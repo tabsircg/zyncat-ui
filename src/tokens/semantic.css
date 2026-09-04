@@ -6,7 +6,8 @@
 
 @layer zyncat.tokens {
   :root {
-    /* The ink on a hue fill - white in either polarity, since the fills stay mid-lightness on dark. */
+    /* The ink on a hue fill - the ramp's lightest rung in either polarity, since the fills stay
+     mid-lightness on dark. */
     --text-on-accent: var(--gray-0);
   }
 
@@ -14,8 +15,10 @@
   [data-theme='light'] {
     color-scheme: light;
 
-    /* The canvas is pure white and cards and panels share it, separated by hairlines and shadow the
-     way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. */
+    /* The canvas is the top of the ramp and cards and panels share it, separated by hairlines and
+     shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp
+     stop apart. All three take --neutral's hue, so warming the neutral warms page and control alike -
+     repoint one of them only to change which rung a role sits on, never to change its temperature. */
     --bg-app: var(--gray-0);
     --bg-surface: var(--gray-0);
     --bg-surface-raised: var(--gray-0);

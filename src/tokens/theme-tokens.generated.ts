@@ -10,7 +10,7 @@
  */
 /** Surfaces - the canvas, cards, fills and the overlay scrim. */
 export interface ColorBgTokens {
-  /** `--bg-app` - The canvas is pure white and cards and panels share it, separated by hairlines and shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
+  /** `--bg-app` - The canvas is the top of the ramp and cards and panels share it, separated by hairlines and shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. All three take --neutral's hue, so warming the neutral warms page and control alike - repoint one of them only to change which rung a role sits on, never to change its temperature. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   app?: string | number;
   /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.195 0.007 h)`. */
   surface?: string | number;
@@ -28,7 +28,7 @@ export interface ColorBgTokens {
 
 /** Ink, from strong to disabled, and the faces on a fill. */
 export interface ColorTextTokens {
-  /** `--text-on-accent` - The ink on a hue fill - white in either polarity, since the fills stay mid-lightness on dark. Default: `var(--gray-0)`. */
+  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity, since the fills stay mid-lightness on dark. Default: `var(--gray-0)`. */
   onAccent?: string | number;
   /** `--text-strong`. Default: `var(--gray-950)`. Dark: `oklch(from var(--neutral) 0.975 0.003 h)`. */
   strong?: string | number;
@@ -427,7 +427,7 @@ export interface TokenProperties {
   '--font-body'?: string | number;
   /** `--font-code` - The code face - --type-code follows. Default: `'Geist Mono', ui-monospace, 'SF Mono', 'Menlo', monospace`. */
   '--font-code'?: string | number;
-  /** `--gray-0`. Default: `oklch(1 0 0)`. */
+  /** `--gray-0` - The top of the ramp, not pure white: it carries --neutral like every rung below it, so a project that warms the neutral warms the canvas and the controls together. Chroma stops at 0.002 because a warm hue leaves sRGB above that at this lightness. Default: `oklch(from var(--neutral) 0.995 0.002 h)`. */
   '--gray-0'?: string | number;
   /** `--gray-50`. Default: `oklch(from var(--neutral) 0.984 0.003 h)`. */
   '--gray-50'?: string | number;
@@ -693,9 +693,9 @@ export interface TokenProperties {
   '--glass-shadow'?: string | number;
   /** `--glass-shadow-hover`. Default: `0 2px 4px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 8px 18px rgb(var(--shadow-rgb) / calc(0.1 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--glass-shadow-hover'?: string | number;
-  /** `--text-on-accent` - The ink on a hue fill - white in either polarity, since the fills stay mid-lightness on dark. Default: `var(--gray-0)`. */
+  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity, since the fills stay mid-lightness on dark. Default: `var(--gray-0)`. */
   '--text-on-accent'?: string | number;
-  /** `--bg-app` - The canvas is pure white and cards and panels share it, separated by hairlines and shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
+  /** `--bg-app` - The canvas is the top of the ramp and cards and panels share it, separated by hairlines and shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. All three take --neutral's hue, so warming the neutral warms page and control alike - repoint one of them only to change which rung a role sits on, never to change its temperature. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   '--bg-app'?: string | number;
   /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.195 0.007 h)`. */
   '--bg-surface'?: string | number;
