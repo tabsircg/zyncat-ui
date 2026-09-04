@@ -307,40 +307,51 @@ function wireTheme(cwd: string, packageRoot: string, pm: PackageManager, entry: 
   return { line: row('Theme file', `${rel} · written`), done: true };
 }
 
-function wireStyles(cwd: string, entry: string | null): Wired {
+const STYLES_LINE = /^\s*import\s+(['"])@zyncat\/ui\/styles\.css\1;?\s*$/;
+const THEME_LINE = new RegExp(`^\\s*import\\s+(['"])[^'"]*${THEME_FILE.replace(/\./g, '\\.')}\\1;?\\s*$`);
+const CSS_LINE = /^\s*import\s+(['"])(\.[^'"]*\.css)\1;?\s*$/;
+
+const slashes = (path: string) => path.split(/[\\/]/).filter(Boolean).join('/');
+
+function importsStylesheet(line: string, fromDir: string, target: string): boolean {
+  const spec = CSS_LINE.exec(line)?.[2];
+  return spec !== undefined && slashes(join(fromDir, spec)) === slashes(target);
+}
+
+function wireStyles(cwd: string, entry: string | null, tailwindEntry: string | null): Wired {
+  const below = tailwindEntry ? `below the ${tailwindEntry} import` : 'above your own stylesheets';
   if (!entry)
     return {
       line: row('Stylesheet', 'no app entry found · add the imports yourself'),
       done: false,
-      hint: `Put ${STYLES_IMPORT} then ${THEME_IMPORT} at your app root, above your own stylesheets.`,
+      hint: `Put ${STYLES_IMPORT} then ${THEME_IMPORT} at your app root, ${below}.`,
     };
   const path = join(cwd, entry);
   const text = readFileSync(path, 'utf8');
   const eol = text.includes('\r\n') ? '\r\n' : '\n';
-  const lines = text.split(eol);
-  const added: string[] = [];
-  let stylesAt = lines.findIndex((line) => line.includes('@zyncat/ui/styles.css'));
-  if (stylesAt === -1) {
-    stylesAt = 0;
-    while (
-      stylesAt < lines.length &&
-      (lines[stylesAt].trim() === '' || /^(['"])use [\w-]+\1;?$/.test(lines[stylesAt].trim()))
-    )
-      stylesAt++;
-    lines.splice(stylesAt, 0, STYLES_IMPORT);
-    added.push('styles');
-  }
-  if (existsSync(join(cwd, dirname(entry), THEME_FILE)) && !text.includes(THEME_FILE)) {
-    lines.splice(stylesAt + 1, 0, THEME_IMPORT);
-    added.push('theme');
-  }
-  if (!added.length) return { line: row('Stylesheet', `${entry} · already imported`), done: true };
-  writeFileSync(path, lines.join(eol));
-  const what = added.length === 2 ? 'imports added' : added[0] === 'theme' ? 'theme import added' : 'import added';
+  const dir = dirname(entry);
+  const hasTheme = existsSync(join(cwd, dir, THEME_FILE));
+
+  const mine = (line: string) => STYLES_LINE.test(line) || (hasTheme && THEME_LINE.test(line));
+  const had = text.split(eol).some(mine);
+  const kept = text.split(eol).filter((line) => !mine(line));
+  const bridgeAt = tailwindEntry ? kept.findIndex((line) => importsStylesheet(line, dir, tailwindEntry)) : -1;
+
+  let at = 0;
+  if (bridgeAt !== -1) at = bridgeAt + 1;
+  else while (at < kept.length && (kept[at].trim() === '' || /^(['"])use [\w-]+\1;?$/.test(kept[at].trim()))) at++;
+
+  kept.splice(at, 0, STYLES_IMPORT, ...(hasTheme ? [THEME_IMPORT] : []));
+  const next = kept.join(eol);
+  if (next === text) return { line: row('Stylesheet', `${entry} · already imported`), done: true };
+
+  writeFileSync(path, next);
+  const what =
+    had && bridgeAt !== -1 ? `imports moved below ${tailwindEntry}` : had ? 'imports updated' : 'imports added';
   return { line: row('Stylesheet', `${entry} · ${what}`), done: true };
 }
 
-function wireTailwind(cwd: string, targetPkg: PackageJson): Wired | null {
+function wireTailwind(cwd: string, targetPkg: PackageJson): (Wired & { bridge?: string }) | null {
   const major = tailwindMajor(cwd, targetPkg);
   if (major === null) return null;
   if (major < 4)
@@ -358,14 +369,15 @@ function wireTailwind(cwd: string, targetPkg: PackageJson): Wired | null {
     };
   const path = join(cwd, entry);
   const text = readFileSync(path, 'utf8');
-  if (text.includes(TAILWIND_BRIDGE)) return { line: row('Tailwind', `${entry} · already imported`), done: true };
+  if (text.includes(TAILWIND_BRIDGE))
+    return { line: row('Tailwind', `${entry} · already imported`), done: true, bridge: entry };
   const eol = text.includes('\r\n') ? '\r\n' : '\n';
   const lines = text.split(eol);
   const at = lines.findIndex((line) => TAILWIND_IMPORT.test(line));
   const quote = lines[at].includes('"') ? '"' : "'";
   lines.splice(at, 0, `@import ${quote}${TAILWIND_BRIDGE}${quote};`);
   writeFileSync(path, lines.join(eol));
-  return { line: row('Tailwind', `${entry} · import added`), done: true };
+  return { line: row('Tailwind', `${entry} · import added`), done: true, bridge: entry };
 }
 
 export async function init(flags: InitFlags): Promise<void> {
@@ -406,7 +418,7 @@ export async function init(flags: InitFlags): Promise<void> {
     wireSkill(cwd, packageRoot, pm),
     wireMcp(cwd),
     wireTheme(cwd, packageRoot, pm, entry),
-    wireStyles(cwd, entry),
+    wireStyles(cwd, entry, tailwind?.bridge ?? null),
     ...(tailwind ? [tailwind] : []),
   ];
   for (const [index, entry] of rows.entries()) {
