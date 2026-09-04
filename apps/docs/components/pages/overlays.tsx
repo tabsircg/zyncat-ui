@@ -39,8 +39,54 @@ const ALERT_COPY: Record<AlertTone, { title: string; body: string }> = {
   danger: { title: 'Payment declined', body: 'Please check your billing details to prevent suspension.' },
 };
 
-const MENU: CSSProperties = { padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 160 };
-const MENU_BTN: CSSProperties = { justifyContent: 'flex-start' };
+const SNOOZE_SLOTS = [
+  { id: 'later', label: 'Later', when: 'today at 17:00' },
+  { id: 'evening', label: 'Tonight', when: 'today at 20:00' },
+  { id: 'tomorrow', label: 'Tomorrow', when: 'tomorrow at 09:00' },
+  { id: 'week', label: 'Monday', when: 'Monday at 09:00' },
+] as const;
+
+type SnoozeId = (typeof SNOOZE_SLOTS)[number]['id'];
+
+const SNOOZE_PANEL: CSSProperties = {
+  width: 212,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-3)',
+  padding: 'var(--space-3)',
+  background: 'var(--bg-surface-raised)',
+  border: 'var(--border-hairline) solid var(--border-default)',
+  borderRadius: 'var(--radius-lg)',
+  boxShadow: 'var(--shadow-lg)',
+  color: 'var(--text-body)',
+};
+const SNOOZE_EYEBROW: CSSProperties = {
+  margin: 0,
+  font: 'var(--type-micro)',
+  letterSpacing: 'var(--tracking-caps)',
+  textTransform: 'uppercase',
+  color: 'var(--text-subtle)',
+};
+const SNOOZE_SUBJECT: CSSProperties = {
+  margin: 'var(--space-1) 0 0',
+  font: 'var(--type-body)',
+  color: 'var(--text-strong)',
+};
+const SNOOZE_GRID: CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-2)' };
+const SNOOZE_READOUT: CSSProperties = {
+  margin: 0,
+  minHeight: 'var(--space-5)',
+  font: 'var(--type-caption)',
+  color: 'var(--text-muted)',
+};
+const SNOOZE_FOOT: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 'var(--space-2)',
+  paddingTop: 'var(--space-3)',
+  borderTop: 'var(--border-hairline) solid var(--border-subtle)',
+};
 
 const SWATCH_TOKENS = ['accent', 'success', 'warning', 'danger', 'info', 'text-strong', 'bg-muted', 'bg-inset'];
 const SWATCH_COLUMNS = 4;
@@ -302,20 +348,42 @@ export function PopoverPlayground() {
   const [align, setAlign] = useState<PopoverAlign>('start');
   const [arrow, setArrow] = useState(false);
   const [open, setOpen] = useState(false);
+  const [slot, setSlot] = useState<SnoozeId | null>(null);
+
+  const chosen = SNOOZE_SLOTS.find((s) => s.id === slot);
 
   const code = `<Popover
-  trigger={<Button variant="secondary">More actions</Button>}
+  trigger={<Button variant="secondary">Snooze</Button>}
   side="${side}"
   align="${align}"
   arrow={${arrow}}
+  open={open}
+  onOpenChange={setOpen}
 >
-  <menu>...</menu>
+  <div className="snooze-panel">
+    <p className="snooze-panel__eyebrow">Snooze thread</p>
+    <div className="snooze-panel__grid">
+      {slots.map((s) => (
+        <Button key={s.id} size="sm" variant={s.id === slot ? 'primary' : 'secondary'} onClick={() => setSlot(s.id)}>
+          {s.label}
+        </Button>
+      ))}
+    </div>
+    <Button size="sm" onClick={confirm}>Confirm</Button>
+  </div>
 </Popover>`;
+
+  const confirm = () => {
+    if (chosen) toast.success(`Snoozed until ${chosen.when}`);
+    setOpen(false);
+    setSlot(null);
+  };
 
   return (
     <Playground
       code={code}
-      note="Non-modal and viewport-aware - it flips to the other side when cramped."
+      note="Popover ships placement only - the surface is yours to paint. Picking a slot leaves the panel open; dismissal is on you."
+      stageStyle={{ minHeight: '34rem' }}
       rail={
         <>
           <KnobSegment label="side" value={side} onChange={setSide} options={['top', 'bottom', 'left', 'right']} />
@@ -324,26 +392,57 @@ export function PopoverPlayground() {
         </>
       }
     >
-      <div style={{ padding: 'var(--space-9) 0' }}>
+      <div>
         <Popover
           key={`${side}-${align}-${arrow}`}
-          trigger={<Button variant="secondary">More actions</Button>}
+          trigger={<Button variant="secondary">Snooze</Button>}
           side={side}
           align={align}
           arrow={arrow}
           open={open}
-          onOpenChange={setOpen}
+          onOpenChange={(next) => {
+            setOpen(next);
+            if (!next) setSlot(null);
+          }}
         >
-          <div style={MENU}>
-            <Button variant="ghost" size="sm" onClick={() => setOpen(false)} style={MENU_BTN}>
-              Reschedule batch
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => setOpen(false)} style={MENU_BTN}>
-              Duplicate draft
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => setOpen(false)} style={MENU_BTN}>
-              Export CSV
-            </Button>
+          <div style={SNOOZE_PANEL}>
+            <div>
+              <p style={SNOOZE_EYEBROW}>Snooze thread</p>
+              <p style={SNOOZE_SUBJECT}>Q3 launch retro</p>
+            </div>
+
+            <div style={SNOOZE_GRID}>
+              {SNOOZE_SLOTS.map((s) => (
+                <Button
+                  key={s.id}
+                  size="sm"
+                  variant={s.id === slot ? 'primary' : 'secondary'}
+                  onClick={() => setSlot(s.id)}
+                  htmlProps={{ 'aria-pressed': s.id === slot }}
+                >
+                  {s.label}
+                </Button>
+              ))}
+            </div>
+
+            <p style={SNOOZE_READOUT}>
+              {chosen ? (
+                <>
+                  Returns <strong style={{ color: 'var(--text-strong)' }}>{chosen.when}</strong>.
+                </>
+              ) : (
+                'Choose when it comes back.'
+              )}
+            </p>
+
+            <div style={SNOOZE_FOOT}>
+              <Button variant="ghost" size="sm" disabled={!chosen} onClick={() => setSlot(null)}>
+                Clear
+              </Button>
+              <Button size="sm" disabled={!chosen} onClick={confirm}>
+                Confirm
+              </Button>
+            </div>
           </div>
         </Popover>
       </div>

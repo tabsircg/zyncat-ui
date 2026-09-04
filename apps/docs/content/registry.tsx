@@ -448,7 +448,7 @@ export const GROUPS: DocGroup[] = [
         blurb:
           'Headless anchored panel, non-modal - flips and clamps to the viewport. You own the surface; drive dismissal with open/onOpenChange.',
         Playground: O.PopoverPlayground,
-        heroCode: `import { Popover } from '@zyncat/ui/popover';\n\n<Popover trigger={<Button variant="secondary">More actions</Button>} side="bottom" align="start">\n  <menu>...</menu>\n</Popover>`,
+        heroCode: `import { Popover } from '@zyncat/ui/popover';\n\n<Popover trigger={<Button variant="secondary">Snooze</Button>} side="bottom" align="start" open={open} onOpenChange={setOpen}>\n  <div className="snooze-panel">...</div>\n</Popover>`,
       },
       {
         slug: 'dropdown',
