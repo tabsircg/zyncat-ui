@@ -1,10 +1,12 @@
 @layer zyncat.tokens, zyncat.components;
 
 @layer zyncat.components {
-  /* Bespoke px: the dot sizes sit off the token ramp on purpose. */
+  /* Bespoke px: the dot sizes sit off the token ramp on purpose. The authored value is the ring
+   gap; the marker falls out of it, so the two never leave an odd remainder to halve. */
   .zc-rg {
     --radio-group-dot: 18px;
-    --radio-group-dot-inner: 8px;
+    --radio-group-dot-gap: 4px;
+    --radio-group-dot-inner: calc(var(--radio-group-dot) - 2 * (var(--border-hairline) + var(--radio-group-dot-gap)));
 
     display: grid;
     border: 0;
@@ -14,7 +16,7 @@
   }
   .zc-rg--sm {
     --radio-group-dot: 16px;
-    --radio-group-dot-inner: 7px;
+    --radio-group-dot-gap: 3px;
   }
 
   .zc-rg__label {
