@@ -265,7 +265,7 @@ for (const [rule, byFile] of Object.entries(debts)) {
     if (count > allowed) {
       debtOver++;
       failures.push(
-        `${file}: ${rule} count ${count} exceeds the ratchet baseline (${allowed}) - fix it, or consciously run "pnpm check:contracts --write"`,
+        `${file}: ${rule} count ${count} exceeds the ratchet baseline (${allowed}) - fix it, or consciously run "pnpm check contracts --write"`,
       );
     }
   }

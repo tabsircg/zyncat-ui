@@ -50,7 +50,7 @@ if (!problems.length) {
 
 if (!write) {
   for (const problem of problems) console.error(`✗ ${problem}`);
-  console.error(`\n${problems.length} exports-map problem(s) - run "pnpm sync:exports" to fix.`);
+  console.error(`\n${problems.length} exports-map problem(s) - run "pnpm sync exports" to fix.`);
   process.exit(1);
 }
 

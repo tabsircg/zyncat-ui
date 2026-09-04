@@ -25,7 +25,7 @@ const next = await prettier.format(JSON.stringify(tsconfig), { ...options, filep
 
 if (process.argv.includes('--check')) {
   if (next !== current) {
-    console.error('✗ apps/docs/tsconfig.json does not map every subpath - run "pnpm sync:tsconfig".');
+    console.error('✗ apps/docs/tsconfig.json does not map every subpath - run "pnpm sync tsconfig".');
     process.exit(1);
   }
   console.log(`sync-tsconfig --check: ${Object.keys(paths).length} subpaths mapped.`);

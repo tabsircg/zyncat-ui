@@ -784,9 +784,9 @@ if (check) {
     try {
       current = readFileSync(output.path, 'utf8');
     } catch {
-      fail(`${output.rel} is missing - run "pnpm sync:theme".`);
+      fail(`${output.rel} is missing - run "pnpm sync theme".`);
     }
-    if (current !== output.text) fail(`${output.rel} is stale - run "pnpm sync:theme".`);
+    if (current !== output.text) fail(`${output.rel} is stale - run "pnpm sync theme".`);
   }
   console.log(`gen-theme --check: ${summary} in sync.`);
 } else {

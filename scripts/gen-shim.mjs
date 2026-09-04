@@ -31,7 +31,7 @@ if (failures.length) {
 if (shim.version !== rootPkg.version) {
   if (check) {
     console.error(
-      `✗ packages/zyncat-ui version ${shim.version} != @zyncat/ui ${rootPkg.version} - run "pnpm sync:shim".`,
+      `✗ packages/zyncat-ui version ${shim.version} != @zyncat/ui ${rootPkg.version} - run "pnpm sync shim".`,
     );
     process.exit(1);
   }
