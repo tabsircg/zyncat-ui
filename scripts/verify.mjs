@@ -1,35 +1,30 @@
-import { lane, pkg, report, script, tool } from './lib/run.mjs';
+import { lane, report } from './lib/run.mjs';
+import { BUILD, CHECKS } from './lib/tasks.mjs';
 
 const startedAt = Date.now();
 
-const independent = [
-  lane([script('check:exports', 'sync-exports.mjs')]),
-  lane([script('check:tsconfig', 'sync-tsconfig.mjs', '--check')]),
-  lane([tool('typecheck:node', 'tsc', '-p', 'tsconfig.node.json')]),
-  lane([pkg('typecheck:cli', 'zyncat-ui', 'typecheck')]),
-  lane([tool('format:check', 'prettier', '--check', '--cache', '.')]),
-  lane([script('check:css', 'check-css-graph.mjs')]),
-  lane([script('check:authoring', 'check-authoring.mjs')]),
-  lane([script('check:contracts', 'check-contracts.mjs')]),
-  lane([script('check:skill', 'gen-skill.mjs', '--check')]),
-  lane([script('check:theme', 'gen-theme.mjs', '--check')]),
-  lane([script('check:shim', 'gen-shim.mjs', '--check')]),
-  lane([
-    tool('build:js', 'tsup'),
-    tool('build:types', 'tsc', '-p', 'tsconfig.build.json', '--emitDeclarationOnly'),
-    pkg('build:cli', 'zyncat-ui', 'build'),
-  ]),
+const STANDALONE = [
+  'exports',
+  'tsconfig',
+  'typecheck:node',
+  'typecheck:cli',
+  'format',
+  'css',
+  'authoring',
+  'contracts',
+  'skill',
+  'theme',
+  'shim',
 ];
+const DIST_DEPENDENT = ['usage', 'props'];
+
+const independent = [...STANDALONE.map((name) => lane([CHECKS[name]])), lane(BUILD)];
 
 const first = (await Promise.all(independent)).flat();
 const buildBroken = first.some((result) => result.label.startsWith('build:') && result.code);
 
-const distDependent = buildBroken
-  ? []
-  : [lane([script('check:usage', 'check-usage.mjs')]), lane([script('check:props', 'gen-props.mjs', '--check')])];
-
-const second = (await Promise.all(distDependent)).flat();
+const second = buildBroken ? [] : (await Promise.all(DIST_DEPENDENT.map((name) => lane([CHECKS[name]])))).flat();
 
 const failures = report([...first, ...second], (Date.now() - startedAt) / 1000);
-if (buildBroken) console.error('  check:usage and check:props skipped - the build failed.');
+if (buildBroken) console.error(`  ${DIST_DEPENDENT.join(' and ')} skipped - the build failed.`);
 process.exit(failures ? 1 : 0);

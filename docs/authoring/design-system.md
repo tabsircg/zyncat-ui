@@ -259,4 +259,4 @@ gains nothing from arriving a frame early.
 - Phase 4: wire `src/components/expressive/` into the tsup scan. Port the motion primitives.
 - Phase 5: support widgets into `src/components/compound/`.
 - Phase 6: replicas. Phase 7: docs coverage, publish gate.
-- Legacy debt (comments, px literals, rAF call sites) is ratcheted by `check:contracts` against `scripts/contracts-baseline.json`.
+- Legacy debt (comments, px literals, rAF call sites) is ratcheted by `check contracts` against `scripts/contracts-baseline.json`.

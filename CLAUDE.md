@@ -20,14 +20,14 @@
 - Tokens, contracts, overrides, tiers: `design_rules(topic?)` or `docs/authoring/design-system.md`.
 - Adding a component: `authoring_checklist()` or `docs/authoring/authoring.md`.
 - Using components: `get_component` (batch), `search_api`, `get_tokens`, or the shipped skill in `skills/`.
-- `pnpm check:authoring` verifies the guidance against the code.
+- `pnpm check authoring` verifies the guidance against the code.
 
 ## Non-negotiables
 
 - `pnpm`, never `npm`.
 - No comments in source. Exceptions: public-props JSDoc, `src/tokens/*.css`, and a choice that
   reads as a mistake - code that deliberately goes against the standard, where the constraint
-  forcing it cannot live in a name. Rare, and `check:contracts --write` has to accept the count.
+  forcing it cannot live in a name. Rare, and `check contracts --write` has to accept the count.
 - Never sequence motion with `setTimeout`, `requestAnimationFrame`, `transitionend` or `animationend`.
 - Chain the `Playback` `finished` promise instead. Wall-clock assumptions are wrong by construction.
 - rAF exists only inside the engine `loop` simulation primitive.
@@ -73,10 +73,25 @@ temp/            imported source material (dc.html decks, magicui reference) - n
 - You: the component, its CSS, its prop JSDoc, its demo page.
 - The `zyncat-docs` agent: the usage doc, the registry row, the canonical example.
 - `pnpm sync`: exports map, docs paths, prop tables, repo docs.
-- Never hand-write a prop table. `pnpm docs:props` generates it from `dist/*.d.ts`.
+- Never hand-write a prop table. `pnpm sync props` generates it from `dist/*.d.ts`.
 
 ## Commands
 
-- `pnpm sync`: regenerate every manifest and generated doc.
-- `pnpm verify`: the whole gate, in order.
-- Pieces run alone: `typecheck`, `check:css`, `check:contracts`, `check:authoring`, `check:exports`, `check:tsconfig`, `check:skill`, `check:theme`, `check:shim`, `check:props`, `build && check:usage`.
+Seven scripts. Three take a target; with none, they run everything they own.
+
+- `pnpm verify`: the whole gate, in parallel lanes.
+- `pnpm check [name...]`: `css` `contracts` `authoring` `exports` `tsconfig` `skill` `theme` `shim`
+  `usage` `props` `format` `typecheck`. Flags pass through - `pnpm check contracts --write`.
+- `pnpm sync [name...]`: `theme` `shim` `exports` `tsconfig` `props` `skill`. Bare, it builds
+  before `props` so the prop tables read a fresh `dist/`.
+- `pnpm build [docs | watch]`: bare builds js, types and the CLI.
+- `pnpm dev`, `pnpm format`.
+
+The task registry is `scripts/lib/tasks.mjs`. Adding a check means one line there, not a new
+`package.json` script.
+
+## Commits
+
+- Never bypass a hook. Not with no-verify, not with -n. A failing hook is the work, not an obstacle.
+- Subject line, then a list. No prose paragraphs, no narrative, no explaining the bug's history.
+- Two or three list items, one line each. If it needs more, the commit is two commits.

@@ -12,14 +12,14 @@ const check = process.argv.includes('--check');
 const { version, modules } = loadModules(ROOT);
 const missing = modules.filter((m) => !m.usage && m.subpath !== 'next');
 if (missing.length) {
-  console.error(`✗ gen-skill: no usage doc for ${missing.map((m) => m.subpath).join(', ')} - fix check:usage first.`);
+  console.error(`✗ gen-skill: no usage doc for ${missing.map((m) => m.subpath).join(', ')} - fix check usage first.`);
   process.exit(1);
 }
 
 const raw = [
   '# @zyncat/ui component index',
   '',
-  `Generated from @zyncat/ui v${version} by \`pnpm sync:skill\` - do not edit by hand.`,
+  `Generated from @zyncat/ui v${version} by \`pnpm sync skill\` - do not edit by hand.`,
   'If node_modules/@zyncat/ui/package.json shows a DIFFERENT version, this index is stale:',
   'trust the get_component MCP tool and re-run `npx zyncat-ui init` to refresh the skill.',
   '',
@@ -41,7 +41,7 @@ if (content !== raw) {
 if (check) {
   const current = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
   if (current !== content) {
-    console.error('✗ skills/zyncat-ui/references/components.md is stale - run "pnpm sync:skill".');
+    console.error('✗ skills/zyncat-ui/references/components.md is stale - run "pnpm sync skill".');
     process.exit(1);
   }
   console.log('check-skill: the generated component index is current.');

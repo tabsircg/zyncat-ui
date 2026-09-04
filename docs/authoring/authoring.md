@@ -19,9 +19,9 @@ src/components/<tier>/<component>/<Component>.tsx
 ## 2. Sync the manifests
 
 - Run `pnpm sync`. Every generator reads `scripts/lib/entries.mjs`.
-- `pnpm sync:exports` writes `package.json` `exports`. Subpaths are the only public API.
-- `pnpm sync:tsconfig` writes `apps/docs/tsconfig.json` `paths`.
-- `pnpm docs:props` writes `apps/docs/content/props.generated.ts` from `dist/*.d.ts`.
+- `pnpm sync exports` writes `package.json` `exports`. Subpaths are the only public API.
+- `pnpm sync tsconfig` writes `apps/docs/tsconfig.json` `paths`.
+- `pnpm sync props` writes `apps/docs/content/props.generated.ts` from `dist/*.d.ts`.
 - No barrel entry. One import never pulls in code or CSS the app did not ask for.
 
 ## 3. Give it its own stylesheet
@@ -31,7 +31,7 @@ src/components/<tier>/<component>/<component>.css
 ```
 
 - Import it at the top of the `.tsx`, above everything else.
-- Every rendered class must resolve through the module's own import graph (`pnpm check:css`).
+- Every rendered class must resolve through the module's own import graph (`pnpm check css`).
 - Classes under `src/tokens` are always satisfied. They ship in `styles.css`.
 - System contract: tokens, not literals.
 - Expressive contract: name every value.
@@ -47,7 +47,7 @@ src/components/<tier>/<component>/<component>.css
 ## 4. Document the props where they live
 
 - JSDoc on the public props interface feeds the tooltip, the docs table and the MCP.
-- Export the interface the JSDoc sits on. `check:contracts` counts JSDoc on an unexported type as comment debt.
+- Export the interface the JSDoc sits on. `check contracts` counts JSDoc on an unexported type as comment debt.
 - Put `@default` on every defaulted prop.
 
 ```tsx
@@ -55,7 +55,7 @@ src/components/<tier>/<component>/<component>.css
 side?: 'top' | 'bottom';
 ```
 
-- `pnpm docs:props` fails on any public prop with no JSDoc.
+- `pnpm sync props` fails on any public prop with no JSDoc.
 - Referenced shapes (`DropdownItem`, `TableColumn`, `SelectOption`) document themselves.
 - Never hand-write a prop table. `apps/docs/content/*.ts` carries only the `example` string.
 
@@ -82,9 +82,9 @@ Prop vocabulary as prose. Sixteen prose lines, hard cap - per-prop detail lives 
 
 - The Group line takes one of the ids in `usage-format.mjs`; the Docs line is the live docs page,
   omitted only when the component has no page.
-- `pnpm check:usage` verifies coverage, the format, the caps and every example prop against the
+- `pnpm check usage` verifies coverage, the format, the caps and every example prop against the
   built types. Run `pnpm build` first.
-- `pnpm sync:skill` regenerates the skill's component index from the summaries. Never edit
+- `pnpm sync skill` regenerates the skill's component index from the summaries. Never edit
   `components.md` by hand.
 
 ## 6. Add it to the docs application
@@ -97,14 +97,14 @@ Prop vocabulary as prose. Sixteen prose lines, hard cap - per-prop detail lives 
 ## 7. Run the checks
 
 - `pnpm format`, then `pnpm sync`, then `pnpm verify`.
-- `pnpm verify` runs everything in parallel lanes; `check:usage` and `check:props` wait on the build.
-- `check:contracts` enforces the mechanical contract rules and ratchets legacy debt via `scripts/contracts-baseline.json`.
+- `pnpm verify` runs everything in parallel lanes; `check usage` and `check props` wait on the build.
+- `check contracts` enforces the mechanical contract rules and ratchets legacy debt via `scripts/contracts-baseline.json`.
 
 ## Conventions the linters do not catch
 
 - No comments in source. Exceptions: public-props JSDoc, the token `.css` files, and a choice that
   reads as a mistake - code that deliberately goes against the standard, where the constraint forcing
-  it cannot live in a name. Rare, and `check:contracts --write` has to accept the raised count.
+  it cannot live in a name. Rare, and `check contracts --write` has to accept the raised count.
 - Sequence motion with `Playback.finished` only.
 - `pnpm`, never `npm`.
 - Named constants, not magic numbers.

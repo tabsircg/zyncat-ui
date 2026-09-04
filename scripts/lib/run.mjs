@@ -23,15 +23,18 @@ export function run(label, command, args) {
 
 export const script =
   (label, file, ...args) =>
-  () =>
-    run(label, NODE, [resolve(ROOT, 'scripts', file), ...args]);
+  (...extra) =>
+    run(label, NODE, [resolve(ROOT, 'scripts', file), ...args, ...extra]);
 
 export const tool =
   (label, name, ...args) =>
-  () =>
-    run(label, bin(name), args);
+  (...extra) =>
+    run(label, bin(name), [...args, ...extra]);
 
-export const pkg = (label, name, task) => () => run(label, 'pnpm', ['--filter', name, task]);
+export const pkg =
+  (label, name, task) =>
+  (...extra) =>
+    run(label, 'pnpm', ['--filter', name, task, ...extra]);
 
 export async function lane(steps) {
   const results = [];

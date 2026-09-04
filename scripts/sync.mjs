@@ -1,18 +1,20 @@
-import { lane, pkg, report, script, tool } from './lib/run.mjs';
+import { lane, report } from './lib/run.mjs';
+import { BUILD, select, SYNCS, usage } from './lib/tasks.mjs';
 
 const startedAt = Date.now();
+const names = process.argv.slice(2);
+const picked = select(SYNCS, names);
 
-const results = await lane([
-  script('sync:theme', 'gen-theme.mjs'),
-  script('sync:shim', 'gen-shim.mjs'),
-  script('sync:exports', 'sync-exports.mjs', '--write'),
-  script('sync:tsconfig', 'sync-tsconfig.mjs'),
-  tool('build:js', 'tsup'),
-  tool('build:types', 'tsc', '-p', 'tsconfig.build.json', '--emitDeclarationOnly'),
-  pkg('build:cli', 'zyncat-ui', 'build'),
-  script('docs:props', 'gen-props.mjs'),
-  script('sync:skill', 'gen-skill.mjs'),
-]);
+if (picked.unknown) {
+  console.error(`unknown target "${picked.unknown}"`);
+  console.error(usage('sync', SYNCS));
+  process.exit(1);
+}
 
+const ORDER = ['theme', 'shim', 'exports', 'tsconfig', 'props', 'skill'];
+const ordered = ORDER.filter((name) => picked.includes(name));
+const steps = ordered.flatMap((name) => (name === 'props' && !names.length ? [...BUILD, SYNCS[name]] : [SYNCS[name]]));
+
+const results = await lane(steps);
 const failures = report(results, (Date.now() - startedAt) / 1000);
 process.exit(failures ? 1 : 0);

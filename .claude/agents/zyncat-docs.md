@@ -41,11 +41,11 @@ behaviour a reader cannot guess from prop names.
   `Select`. Find that sentence and make it the summary.
 - `Group:` is one of the ids in `scripts/lib/usage-format.mjs`. `Docs:` is the
   live docs page; omit the line only when the component has no page.
-- **Sixteen prose lines, hard cap** — `pnpm check:usage` enforces it. Per-prop
+- **Sixteen prose lines, hard cap** — `pnpm check usage` enforces it. Per-prop
   detail belongs in the props JSDoc instead, which `get_component` already
   ships beside this doc — writing it in both places only creates drift.
 - Every JSX attribute in your examples must resolve to a real prop on the built
-  types — `pnpm check:usage` enforces it, which is why these examples do not
+  types — `pnpm check usage` enforces it, which is why these examples do not
   rot. Give the common case; add a second fence only when the controlled or
   advanced shape is genuinely different.
 
@@ -104,13 +104,13 @@ code — real prop values, plausible labels, no `foo`/`bar`.
 ## Proving it
 
 ```bash
-pnpm build && pnpm check:usage   # coverage, format, caps, example props (needs dist/)
-pnpm sync:skill                  # regenerate the skill's component index
-pnpm docs:props                  # regenerate the prop tables
+pnpm build && pnpm check usage   # coverage, format, caps, example props (needs dist/)
+pnpm sync skill                  # regenerate the skill's component index
+pnpm sync props                  # regenerate the prop tables
 pnpm exec prettier --write src/**/*.usage.md apps/docs/content skills
 ```
 
-`check:usage` failing with "not a prop of @zyncat/ui/thing" means your example
+`check usage` failing with "not a prop of @zyncat/ui/thing" means your example
 is wrong, or the build is stale. Rebuild before assuming the example is wrong.
 Failing with "over the 16-line cap" means the doc has become a manual — move
 the per-prop lines into the JSDoc rather than shortening the examples away.

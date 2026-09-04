@@ -13,7 +13,7 @@ pre-commit:
 pre-push:
   commands:
     typecheck:
-      run: pnpm typecheck
+      run: pnpm check typecheck
 
 commit-msg:
   commands:

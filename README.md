@@ -274,13 +274,14 @@ dist/               compiled ESM + .d.ts - what you import
 
 ```bash
 pnpm install
-pnpm build            # tsup - dist/ (ESM + .d.ts)
-pnpm typecheck        # tsc --noEmit
-pnpm format           # prettier --write
-pnpm check:css        # every rendered class is reachable from its own module
-pnpm check:usage      # every subpath has a usage doc, and its example props are real
-pnpm check:authoring  # docs/authoring + CLAUDE.md still match the code
-pnpm verify           # every gate above, in order
+pnpm build              # tsup - dist/ (ESM + .d.ts)
+pnpm format             # prettier --write
+pnpm check typecheck    # tsc --noEmit, across src, scripts and the CLI
+pnpm check css          # every rendered class is reachable from its own module
+pnpm check usage        # every subpath has a usage doc, and its example props are real
+pnpm check authoring    # docs/authoring + CLAUDE.md still match the code
+pnpm check              # all of the above
+pnpm verify             # every check plus the build, in parallel lanes
 ```
 
 Contributing to this repo? Start at [`CLAUDE.md`](CLAUDE.md), then
