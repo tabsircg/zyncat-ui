@@ -113,7 +113,6 @@
   }
   .zc-support-rail__needle:focus-visible {
     outline: var(--focus-ring);
-    outline-offset: var(--ring-inset);
   }
 
   .zc-support-rail[data-open='true'] .zc-support-rail__needle {
@@ -342,7 +341,6 @@
   .zc-support-rail__row:focus-visible {
     z-index: 1;
     outline: var(--focus-ring);
-    outline-offset: var(--ring-inset);
   }
 
   .zc-support-rail__row-icon {
@@ -384,7 +382,6 @@
   }
   .zc-support-rail__extra:focus-visible {
     outline: var(--focus-ring);
-    outline-offset: var(--ring-inset);
   }
   .zc-support-rail__extra:not(:empty) {
     padding: var(--space-4) var(--space-5) var(--space-5);

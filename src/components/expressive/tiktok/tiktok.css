@@ -74,7 +74,6 @@
 
   .zc-tiktok__viewport:focus-visible {
     outline: var(--focus-ring);
-    outline-offset: var(--ring-inset);
   }
 
   .zc-tiktok__track {

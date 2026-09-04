@@ -232,7 +232,6 @@
   }
   .zc-numf__step:focus-visible {
     outline: var(--ring-accent);
-    outline-offset: var(--ring-inset);
   }
   .zc-numf__step + .zc-numf__step {
     border-top: var(--border-hairline) solid var(--border-default);

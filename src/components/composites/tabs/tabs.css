@@ -26,6 +26,7 @@
     scrollbar-width: none;
     margin-inline: calc(var(--space-2) * -1);
     padding-inline: var(--space-2);
+    padding-block: calc(var(--tabs-ink-h) + var(--space-px));
     scroll-padding-inline: var(--space-2);
 
     --tabs-fade-start: 0px;
@@ -53,15 +54,18 @@
     border: 0;
     background: none;
     margin: 0;
-    padding: 0 0 calc(var(--tabs-ink-h) + var(--space-px));
+    padding: 0;
     flex: none;
     display: block;
     font-family: var(--font-body);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    border-radius: var(--radius-md);
+    outline: var(--ring-rest);
+    transition: var(--transition-control);
   }
   .zc-tab:focus-visible {
-    outline: none;
+    outline: var(--ring-accent);
   }
 
   .zc-tab__pad {
@@ -79,8 +83,6 @@
     transition:
       var(--transition-control),
       transform var(--duration-fast) var(--ease-standard);
-    outline: var(--ring-rest);
-    outline-offset: var(--ring-inset);
   }
   .zc-tab__pad .zc-icon {
     display: inline-flex;
@@ -95,9 +97,6 @@
   .zc-tab.zc-is-selected .zc-tab__pad,
   .zc-tab.zc-is-selected:hover:not(:disabled) .zc-tab__pad {
     color: var(--text-strong);
-  }
-  .zc-tab:focus-visible .zc-tab__pad {
-    outline: var(--ring-accent);
   }
   .zc-tab:disabled {
     cursor: not-allowed;
@@ -169,7 +168,7 @@
   }
 
   .zc-tabs--pill .zc-tab {
-    padding: 0;
+    border-radius: var(--tabs-pill-radius);
   }
   .zc-tabs--pill .zc-tab__pad {
     z-index: 1;
@@ -197,7 +196,6 @@
   }
   .zc-tab-panel:focus-visible {
     outline: var(--ring-accent);
-    outline-offset: var(--ring-inset);
     border-radius: var(--radius-md);
   }
   .zc-tab-panel__inner {

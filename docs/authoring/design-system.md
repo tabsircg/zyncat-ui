@@ -65,12 +65,22 @@
   - a scroller whose children sit flush to its content edge also adds `padding` of
     `var(--ring-width)` with a matching negative `margin`, but only when no clipping ancestor
     would swallow it again;
-  - `overflow: clip` plus `overflow-clip-margin: var(--ring-width)` works only where the clip is
-    not decorative - it defeats a rounded corner, and it needs `clip` on both axes.
-- A control that is flush with a clipping edge by design - a full-bleed panel, region or row -
-  turns its ring inward with `outline-offset: var(--ring-inset)` instead of reserving room.
+  - `overflow: clip` plus `overflow-clip-margin: var(--ring-width)` needs `clip` on both axes, and
+    Safari does not implement it, so it degrades to a cut ring on the browsers in our baseline.
+- Every ring in the library is outward. That is what an outline is for, and it is the shape a
+  consumer's own focus rule takes, so a ring that goes inward reads as a different control.
+  `outline-offset` appears on no component.
 - Collapse is the one place a ring can still be cut: clipping the collapsing axis is how it
   collapses, so content flush to its edge loses the outer part of its ring.
+
+Two things are owed here, both open:
+
+- `--ring-inset` is still a token but nothing uses it. An inward ring is the right answer for a
+  full-bleed panel, region or row, where there is no outward space to paint in. It should be an
+  opt-in the consumer can toggle, not a per-component decision taken for them.
+- Every container the library ships that clips has to carry the spacing its children's rings need.
+  Reserving it in the clipper is the only mechanism that works, because the negative-margin variant
+  above pushes the box past a clipping ancestor and loses the ring again.
 
 ### Invariants
 
