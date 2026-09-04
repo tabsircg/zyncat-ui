@@ -127,7 +127,7 @@ export function TabsPlayground() {
       note="The ink reaches then releases either way - an underline that spans the tab, or a pill riding an inset track."
       rail={<KnobSegment label="variant" value={variant} onChange={setVariant} options={['underline', 'pill']} />}
     >
-      <div style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+      <div style={{ width: '100%', maxWidth: 440 }}>
         <Tabs
           items={TAB_ITEMS}
           value={active}
@@ -139,7 +139,7 @@ export function TabsPlayground() {
           name="tabs-playground"
           ariaLabel="Workspace sections"
         />
-        <TabPanel name="tabs-playground" tab={active} dir={dir}>
+        <TabPanel name="tabs-playground" tab={active} dir={dir} style={{ paddingTop: 'var(--space-4)' }}>
           <p style={{ margin: 0, font: 'var(--type-body)', color: 'var(--text-muted)', minHeight: 'var(--space-8)' }}>
             {TAB_COPY[active]}
           </p>

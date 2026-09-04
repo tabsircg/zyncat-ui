@@ -26,9 +26,7 @@
     scrollbar-width: none;
     margin-inline: calc(var(--space-2) * -1);
     padding-inline: var(--space-2);
-    margin-block: calc(var(--ring-width) * -1);
-    padding-block: var(--ring-width);
-    scroll-padding: var(--ring-width);
+    scroll-padding-inline: var(--space-2);
 
     --tabs-fade-start: 0px;
     --tabs-fade-end: 0px;
@@ -82,6 +80,7 @@
       var(--transition-control),
       transform var(--duration-fast) var(--ease-standard);
     outline: var(--ring-rest);
+    outline-offset: var(--ring-inset);
   }
   .zc-tab__pad .zc-icon {
     display: inline-flex;
@@ -142,7 +141,7 @@
   .zc-tabs__ink {
     position: absolute;
     left: 0;
-    bottom: var(--ring-width);
+    bottom: 0;
     height: var(--tabs-ink-h);
     border-radius: var(--radius-full);
     background: var(--accent);

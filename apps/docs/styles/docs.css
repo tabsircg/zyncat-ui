@@ -490,10 +490,6 @@ body {
   margin-bottom: calc(var(--border-hairline) * -1);
 }
 
-.plate-tabs::after {
-  display: none;
-}
-
 .hero-preview__actions {
   display: flex;
   align-items: center;
