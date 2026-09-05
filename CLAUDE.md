@@ -35,6 +35,8 @@
 - Values follow the tier's contract. `design_rules('contracts')` has the rules.
 - Zero runtime dependencies.
 - Do not commit or stage anything until the change has been reviewed.
+- Never launch an agent, and never start satellite or chore work - docs, registry rows, SEO
+  entries, formatting sweeps, cleanups - until the main task has been reviewed and approved.
 
 ## Layout
 
@@ -70,6 +72,7 @@ temp/            imported source material (dc.html decks, magicui reference) - n
 
 ## Delegate the satellite work
 
+- Only after the main task is approved. Until then no agent runs, whatever the task looks like.
 - You: the component, its CSS, its prop JSDoc, its demo page.
 - The `zyncat-docs` agent: the usage doc, the registry row, the canonical example.
 - `pnpm sync`: exports map, docs paths, prop tables, repo docs.
