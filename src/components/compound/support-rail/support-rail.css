@@ -4,9 +4,8 @@
   .zc-support-rail {
     /* Panel width; the rail never exceeds its container. */
     --support-rail-width: 318px;
-    --_support-rail-needle-width: 40px;
-    --_support-rail-needle-height: 48px;
-    --_support-rail-needle-duck: 0.55;
+    --_support-rail-tab-width: 40px;
+    --_support-rail-tab-height: 48px;
 
     /* Row padding on the block axis - the density knob. */
     --support-rail-row-pad-block: var(--space-3);
@@ -14,32 +13,25 @@
     --support-rail-row-pad-inline: var(--space-4);
     --_support-rail-row-nudge: 5px;
 
-    /* The panel and the needle. */
+    /* The one surface: the tab, and the panel it morphs into. */
     --support-rail-surface: var(--bg-subtle);
-    /* The needle while hovered. */
+    /* The tab while hovered. */
     --support-rail-surface-raised: var(--bg-surface);
-    /* The panel's edge and the needle's border. */
+    /* The surface's edge. */
     --support-rail-line: var(--border-default);
     /* Row dividers. */
     --support-rail-line-soft: var(--border-subtle);
     /* The tab's outer corners. */
     --support-rail-radius: var(--radius-2xl);
 
-    /* How long the panel takes to open. */
-    --support-rail-open-duration: calc(var(--duration-slower) * 1.4);
-    /* How long the panel takes to close. */
-    --support-rail-close-duration: var(--duration-slower);
-    --_support-rail-needle-delay: calc(var(--duration-slow) * 0.5);
     --_support-rail-stagger: calc(var(--duration-fast) * 0.3);
-
-    --_support-rail-collapse-x: 1;
-    --_support-rail-collapse-y: 1;
     --_support-rail-index: 0;
 
     position: absolute;
     top: 0;
     bottom: 0;
     width: min(var(--support-rail-width), 100%);
+    container-type: inline-size;
     isolation: isolate;
     pointer-events: none;
     font-family: var(--font-body);
@@ -53,108 +45,81 @@
     left: 0;
   }
 
-  .zc-support-rail__needle {
+  .zc-support-rail__shell {
     position: absolute;
     top: 50%;
-    min-width: var(--_support-rail-needle-width);
-    min-height: var(--_support-rail-needle-height);
+    width: var(--_support-rail-tab-width);
+    height: var(--_support-rail-tab-height);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: var(--space-2);
-    margin: 0;
-    padding: var(--space-2);
+    overflow: hidden;
     background: var(--support-rail-surface);
     border: var(--border-hairline) solid var(--support-rail-line);
     box-shadow: var(--shadow-md);
-    cursor: pointer;
     pointer-events: auto;
-    color: var(--text-secondary);
-    font: inherit;
-    opacity: 1;
     translate: 0 -50%;
-    scale: 1;
-    transition:
-      scale var(--support-rail-open-duration) var(--ease-spring) var(--_support-rail-needle-delay),
-      opacity var(--duration-base) linear var(--_support-rail-needle-delay),
-      background-color var(--duration-fast) var(--ease-standard),
-      color var(--duration-fast) var(--ease-standard);
   }
 
-  .zc-support-rail[data-side='right'] .zc-support-rail__needle {
+  .zc-support-rail[data-side='right'] .zc-support-rail__shell {
     right: 0;
     border-right: 0;
     border-radius: var(--support-rail-radius) 0 0 var(--support-rail-radius);
-    transform-origin: 100% 50%;
   }
-  .zc-support-rail[data-side='left'] .zc-support-rail__needle {
+  .zc-support-rail[data-side='left'] .zc-support-rail__shell {
     left: 0;
     border-left: 0;
     border-radius: 0 var(--support-rail-radius) var(--support-rail-radius) 0;
-    transform-origin: 0 50%;
   }
 
-  .zc-support-rail__needle:hover {
-    background: var(--support-rail-surface-raised);
+  .zc-support-rail[data-open='true'] .zc-support-rail__shell {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    border-radius: 0;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .zc-support-rail .zc-support-rail__tab {
+    position: absolute;
+    top: 50%;
+    width: var(--_support-rail-tab-width);
+    height: var(--_support-rail-tab-height);
+    box-sizing: border-box;
+    padding: var(--space-2);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    color: var(--text-secondary);
+    opacity: 1;
+    translate: 0 -50%;
+  }
+  .zc-support-rail .zc-support-rail__tab:focus-visible {
+    outline: none;
+  }
+  .zc-support-rail[data-side='right'] .zc-support-rail__tab {
+    right: 0;
+  }
+  .zc-support-rail[data-side='left'] .zc-support-rail__tab {
+    left: 0;
+  }
+  .zc-support-rail__tab:hover {
     color: var(--text-strong);
   }
-  .zc-support-rail__needle:focus-visible {
+  .zc-support-rail[data-open='true'] .zc-support-rail__tab {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .zc-support-rail:not([data-open='true']) .zc-support-rail__shell:hover {
+    background: var(--support-rail-surface-raised);
+  }
+  .zc-support-rail__shell:has(.zc-support-rail__tab:focus-visible) {
     outline: var(--focus-ring);
   }
 
-  .zc-support-rail[data-open='true'] .zc-support-rail__needle {
-    opacity: 0;
-    scale: var(--_support-rail-needle-duck);
-    pointer-events: none;
-    transition:
-      scale var(--duration-base) var(--ease-exit),
-      opacity var(--duration-fast) linear;
-  }
-
-  .zc-support-rail__panel {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    max-height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: var(--support-rail-surface);
-    box-shadow: var(--shadow-lg);
-    pointer-events: none;
-    opacity: 0;
-    translate: 0 -50%;
-    scale: var(--_support-rail-collapse-x) var(--_support-rail-collapse-y);
-    will-change: scale;
-    transition:
-      scale var(--support-rail-close-duration) var(--ease-exit),
-      opacity var(--duration-base) linear calc(var(--support-rail-close-duration) * 0.5);
-  }
-
-  .zc-support-rail[data-side='right'] .zc-support-rail__panel {
-    right: 0;
-    border-left: var(--border-hairline) solid var(--support-rail-line);
-    transform-origin: 100% 50%;
-  }
-  .zc-support-rail[data-side='left'] .zc-support-rail__panel {
-    left: 0;
-    border-right: var(--border-hairline) solid var(--support-rail-line);
-    transform-origin: 0 50%;
-  }
-
-  .zc-support-rail[data-open='true'] .zc-support-rail__panel {
-    pointer-events: auto;
-    opacity: 1;
-    scale: 1 1;
-    transition:
-      scale var(--support-rail-open-duration) var(--ease-spring),
-      opacity var(--duration-base) linear;
-  }
-
   .zc-support-rail__body {
+    width: 100cqw;
     flex: 1 1 auto;
     min-height: 0;
     box-sizing: border-box;
@@ -162,6 +127,9 @@
     flex-direction: column;
     padding-inline: var(--ring-gutter);
     outline: none;
+  }
+  .zc-support-rail[data-morphing] .zc-support-rail__body {
+    flex: none;
   }
 
   .zc-support-rail__header {

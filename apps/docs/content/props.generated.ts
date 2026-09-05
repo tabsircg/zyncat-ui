@@ -402,7 +402,7 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
       default: '[]',
       required: true,
       description:
-        'The rows, in order. Each renders a button carrying its label, optional description and optional meta.',
+        'The options, in order. Each renders a button in the grid carrying its label, optional description and optional meta.',
     },
     {
       name: 'title',
@@ -413,14 +413,14 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     {
       name: 'status',
       type: 'string',
-      description: 'Small uppercase mono line under the heading - opening hours, queue depth, a shift note.',
+      description:
+        'Mono line under the heading - opening hours, queue depth, a shift note. Carries the live dot when `live` is set.',
     },
     {
       name: 'side',
       type: "'right' | 'left'",
       default: "'right'",
-      description:
-        'Container edge the rail pins to. Flips the needle, the collapse origin, the drag axis and the vertical label.',
+      description: 'Container edge the rail pins to. Flips the needle, the collapse origin and the vertical label.',
     },
     { name: 'open', type: 'boolean', description: 'Controlled open state. Omit to stay uncontrolled.' },
     { name: 'defaultOpen', type: 'boolean', default: 'false', description: 'Initial state when uncontrolled.' },
@@ -442,15 +442,35 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
       description: "The vertical mono word on the needle. Doubles as the needle's accessible name.",
     },
     {
+      name: 'needleAlign',
+      type: 'NeedleAlign',
+      default: "'center'",
+      description:
+        "Where the needle sits along the pinned edge - a keyword or a 0-1 fraction from the top. The panel's collapse origin follows it, so the open animation still grows out of the needle.",
+    },
+    {
+      name: 'trigger',
+      type: 'ReactNode',
+      description:
+        'Your own trigger content, in place of the dot, word and rule. The rail keeps the button and its aria wiring and drops its own chrome; `needleLabel` becomes the accessible name.',
+    },
+    {
+      name: 'activateOn',
+      type: 'ActivateOn',
+      default: "'click'",
+      description: 'Whether the needle fires on `pointerdown` (snappier) or waits for `click`.',
+    },
+    {
       name: 'live',
       type: 'boolean',
       default: 'false',
-      description: 'Availability dot on the needle, with an ambient halo.',
+      description: 'Availability dot on the needle and beside `status`, with an ambient halo.',
     },
     {
       name: 'children',
       type: 'ReactNode',
-      description: 'Arbitrary content below the rows; it takes the leftover height and scrolls.',
+      description:
+        'Arbitrary content below the rows; it takes the leftover height, and scrolls with the rows when they overflow.',
     },
     {
       name: 'footer',
@@ -2805,7 +2825,15 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: 'description',
           type: 'string',
-          description: 'Second line under the label. The rail shows it; the fan puts it in the caption.',
+          description:
+            'Second line under the label, on the primary cell only - what the option costs the user, in a few words.',
+        },
+        {
+          name: 'primary',
+          type: 'boolean',
+          default: 'false',
+          description:
+            "Lead with this action: it takes a full-width band at the top of the grid, lifted onto its own surface above a rule in the rail's accent, its label a step up and its meta in accent ink. One per rail reads best.",
         },
         {
           name: 'onSelect',
@@ -2823,6 +2851,12 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
           description: '`--support-rail-width` - Panel width; the rail never exceeds its container. Default: `318px`.',
         },
         {
+          name: '--support-rail-needle-width',
+          type: 'string | number',
+          description:
+            '`--support-rail-needle-width` - Needle width. Ignored when `trigger` supplies your own. Default: `38px`.',
+        },
+        {
           name: '--support-rail-row-pad-block',
           type: 'string | number',
           description:
@@ -2832,7 +2866,7 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
           name: '--support-rail-row-pad-inline',
           type: 'string | number',
           description:
-            '`--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`.',
+            '`--support-rail-row-pad-inline` - Inline inset of the rows, and of the header and footer that align to them - the density knob. Default: `var(--space-4)`.',
         },
         {
           name: '--support-rail-surface',
@@ -2842,7 +2876,8 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: '--support-rail-surface-raised',
           type: 'string | number',
-          description: '`--support-rail-surface-raised` - The needle while hovered. Default: `var(--bg-surface)`.',
+          description:
+            '`--support-rail-surface-raised` - The needle while hovered. Default: `var(--bg-surface-raised)`.',
         },
         {
           name: '--support-rail-line',
@@ -2853,13 +2888,24 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: '--support-rail-line-soft',
           type: 'string | number',
-          description:
-            "`--support-rail-line-soft` - Row dividers and the grabber's edge. Default: `var(--border-subtle)`.",
+          description: '`--support-rail-line-soft` - Cell dividers. Default: `var(--border-subtle)`.',
         },
         {
           name: '--support-rail-accent',
           type: 'string | number',
           description: "`--support-rail-accent` - The needle's rule. Default: `var(--accent)`.",
+        },
+        {
+          name: '--support-rail-lead-fill',
+          type: 'string | number',
+          description:
+            "`--support-rail-lead-fill` - The lead cell's face - a lift off the panel. Its hover and press shades derive from it. Default: `var(--bg-surface-raised)`.",
+        },
+        {
+          name: '--support-rail-lead-ink',
+          type: 'string | number',
+          description:
+            "`--support-rail-lead-ink` - The lead cell's meta - the one place the accent reaches the rows. Default: `var(--text-accent)`.",
         },
         {
           name: '--support-rail-live-color',

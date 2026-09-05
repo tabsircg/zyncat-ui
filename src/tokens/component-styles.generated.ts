@@ -177,18 +177,14 @@ export interface SupportRailStyle extends CSSProperties {
   '--support-rail-row-pad-block'?: string | number;
   /** `--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`. */
   '--support-rail-row-pad-inline'?: string | number;
-  /** `--support-rail-surface` - The panel and the needle. Default: `var(--bg-subtle)`. */
+  /** `--support-rail-surface` - The one surface: the tab, and the panel it morphs into. Default: `var(--bg-subtle)`. */
   '--support-rail-surface'?: string | number;
-  /** `--support-rail-surface-raised` - The needle while hovered. Default: `var(--bg-surface)`. */
+  /** `--support-rail-surface-raised` - The tab while hovered. Default: `var(--bg-surface)`. */
   '--support-rail-surface-raised'?: string | number;
-  /** `--support-rail-line` - The panel's edge and the needle's border. Default: `var(--border-default)`. */
+  /** `--support-rail-line` - The surface's edge. Default: `var(--border-default)`. */
   '--support-rail-line'?: string | number;
   /** `--support-rail-line-soft` - Row dividers. Default: `var(--border-subtle)`. */
   '--support-rail-line-soft'?: string | number;
   /** `--support-rail-radius` - The tab's outer corners. Default: `var(--radius-2xl)`. */
   '--support-rail-radius'?: string | number;
-  /** `--support-rail-open-duration` - How long the panel takes to open. Default: `calc(var(--duration-slower) * 1.4)`. */
-  '--support-rail-open-duration'?: string | number;
-  /** `--support-rail-close-duration` - How long the panel takes to close. Default: `var(--duration-slower)`. */
-  '--support-rail-close-duration'?: string | number;
 }

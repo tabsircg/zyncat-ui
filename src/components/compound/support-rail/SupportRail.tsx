@@ -13,12 +13,14 @@ import {
 } from 'react';
 
 import type { DataAttributes } from '../../../dom-props';
-import type { Layer } from '../../../engine';
+import { animate, type Layer } from '../../../engine';
 import { Motion } from '../../../motion/element';
+import { resolveMotionTiming } from '../../../motion/motion-timing';
 import { Presence } from '../../../motion/presence';
 import { usePresence } from '../../../motion/presence-context';
+import type { DisableableAnimation } from '../../../motion/timing';
 import type { SupportRailStyle } from '../../../tokens/component-styles.generated';
-import { UIMotion } from '../../../tokens/motion-tokens';
+import { UIMotion, type MotionTransition } from '../../../tokens/motion-tokens';
 import { useControllable } from '../../internal/hooks/use-controllable';
 import { Icon } from '../../internal/icon/Icon';
 import { useReturnFocus } from '../../internal/overlay/focus';
@@ -29,13 +31,22 @@ import { Button } from '../../primitives/button/Button';
 
 export type { SupportAction };
 
+const RAIL_TIMING = {
+  open: { duration: 'slower', ease: 'spring' },
+  close: { duration: 'slow', ease: 'exit' },
+} as const;
+
 const CONTENT_FADE_IN_DELAY_RATIO = 0.55;
-const NEUTRAL_RATIO = 1;
 const STAGGER_STEPS_MAX = 8;
 
-const COLLAPSE_X_PROPERTY = '--_support-rail-collapse-x';
-const COLLAPSE_Y_PROPERTY = '--_support-rail-collapse-y';
 const INDEX_PROPERTY = '--_support-rail-index';
+const MORPHING_ATTRIBUTE = 'data-morphing';
+
+interface ShellBox {
+  width: number;
+  height: number;
+  radius: string;
+}
 
 const contentFadeIn = (): Layer => ({
   opacity: [0, 1],
@@ -43,13 +54,28 @@ const contentFadeIn = (): Layer => ({
 });
 const contentFadeOut = (): Layer => ({ opacity: [0], timing: { duration: UIMotion.dur.fast, ease: 'linear' } });
 
-function collapseRatio(needleSpan: number, panelSpan: number): number {
-  return panelSpan > 0 ? needleSpan / panelSpan : NEUTRAL_RATIO;
+function measureShell(shell: HTMLElement): ShellBox {
+  return { width: shell.offsetWidth, height: shell.offsetHeight, radius: getComputedStyle(shell).borderRadius };
 }
 
-function holdFoldingBox(panel: HTMLElement, open: boolean): void {
-  if (open) panel.style.height = '';
-  else if (panel.offsetHeight) panel.style.height = panel.offsetHeight + 'px';
+function morphShell(shell: HTMLElement, from: ShellBox, to: ShellBox, transition: MotionTransition) {
+  return animate(shell, {
+    width: [from.width, to.width],
+    height: [from.height, to.height],
+    radius: [from.radius, to.radius],
+    timing: { ...transition, fill: 'none' },
+  });
+}
+
+function fadeTab(tab: HTMLElement, open: boolean, transition: MotionTransition) {
+  const timing = open
+    ? { duration: UIMotion.dur.fast, ease: 'linear' as const }
+    : {
+        duration: UIMotion.dur.fast,
+        ease: 'linear' as const,
+        delay: Math.max(0, transition.duration - UIMotion.dur.fast),
+      };
+  animate(tab, { opacity: open ? [1, 0] : [0, 1], timing });
 }
 
 function indexStyle(index: number): CSSProperties {
@@ -64,8 +90,7 @@ function SupportRailBody({
   children,
   panelId,
   titleId,
-  panelRef,
-  needleRef,
+  shellRef,
   requestClose,
   onSelect,
 }: {
@@ -76,17 +101,16 @@ function SupportRailBody({
   children?: ReactNode;
   panelId: string;
   titleId: string;
-  panelRef: RefObject<HTMLElement>;
-  needleRef: RefObject<HTMLElement>;
+  shellRef: RefObject<HTMLElement>;
   requestClose: () => void;
   onSelect?: (id: string, action: SupportAction) => void;
 }) {
   const bodyRef = useRef<HTMLElement>(null);
   const { isPresent } = usePresence();
-  const entry = useOverlayEntry({ nodeRef: panelRef, dismissible: isPresent, requestClose });
+  const entry = useOverlayEntry({ nodeRef: shellRef, dismissible: isPresent, requestClose });
 
-  useOutsidePress({ entry, refs: [panelRef, needleRef], enabled: isPresent, onPress: requestClose });
-  useReturnFocus(panelRef);
+  useOutsidePress({ entry, refs: [shellRef], enabled: isPresent, onPress: requestClose });
+  useReturnFocus(shellRef);
 
   useLayoutEffect(() => {
     bodyRef.current?.focus({ preventScroll: true });
@@ -172,7 +196,7 @@ export interface SupportRailOwnProps {
   title?: string;
   /** Small mono line under the heading - opening hours, queue depth, a shift note. */
   status?: string;
-  /** Container edge the rail pins to. Flips the tab, the collapse origin and the panel's border. @default 'right' */
+  /** Container edge the rail pins to. Flips the tab, the morph origin and the panel's border. @default 'right' */
   side?: 'right' | 'left';
   /** Controlled open state. Omit to stay uncontrolled. */
   open?: boolean;
@@ -182,8 +206,10 @@ export interface SupportRailOwnProps {
   onOpenChange?: (open: boolean) => void;
   /** Fires when a row commits - gets its `id` and the full action. The rail stays open; render what happens next in `children`. */
   onSelect?: (id: string, action: SupportAction) => void;
+  /** Retune the morph, per direction. `null` turns it off and the rail snaps. */
+  animation?: DisableableAnimation;
   /** What sits inside the edge tab - an icon, a word, an avatar. The rail owns the tab itself: its
-   *  edge, its ARIA and its fold. Defaults to a chat glyph; `title` names it either way. */
+   *  edge, its ARIA and its morph. Defaults to a chat glyph; `title` names it either way. */
   trigger?: ReactNode;
   /** Arbitrary content under the rows, inside the same scroll region. */
   children?: ReactNode;
@@ -209,6 +235,7 @@ export function SupportRail({
   defaultOpen = false,
   onOpenChange,
   onSelect,
+  animation,
   trigger,
   children,
   footer,
@@ -218,33 +245,42 @@ export function SupportRail({
 }: SupportRailProps) {
   const [open, setOpen] = useControllable(controlledOpen, defaultOpen, onOpenChange);
   const rootRef = useRef<HTMLDivElement>(null);
-  const needleRef = useRef<HTMLElement>(null);
-  const panelRef = useRef<HTMLElement>(null);
+  const shellRef = useRef<HTMLElement>(null);
+  const tabRef = useRef<HTMLButtonElement>(null);
+  const fromBox = useRef<ShellBox | null>(null);
   const autoId = useId();
   const panelId = 'support-rail-' + autoId;
   const titleId = panelId + '-title';
-  const requestClose = () => setOpen(false);
+  const timings = resolveMotionTiming(animation, RAIL_TIMING);
+
+  const toggle = (next: boolean) => {
+    const shell = shellRef.current;
+    if (shell) fromBox.current = measureShell(shell);
+    setOpen(next);
+  };
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    const needle = needleRef.current;
-    const panel = panelRef.current;
-    if (!root || !needle || !panel) return undefined;
-    const remeasure = () => {
-      root.style.setProperty(COLLAPSE_X_PROPERTY, String(collapseRatio(needle.offsetWidth, panel.offsetWidth)));
-      const panelHeight = panel.offsetHeight || root.offsetHeight;
-      root.style.setProperty(COLLAPSE_Y_PROPERTY, String(collapseRatio(needle.offsetHeight, panelHeight)));
-    };
-    remeasure();
-    const sizes = new ResizeObserver(remeasure);
-    sizes.observe(panel);
-    sizes.observe(needle);
-    return () => sizes.disconnect();
-  }, [side]);
+    const shell = shellRef.current;
+    const tab = tabRef.current;
+    const from = fromBox.current;
+    fromBox.current = null;
+    if (!root || !shell || !tab || !from) return undefined;
 
-  useLayoutEffect(() => {
-    const panel = panelRef.current;
-    if (panel) holdFoldingBox(panel, open);
+    const transition = open ? timings.open : timings.close;
+    const morph = morphShell(shell, from, measureShell(shell), transition);
+    fadeTab(tab, open, transition);
+    if (!morph) return undefined;
+
+    root.setAttribute(MORPHING_ATTRIBUTE, '');
+    let live = true;
+    morph.finished.then(() => {
+      if (live) root.removeAttribute(MORPHING_ATTRIBUTE);
+    });
+    return () => {
+      live = false;
+      root.removeAttribute(MORPHING_ATTRIBUTE);
+    };
   }, [open]);
 
   return (
@@ -256,20 +292,20 @@ export function SupportRail({
       data-open={open}
       {...htmlProps}
     >
-      <button
-        type="button"
-        ref={needleRef as RefObject<HTMLButtonElement>}
-        className="zc-support-rail__needle"
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        aria-controls={open ? panelId : undefined}
-        aria-label={title}
-        onClick={() => setOpen(!open)}
-      >
-        {trigger ?? <Icon name="chat" />}
-      </button>
+      <div ref={shellRef as RefObject<HTMLDivElement>} className="zc-support-rail__shell">
+        <Button
+          variant="unstyled"
+          ref={tabRef}
+          className="zc-support-rail__tab"
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          aria-controls={open ? panelId : undefined}
+          aria-label={title}
+          onClick={() => toggle(true)}
+        >
+          {trigger ?? <Icon name="chat" />}
+        </Button>
 
-      <div ref={panelRef as RefObject<HTMLDivElement>} className="zc-support-rail__panel">
         <Presence>
           {open && (
             <SupportRailBody
@@ -280,9 +316,8 @@ export function SupportRail({
               footer={footer}
               panelId={panelId}
               titleId={titleId}
-              panelRef={panelRef}
-              needleRef={needleRef}
-              requestClose={requestClose}
+              shellRef={shellRef}
+              requestClose={() => toggle(false)}
               onSelect={onSelect}
             >
               {children}

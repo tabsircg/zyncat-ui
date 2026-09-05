@@ -19,6 +19,7 @@ export interface Layer {
   opacity?: number[];
   width?: Size[];
   height?: Size[];
+  radius?: string[];
   timing?: Timing;
   composite?: CompositeOperation;
 }
@@ -26,6 +27,11 @@ export interface Layer {
 export type Placement = Omit<Layer, 'timing' | 'composite'>;
 
 const RESET: Record<string, string> = { translate: '0px 0px', scale: '1' };
+const CSS_NAME: Record<string, string> = { borderRadius: 'border-radius' };
+
+function cssName(key: string): string {
+  return CSS_NAME[key] ?? key;
+}
 const AUTO_METRIC = { width: 'offsetWidth', height: 'offsetHeight' } as const;
 const SIZES = ['width', 'height'] as const;
 
@@ -47,7 +53,7 @@ function cssLength(value: Length): string {
 }
 
 function currentValue(el: HTMLElement, key: string): string {
-  const raw = getComputedStyle(el).getPropertyValue(key).trim();
+  const raw = getComputedStyle(el).getPropertyValue(cssName(key)).trim();
   return raw && raw !== 'none' ? raw : RESET[key];
 }
 
@@ -63,6 +69,7 @@ function compile(el: HTMLElement, layer: Layer) {
   }
   if (layer.scale) frames.scale = layer.scale.map((v) => (typeof v === 'number' ? String(v) : `${v[0]} ${v[1]}`));
   if (layer.opacity) frames.opacity = layer.opacity.map(String);
+  if (layer.radius) frames.borderRadius = [...layer.radius];
 
   for (const key of SIZES) {
     const list = layer[key];
@@ -115,7 +122,8 @@ function play(el: HTMLElement, layer: Layer): Playback | null {
 
   if (resolved.duration <= 0) {
     claim(el, keys, null);
-    if (timing?.fill !== 'none') for (const key of keys) el.style.setProperty(key, frames[key][frames[key].length - 1]);
+    if (timing?.fill !== 'none')
+      for (const key of keys) el.style.setProperty(cssName(key), frames[key][frames[key].length - 1]);
     return null;
   }
 

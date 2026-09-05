@@ -366,20 +366,16 @@ export interface SupportRailTokens {
   width?: string | number;
   /** The `--support-rail-row-*` knobs. */
   row?: SupportRailRowTokens;
-  /** `--support-rail-surface` - The panel and the needle. Default: `var(--bg-subtle)`. */
+  /** `--support-rail-surface` - The one surface: the tab, and the panel it morphs into. Default: `var(--bg-subtle)`. */
   surface?: string | number;
-  /** `--support-rail-surface-raised` - The needle while hovered. Default: `var(--bg-surface)`. */
+  /** `--support-rail-surface-raised` - The tab while hovered. Default: `var(--bg-surface)`. */
   surfaceRaised?: string | number;
-  /** `--support-rail-line` - The panel's edge and the needle's border. Default: `var(--border-default)`. */
+  /** `--support-rail-line` - The surface's edge. Default: `var(--border-default)`. */
   line?: string | number;
   /** `--support-rail-line-soft` - Row dividers. Default: `var(--border-subtle)`. */
   lineSoft?: string | number;
   /** `--support-rail-radius` - The tab's outer corners. Default: `var(--radius-2xl)`. */
   radius?: string | number;
-  /** `--support-rail-open-duration` - How long the panel takes to open. Default: `calc(var(--duration-slower) * 1.4)`. */
-  openDuration?: string | number;
-  /** `--support-rail-close-duration` - How long the panel takes to close. Default: `var(--duration-slower)`. */
-  closeDuration?: string | number;
 }
 
 /** Per-component knobs - retunes every instance of that component. */

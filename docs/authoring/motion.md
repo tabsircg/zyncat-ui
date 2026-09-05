@@ -44,12 +44,14 @@
 - `scale` — `number[]`, or per-axis pairs.
 - `opacity` — `number[]`.
 - `width`, `height` — `Size[]`.
+- `radius` — `string[]`; whole `border-radius` shorthands, one per keyframe.
 - `timing` — a `Timing`.
 - `composite` — `CompositeOperation`; almost always omitted.
 - Giving only `x` or `y` holds the other at `0`.
 - Bare numbers are px. `Size` adds `'auto'`.
 - A percentage on `x` / `y` resolves against the element's own box.
 - A percentage on `width` / `height` resolves against the containing block.
+- `radius` is the corner half of a size morph. Animate it with `width` / `height`, never alone.
 - `'auto'` measures, animates to the pixel value, then restores `auto` on finish.
 - `animate()` takes any number of layers and runs them as one `Playback`.
 - Split layers only when parts need different timing.
@@ -78,7 +80,7 @@
 - The engine tracks which animation owns each property, per element.
 - Starting a new animation on a property cancels the holder.
 - CSS must not transition a property the engine writes.
-- The engine writes `translate`, `scale`, `opacity`, `width`, `height`.
+- The engine writes `translate`, `scale`, `opacity`, `width`, `height`, `border-radius`.
 - A layer that stacks instead of replacing uses `composite: 'add'`.
 - An `'add'` layer does not claim the property. Pair it with `fill: 'none'`.
 - Hand-written styles lose while an animation holds the property.
