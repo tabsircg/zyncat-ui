@@ -382,7 +382,8 @@ const CONTRIBUTOR_TOOLS = [
       properties: {
         topic: {
           type: 'string',
-          description: 'One section, e.g. "tokens", "contracts", "overrides", "compose", "tier". Omit for all.',
+          description:
+            'One section, e.g. "tokens", "retiring", "contracts", "overrides", "compose", "tier". Omit for all.',
         },
       },
       additionalProperties: false,

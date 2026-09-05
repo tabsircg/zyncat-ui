@@ -14,6 +14,8 @@ pre-push:
   commands:
     typecheck:
       run: pnpm check typecheck
+    history:
+      run: pnpm check history
 
 commit-msg:
   commands:

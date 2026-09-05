@@ -33,6 +33,8 @@
 - rAF exists only inside the engine `loop` simulation primitive.
 - One writer per property. JS and CSS never animate the same property.
 - Values follow the tier's contract. `design_rules('contracts')` has the rules.
+- A shipped token is never deleted. Deprecate it, alias the survivor to it, ship, then remove it a release
+  later. `design_rules('retiring')` has the steps; `pnpm check history` gates them and runs on push.
 - Zero runtime dependencies.
 - Do not commit or stage anything until the change has been reviewed.
 - Never launch an agent, and never start satellite or chore work - docs, registry rows, SEO

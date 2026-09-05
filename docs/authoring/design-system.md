@@ -74,6 +74,13 @@
 - A component-owned palette (the avatar's identity hues) lives on its root class and flips with `light-dark()`, keyed on the `color-scheme` the polarity blocks set. `light-dark()` is the browser floor: Chrome 123, Safari 17.5, Firefox 120.
 - TypeScript reads tokens off the DOM: `UIMotion`, `tokenPx`. Never duplicate a token value as a literal.
 
+### Retiring a token
+
+- A shipped token is never deleted in one release. A consumer's `zyncat.theme.css` still sets it, and a token nothing reads is a silent visual regression: no build error, and TypeScript cannot see into CSS.
+- Two releases. First: define the survivor as `var(--old-name, <default>)`, stop defining the old name, and add `{ deprecated: '<this version>', use: '--survivor' }` for it to `TOKEN_HISTORY` in `packages/zyncat-ui/src/theme-file.ts`. A later release: drop the alias and add `removed: '<this version>'`.
+- A new decision gets `{ since: '<this version>' }` in the same map, or `zyncat-ui update` never offers it.
+- `pnpm check history` enforces every step and runs on push. Its failure prints the line to paste.
+
 ### Token, or constant?
 
 - Ownership decides: is a theme entitled to move this value?
