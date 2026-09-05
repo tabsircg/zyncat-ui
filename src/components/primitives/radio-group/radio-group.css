@@ -1,4 +1,4 @@
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.components {
   /* Bespoke px: the dot sizes sit off the token ramp on purpose. The authored value is the ring

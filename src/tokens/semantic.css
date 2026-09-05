@@ -2,7 +2,7 @@
    Neutral roles are a polarity: light values on `:root, [data-theme='light']`, dark ones in dark.css.
    Derived roles sit on every theme root, so a subtree that repoints a decision re-derives them. */
 
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root {

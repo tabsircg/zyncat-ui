@@ -3,7 +3,7 @@
    after the components, so a consumer's unlayered body rule still wins; antialiasing keeps light
    ink from bloating. The selection reads --accent, so a retheme moves it with everything else. */
 
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.base {
   body {

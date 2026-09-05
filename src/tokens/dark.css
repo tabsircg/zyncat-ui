@@ -2,7 +2,7 @@
    light island inside it. Every value here is a polarity with a light twin, and gen-theme holds
    the two sides together. Surfaces step lighter as they rise; ink steps down from near-white. */
 
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   [data-theme='dark'] {

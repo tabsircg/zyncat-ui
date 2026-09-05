@@ -2,7 +2,7 @@
    Three strengths scale the lighting per polarity: every shadow, white highlight and cast-light
    alpha is a multiple of --shadow-strength, --sheen-strength or --glow-strength. */
 
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root {

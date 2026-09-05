@@ -1,0 +1,27 @@
+/* The reset is the first layer in the order, so every rule here is the weakest thing in the
+   cascade: a component rule, a rule of yours, and Tailwind's preflight all win over it. That is
+   what makes it safe to ship - it only reaches an element nobody else has an opinion about.
+   It stays this short on purpose. Anything that moves type or spacing is the consumer's call. */
+
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
+
+@layer zyncat.reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* The base layer paints body in the app surface; the UA's 8px margin would frame it in canvas. */
+  body {
+    margin: 0;
+  }
+
+  /* Browsers give form controls a system font instead of inheriting one. */
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}

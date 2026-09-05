@@ -1,4 +1,4 @@
-@layer docs-reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, docs-reset, zyncat.tokens, zyncat.components;
 
 @layer docs-reset {
   *,

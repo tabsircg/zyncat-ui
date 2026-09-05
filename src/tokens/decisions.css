@@ -1,7 +1,7 @@
 /* The decisions - the values the rest of the vocabulary derives from. zyncat-ui init copies the
    :root block below, comments included, into the project as zyncat.theme.css. */
 
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root {

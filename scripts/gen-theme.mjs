@@ -623,7 +623,7 @@ const STRENGTH_SUFFIX = '-strength';
 const TYPE_BUNDLE_RE =
   /^var\((--weight-[\w-]+)\) var\((--size-[\w-]+)\)\/var\((--leading-[\w-]+)\) var\((--font-[\w-]+)\)$/;
 const TAILWIND_LAYER_ORDER =
-  '@layer theme, base, zyncat.tokens, zyncat.components, zyncat.base, components, utilities;';
+  '@layer theme, zyncat.reset, base, zyncat.tokens, zyncat.components, zyncat.base, components, utilities;';
 const DARK_VARIANT = "@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));";
 
 const inFile = (file, prefix) => tokens.filter((token) => token.file === file && token.cssName.startsWith(prefix));
@@ -746,8 +746,9 @@ const tailwindLines = [
   '   that carry the same name on both sides would be a cycle.',
   '',
   '   The layer statement pins the Tailwind layers around the zyncat ones - utilities above',
-  '   component rules, the base layer above preflight - and holds only while this file precedes',
-  '   the Tailwind import, because the first statement fixes the order.',
+  '   component rules, the base layer above preflight, the zyncat reset below it so preflight',
+  '   wins - and holds only while this file precedes the Tailwind import, because the first',
+  '   statement fixes the order.',
   '',
   '   Generated from the token CSS by `scripts/gen-theme.mjs` - `pnpm sync` rebuilds it. */',
   '',

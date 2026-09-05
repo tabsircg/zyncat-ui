@@ -152,7 +152,7 @@ registeredPrefixes.add('avatar').add('collapse');
 const hasRegisteredPrefix = (name) =>
   [...registeredPrefixes].some((prefix) => name.startsWith(`--${prefix}-`) || name.startsWith(`--_${prefix}-`));
 
-const ORDER_STATEMENT = '@layer zyncat.tokens, zyncat.components;';
+const ORDER_STATEMENT = '@layer zyncat.reset, zyncat.tokens, zyncat.components;';
 
 const KNOB_DOC_ABOVE = /^[ \t]*\n[ \t]*--[a-z][\w-]*\s*:/;
 const KNOB_DOC_TRAILING = /--[a-z][\w-]*\s*:[^;]*;[ \t]*$/;
@@ -180,10 +180,13 @@ for (const file of cssFiles) {
     );
 
   if (inTokens && stripped.includes('{')) {
-    if (!stripped.trimStart().startsWith(ORDER_STATEMENT) || !/@layer zyncat\.(?:tokens|base)\s*\{/.test(stripped))
+    if (
+      !stripped.trimStart().startsWith(ORDER_STATEMENT) ||
+      !/@layer zyncat\.(?:tokens|base|reset)\s*\{/.test(stripped)
+    )
       fail(
         file,
-        `token declarations sit outside the zyncat layers - start with "${ORDER_STATEMENT}" and wrap the rules in @layer zyncat.tokens (or @layer zyncat.base for the page defaults)`,
+        `token declarations sit outside the zyncat layers - start with "${ORDER_STATEMENT}" and wrap the rules in @layer zyncat.tokens (or zyncat.base for the page defaults, zyncat.reset for the reset)`,
       );
   }
 

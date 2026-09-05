@@ -2,7 +2,7 @@
    the mid steps, so chrome, fills and text share the accent's temperature, and lightness is the
    contrast spine. The ramp is a material: the dark theme derives its roles from --neutral. */
 
-@layer zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root {
