@@ -354,7 +354,7 @@ export interface WeightFieldTokens {
 
 /** The `--support-rail-row-*` knobs. */
 export interface SupportRailRowTokens {
-  /** `--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-4)`. */
+  /** `--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-3)`. */
   padBlock?: string | number;
   /** `--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`. */
   padInline?: string | number;
@@ -372,13 +372,9 @@ export interface SupportRailTokens {
   surfaceRaised?: string | number;
   /** `--support-rail-line` - The panel's edge and the needle's border. Default: `var(--border-default)`. */
   line?: string | number;
-  /** `--support-rail-line-soft` - Row dividers and the grabber's edge. Default: `var(--border-subtle)`. */
+  /** `--support-rail-line-soft` - Row dividers. Default: `var(--border-subtle)`. */
   lineSoft?: string | number;
-  /** `--support-rail-accent` - The needle's rule. Default: `var(--accent)`. */
-  accent?: string | number;
-  /** `--support-rail-live-color` - The live dot and its pulse. Default: `var(--success)`. */
-  liveColor?: string | number;
-  /** `--support-rail-radius` - The needle's outer corners. Default: `var(--radius-2xl)`. */
+  /** `--support-rail-radius` - The tab's outer corners. Default: `var(--radius-2xl)`. */
   radius?: string | number;
   /** `--support-rail-open-duration` - How long the panel takes to open. Default: `calc(var(--duration-slower) * 1.4)`. */
   openDuration?: string | number;

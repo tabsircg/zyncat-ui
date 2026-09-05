@@ -4,20 +4,12 @@
   .zc-support-rail {
     /* Panel width; the rail never exceeds its container. */
     --support-rail-width: 318px;
-    --_support-rail-needle-width: 42px;
-    --_support-rail-needle-height: 150px;
+    --_support-rail-needle-width: 40px;
+    --_support-rail-needle-height: 48px;
     --_support-rail-needle-duck: 0.55;
-    --_support-rail-needle-tracking: 0.22em;
-    --_support-rail-caps-tracking: 0.13em;
-    --_support-rail-grabber-width: 13px;
-    --_support-rail-grabber-pill: 34px;
-    --_support-rail-live-size: 6px;
-    --_support-rail-live-reach: 2.6;
-    --_support-rail-rule-width: 1.5px;
-    --_support-rail-rule-height: 20px;
 
     /* Row padding on the block axis - the density knob. */
-    --support-rail-row-pad-block: var(--space-4);
+    --support-rail-row-pad-block: var(--space-3);
     /* Row padding on the inline axis - the density knob. */
     --support-rail-row-pad-inline: var(--space-4);
     --_support-rail-row-nudge: 5px;
@@ -28,13 +20,9 @@
     --support-rail-surface-raised: var(--bg-surface);
     /* The panel's edge and the needle's border. */
     --support-rail-line: var(--border-default);
-    /* Row dividers and the grabber's edge. */
+    /* Row dividers. */
     --support-rail-line-soft: var(--border-subtle);
-    /* The needle's rule. */
-    --support-rail-accent: var(--accent);
-    /* The live dot and its pulse. */
-    --support-rail-live-color: var(--success);
-    /* The needle's outer corners. */
+    /* The tab's outer corners. */
     --support-rail-radius: var(--radius-2xl);
 
     /* How long the panel takes to open. */
@@ -46,7 +34,6 @@
 
     --_support-rail-collapse-x: 1;
     --_support-rail-collapse-y: 1;
-    --_support-rail-drag: 0px;
     --_support-rail-index: 0;
 
     position: absolute;
@@ -69,22 +56,22 @@
   .zc-support-rail__needle {
     position: absolute;
     top: 50%;
-    width: var(--_support-rail-needle-width);
-    height: var(--_support-rail-needle-height);
+    min-width: var(--_support-rail-needle-width);
+    min-height: var(--_support-rail-needle-height);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
     margin: 0;
-    padding: 0;
+    padding: var(--space-2);
     background: var(--support-rail-surface);
     border: var(--border-hairline) solid var(--support-rail-line);
     box-shadow: var(--shadow-md);
     cursor: pointer;
     pointer-events: auto;
-    color: inherit;
+    color: var(--text-secondary);
     font: inherit;
     opacity: 1;
     translate: 0 -50%;
@@ -92,7 +79,8 @@
     transition:
       scale var(--support-rail-open-duration) var(--ease-spring) var(--_support-rail-needle-delay),
       opacity var(--duration-base) linear var(--_support-rail-needle-delay),
-      background-color var(--duration-fast) var(--ease-standard);
+      background-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
   }
 
   .zc-support-rail[data-side='right'] .zc-support-rail__needle {
@@ -110,6 +98,7 @@
 
   .zc-support-rail__needle:hover {
     background: var(--support-rail-surface-raised);
+    color: var(--text-strong);
   }
   .zc-support-rail__needle:focus-visible {
     outline: var(--focus-ring);
@@ -124,61 +113,24 @@
       opacity var(--duration-fast) linear;
   }
 
-  .zc-support-rail__live {
-    position: relative;
-    display: block;
-    width: var(--_support-rail-live-size);
-    height: var(--_support-rail-live-size);
-    border-radius: var(--radius-full);
-    background: var(--support-rail-live-color);
-  }
-  .zc-support-rail__live::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-full);
-    background: var(--support-rail-live-color);
-    animation: support-rail-pulse var(--duration-pulse) var(--ease-standard) infinite;
-  }
-
-  .zc-support-rail__needle-label {
-    writing-mode: vertical-rl;
-    font-family: var(--font-code);
-    font-size: var(--size-micro);
-    line-height: 1;
-    letter-spacing: var(--_support-rail-needle-tracking);
-    text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-  .zc-support-rail[data-side='left'] .zc-support-rail__needle-label {
-    writing-mode: vertical-lr;
-    rotate: 180deg;
-  }
-
-  .zc-support-rail__needle-rule {
-    display: block;
-    width: var(--_support-rail-rule-width);
-    height: var(--_support-rail-rule-height);
-    border-radius: var(--radius-full);
-    background: var(--support-rail-accent);
-  }
-
   .zc-support-rail__panel {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 50%;
     width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     background: var(--support-rail-surface);
     box-shadow: var(--shadow-lg);
     pointer-events: none;
     opacity: 0;
-    translate: var(--_support-rail-drag) 0;
+    translate: 0 -50%;
     scale: var(--_support-rail-collapse-x) var(--_support-rail-collapse-y);
-    will-change: scale, translate;
+    will-change: scale;
     transition:
       scale var(--support-rail-close-duration) var(--ease-exit),
-      translate var(--support-rail-close-duration) var(--ease-exit),
       opacity var(--duration-base) linear calc(var(--support-rail-close-duration) * 0.5);
   }
 
@@ -199,57 +151,17 @@
     scale: 1 1;
     transition:
       scale var(--support-rail-open-duration) var(--ease-spring),
-      translate var(--support-rail-open-duration) var(--ease-spring),
       opacity var(--duration-base) linear;
   }
 
-  .zc-support-rail[data-dragging] .zc-support-rail__panel {
-    transition: none;
-  }
-
   .zc-support-rail__body {
-    position: absolute;
-    inset: 0 var(--ring-gutter);
-    display: flex;
-    outline: none;
-  }
-  .zc-support-rail[data-side='left'] .zc-support-rail__body {
-    flex-direction: row-reverse;
-  }
-  .zc-support-rail[data-dragging] .zc-support-rail__body {
-    user-select: none;
-  }
-
-  .zc-support-rail__grabber {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--_support-rail-grabber-width);
-    border-right: var(--border-hairline) solid var(--support-rail-line-soft);
-    cursor: grab;
-    touch-action: none;
-  }
-  .zc-support-rail[data-side='left'] .zc-support-rail__grabber {
-    border-right: 0;
-    border-left: var(--border-hairline) solid var(--support-rail-line-soft);
-  }
-  .zc-support-rail[data-dragging] .zc-support-rail__grabber {
-    cursor: grabbing;
-  }
-  .zc-support-rail__grabber-pill {
-    display: block;
-    width: var(--border-emphasis);
-    height: var(--_support-rail-grabber-pill);
-    border-radius: var(--radius-full);
-    background: var(--text-subtle);
-  }
-
-  .zc-support-rail__stack {
-    flex: 1;
-    min-width: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    padding-inline: var(--ring-gutter);
+    outline: none;
   }
 
   .zc-support-rail__header {
@@ -272,36 +184,27 @@
     font-family: var(--font-code);
     font-size: var(--size-micro);
     line-height: var(--leading-micro);
-    letter-spacing: var(--_support-rail-caps-tracking);
-    text-transform: uppercase;
     color: var(--text-subtle);
   }
 
   .zc-support-rail__close {
     flex: none;
-    display: grid;
-    place-items: center;
-    width: var(--control-height-sm);
-    height: var(--control-height-sm);
-    padding: 0;
-    background: transparent;
-    border: var(--border-hairline) solid var(--support-rail-line);
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: var(--transition-colors);
   }
-  .zc-support-rail__close:hover {
-    background: var(--text-strong);
-    border-color: var(--text-strong);
-    color: var(--text-inverse);
+
+  .zc-support-rail__scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin-inline: calc(var(--ring-gutter) * -1);
+    padding: var(--ring-gutter);
+    scroll-padding: var(--ring-gutter);
   }
-  .zc-support-rail__close:focus-visible {
+  .zc-support-rail__scroll:focus-visible {
     outline: var(--focus-ring);
   }
 
   .zc-support-rail__list {
-    flex: none;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -359,7 +262,7 @@
   .zc-support-rail__row-label {
     font-size: var(--size-body);
     line-height: var(--leading-body);
-    font-weight: var(--weight-medium);
+    font-weight: var(--weight-regular);
   }
   .zc-support-rail__row-note {
     font: var(--type-micro);
@@ -373,16 +276,6 @@
     color: var(--text-subtle);
   }
 
-  .zc-support-rail__extra {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scroll-padding: var(--ring-gutter);
-  }
-  .zc-support-rail__extra:focus-visible {
-    outline: var(--focus-ring);
-  }
   .zc-support-rail__extra:not(:empty) {
     padding: var(--space-4) calc(var(--space-5) - var(--ring-gutter)) var(--space-5);
   }
@@ -409,26 +302,6 @@
     from {
       translate: 0 var(--distance-sm);
       opacity: 0;
-    }
-  }
-
-  @keyframes support-rail-pulse {
-    0% {
-      scale: 1;
-      opacity: 0.55;
-    }
-    70%,
-    100% {
-      scale: var(--_support-rail-live-reach);
-      opacity: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .zc-support-rail__live::after {
-      animation: none;
-      scale: 1.9;
-      opacity: 0.28;
     }
   }
 }

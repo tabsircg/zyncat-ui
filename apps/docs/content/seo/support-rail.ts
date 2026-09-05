@@ -3,7 +3,7 @@ import type { PageSeo } from './types';
 const seo: PageSeo = {
   title: 'React Support Rail Component',
   description:
-    'A React support rail - an edge tab that expands into an action panel with drag-to-dismiss, a live status dot and a pinned footer, without covering the screen.',
+    'A React support rail - an edge tab that expands into an action panel with a scrolling row list and a pinned footer, without covering the screen.',
   keywords: [
     'support rail',
     'react support rail',
@@ -20,15 +20,15 @@ const seo: PageSeo = {
     },
     {
       q: 'How do I dismiss the panel?',
-      a: 'Drag the grabber outward past 88px, or flick it faster than 500px/s, and it snaps closed; let go short of that and it springs back. Escape and the visible close button do the same thing without a pointer.',
+      a: 'Escape closes it, so does the visible close button, and so does a press anywhere outside the panel. It folds back into the tab it grew out of.',
     },
     {
-      q: 'Can I show a live indicator or a status line on the tab?',
-      a: 'live adds a small availability dot with an ambient halo on the needle itself, and status renders a small mono line under the panel\'s title - e.g. status="Open · closes 20:00" in the component\'s own example.',
+      q: 'Can I use my own trigger instead of the default tab icon?',
+      a: 'trigger takes any node - an icon, a word, an avatar - and the rail renders it inside the tab it owns, keeping the edge, the ARIA and the fold-back animation. Leave it out and you get a chat glyph; title names the tab either way.',
     },
     {
       q: 'Which edge does the rail pin to?',
-      a: 'side is "right" (the default) or "left", and it flips more than which edge the needle sits on - the collapse origin, the drag axis and the vertical needle label all mirror with it, so a left rail isn\'t just a right rail nudged over.',
+      a: 'side is "right" (the default) or "left", and it flips more than which edge the needle sits on - the collapse origin and the panel\'s border all mirror with it, so a left rail isn\'t just a right rail nudged over.',
     },
   ],
 };

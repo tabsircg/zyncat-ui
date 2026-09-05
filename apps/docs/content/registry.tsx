@@ -226,7 +226,7 @@ export const GROUPS: DocGroup[] = [
         blurb:
           'Expressive contract. An edge tab that grows a support panel out of its own measured box, and folds back into it.',
         Playground: C.SupportRailPlayground,
-        heroCode: `import { SupportRail } from '@zyncat/ui/support-rail';\n\n<SupportRail actions={actions} status="Open · closes 20:00" live onSelect={route} />`,
+        heroCode: `import { SupportRail } from '@zyncat/ui/support-rail';\n\n<SupportRail actions={actions} status="Open · closes 20:00" onSelect={route} />`,
       },
     ],
   },

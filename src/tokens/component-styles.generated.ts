@@ -173,7 +173,7 @@ export interface WeightFieldStyle extends CSSProperties {
 export interface SupportRailStyle extends CSSProperties {
   /** `--support-rail-width` - Panel width; the rail never exceeds its container. Default: `318px`. */
   '--support-rail-width'?: string | number;
-  /** `--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-4)`. */
+  /** `--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-3)`. */
   '--support-rail-row-pad-block'?: string | number;
   /** `--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`. */
   '--support-rail-row-pad-inline'?: string | number;
@@ -183,13 +183,9 @@ export interface SupportRailStyle extends CSSProperties {
   '--support-rail-surface-raised'?: string | number;
   /** `--support-rail-line` - The panel's edge and the needle's border. Default: `var(--border-default)`. */
   '--support-rail-line'?: string | number;
-  /** `--support-rail-line-soft` - Row dividers and the grabber's edge. Default: `var(--border-subtle)`. */
+  /** `--support-rail-line-soft` - Row dividers. Default: `var(--border-subtle)`. */
   '--support-rail-line-soft'?: string | number;
-  /** `--support-rail-accent` - The needle's rule. Default: `var(--accent)`. */
-  '--support-rail-accent'?: string | number;
-  /** `--support-rail-live-color` - The live dot and its pulse. Default: `var(--success)`. */
-  '--support-rail-live-color'?: string | number;
-  /** `--support-rail-radius` - The needle's outer corners. Default: `var(--radius-2xl)`. */
+  /** `--support-rail-radius` - The tab's outer corners. Default: `var(--radius-2xl)`. */
   '--support-rail-radius'?: string | number;
   /** `--support-rail-open-duration` - How long the panel takes to open. Default: `calc(var(--duration-slower) * 1.4)`. */
   '--support-rail-open-duration'?: string | number;

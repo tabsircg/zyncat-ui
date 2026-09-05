@@ -9,39 +9,33 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
-  type PointerEvent as ReactPointerEvent,
   type RefObject,
 } from 'react';
 
 import type { DataAttributes } from '../../../dom-props';
-import { startDrag, type Layer, type PanInfo } from '../../../engine';
+import type { Layer } from '../../../engine';
 import { Motion } from '../../../motion/element';
 import { Presence } from '../../../motion/presence';
 import { usePresence } from '../../../motion/presence-context';
 import type { SupportRailStyle } from '../../../tokens/component-styles.generated';
 import { UIMotion } from '../../../tokens/motion-tokens';
 import { useControllable } from '../../internal/hooks/use-controllable';
+import { Icon } from '../../internal/icon/Icon';
 import { useReturnFocus } from '../../internal/overlay/focus';
 import { useOutsidePress, useOverlayEntry } from '../../internal/overlay/layer';
 import type { SupportAction } from '../../internal/support/types';
 import { cx } from '../../internal/utils/cx';
+import { Button } from '../../primitives/button/Button';
 
 export type { SupportAction };
 
-const RUBBER_BAND_DIVISOR = 6;
-const DISMISS_DISTANCE_PX = 88;
-const DISMISS_VELOCITY_PX_PER_S = 500;
-const FLICK_DISTANCE_PX = 24;
 const CONTENT_FADE_IN_DELAY_RATIO = 0.55;
 const NEUTRAL_RATIO = 1;
 const STAGGER_STEPS_MAX = 8;
 
-const DRAG_PROPERTY = '--_support-rail-drag';
 const COLLAPSE_X_PROPERTY = '--_support-rail-collapse-x';
 const COLLAPSE_Y_PROPERTY = '--_support-rail-collapse-y';
 const INDEX_PROPERTY = '--_support-rail-index';
-const DRAGGING_ATTRIBUTE = 'data-dragging';
-const NO_DRAG = '0px';
 
 const contentFadeIn = (): Layer => ({
   opacity: [0, 1],
@@ -49,20 +43,13 @@ const contentFadeIn = (): Layer => ({
 });
 const contentFadeOut = (): Layer => ({ opacity: [0], timing: { duration: UIMotion.dur.fast, ease: 'linear' } });
 
-type GrabHandler = (event: ReactPointerEvent<HTMLElement>) => void;
-
 function collapseRatio(needleSpan: number, panelSpan: number): number {
   return panelSpan > 0 ? needleSpan / panelSpan : NEUTRAL_RATIO;
 }
 
-function railTravel(offsetX: number, dismissSign: number): number {
-  const along = offsetX * dismissSign;
-  return along < 0 ? along / RUBBER_BAND_DIVISOR : along;
-}
-
-function railDismisses(travel: number, velocityAlong: number): boolean {
-  if (travel >= DISMISS_DISTANCE_PX) return true;
-  return travel >= FLICK_DISTANCE_PX && velocityAlong >= DISMISS_VELOCITY_PX_PER_S;
+function holdFoldingBox(panel: HTMLElement, open: boolean): void {
+  if (open) panel.style.height = '';
+  else if (panel.offsetHeight) panel.style.height = panel.offsetHeight + 'px';
 }
 
 function indexStyle(index: number): CSSProperties {
@@ -79,7 +66,6 @@ function SupportRailBody({
   titleId,
   panelRef,
   needleRef,
-  onGrab,
   requestClose,
   onSelect,
 }: {
@@ -92,7 +78,6 @@ function SupportRailBody({
   titleId: string;
   panelRef: RefObject<HTMLElement>;
   needleRef: RefObject<HTMLElement>;
-  onGrab: GrabHandler;
   requestClose: () => void;
   onSelect?: (id: string, action: SupportAction) => void;
 }) {
@@ -125,25 +110,25 @@ function SupportRailBody({
       aria-labelledby={titleId}
       tabIndex={-1}
     >
-      <span className="zc-support-rail__grabber" aria-hidden="true" onPointerDown={onGrab}>
-        <span className="zc-support-rail__grabber-pill" />
-      </span>
-
-      <div className="zc-support-rail__stack">
-        <div className="zc-support-rail__header">
-          <div className="zc-support-rail__heading">
-            <div className="zc-support-rail__title" id={titleId}>
-              {title}
-            </div>
-            {status && <div className="zc-support-rail__status">{status}</div>}
+      <div className="zc-support-rail__header">
+        <div className="zc-support-rail__heading">
+          <div className="zc-support-rail__title" id={titleId}>
+            {title}
           </div>
-          <button type="button" className="zc-support-rail__close" aria-label="Close" onClick={requestClose}>
-            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" stroke="currentColor" strokeWidth="1.3">
-              <path d="M1 1l7 7M8 1l-7 7" />
-            </svg>
-          </button>
+          {status && <div className="zc-support-rail__status">{status}</div>}
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="zc-support-rail__close"
+          aria-label="Close"
+          onClick={requestClose}
+        >
+          <Icon name="x" size="sm" />
+        </Button>
+      </div>
 
+      <div className="zc-support-rail__scroll">
         <ul className="zc-support-rail__list">
           {actions.map((action, index) => (
             <li key={action.id}>
@@ -169,13 +154,13 @@ function SupportRailBody({
         <div className="zc-support-rail__extra" style={indexStyle(actions.length)}>
           {children}
         </div>
-
-        {footer && (
-          <div className="zc-support-rail__footer" style={indexStyle(actions.length + 1)}>
-            {footer}
-          </div>
-        )}
       </div>
+
+      {footer && (
+        <div className="zc-support-rail__footer" style={indexStyle(actions.length + 1)}>
+          {footer}
+        </div>
+      )}
     </Motion>
   );
 }
@@ -185,9 +170,9 @@ export interface SupportRailOwnProps {
   actions: SupportAction[];
   /** Panel heading, and the panel's accessible name. @default 'Talk to us' */
   title?: string;
-  /** Small uppercase mono line under the heading - opening hours, queue depth, a shift note. */
+  /** Small mono line under the heading - opening hours, queue depth, a shift note. */
   status?: string;
-  /** Container edge the rail pins to. Flips the needle, the collapse origin, the drag axis and the vertical label. @default 'right' */
+  /** Container edge the rail pins to. Flips the tab, the collapse origin and the panel's border. @default 'right' */
   side?: 'right' | 'left';
   /** Controlled open state. Omit to stay uncontrolled. */
   open?: boolean;
@@ -197,11 +182,10 @@ export interface SupportRailOwnProps {
   onOpenChange?: (open: boolean) => void;
   /** Fires when a row commits - gets its `id` and the full action. The rail stays open; render what happens next in `children`. */
   onSelect?: (id: string, action: SupportAction) => void;
-  /** The vertical mono word on the needle. Doubles as the needle's accessible name. @default 'Support' */
-  needleLabel?: string;
-  /** Availability dot on the needle, with an ambient halo. @default false */
-  live?: boolean;
-  /** Arbitrary content below the rows; it takes the leftover height and scrolls. */
+  /** What sits inside the edge tab - an icon, a word, an avatar. The rail owns the tab itself: its
+   *  edge, its ARIA and its fold. Defaults to a chat glyph; `title` names it either way. */
+  trigger?: ReactNode;
+  /** Arbitrary content under the rows, inside the same scroll region. */
   children?: ReactNode;
   /** Pinned bottom strip - on-shift avatars, an SLA line, a link out. */
   footer?: ReactNode;
@@ -225,8 +209,7 @@ export function SupportRail({
   defaultOpen = false,
   onOpenChange,
   onSelect,
-  needleLabel = 'Support',
-  live = false,
+  trigger,
   children,
   footer,
   className = '',
@@ -237,30 +220,10 @@ export function SupportRail({
   const rootRef = useRef<HTMLDivElement>(null);
   const needleRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLElement>(null);
-  const detach = useRef<(() => void) | null>(null);
   const autoId = useId();
   const panelId = 'support-rail-' + autoId;
   const titleId = panelId + '-title';
-  const dismissSign = side === 'right' ? 1 : -1;
   const requestClose = () => setOpen(false);
-
-  const onGrab: GrabHandler = (event) => {
-    const root = rootRef.current;
-    if (!root || !open || event.button !== 0 || !event.isPrimary) return;
-    detach.current?.();
-    root.setAttribute(DRAGGING_ATTRIBUTE, '');
-    detach.current = startDrag(event, {
-      onMove: (info: PanInfo) =>
-        root.style.setProperty(DRAG_PROPERTY, railTravel(info.offset.x, dismissSign) * dismissSign + 'px'),
-      onEnd: (info: PanInfo) => {
-        detach.current = null;
-        root.removeAttribute(DRAGGING_ATTRIBUTE);
-        const travel = railTravel(info.offset.x, dismissSign);
-        if (railDismisses(travel, info.velocity.x * dismissSign)) requestClose();
-        else root.style.setProperty(DRAG_PROPERTY, NO_DRAG);
-      },
-    });
-  };
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -269,7 +232,8 @@ export function SupportRail({
     if (!root || !needle || !panel) return undefined;
     const remeasure = () => {
       root.style.setProperty(COLLAPSE_X_PROPERTY, String(collapseRatio(needle.offsetWidth, panel.offsetWidth)));
-      root.style.setProperty(COLLAPSE_Y_PROPERTY, String(collapseRatio(needle.offsetHeight, panel.offsetHeight)));
+      const panelHeight = panel.offsetHeight || root.offsetHeight;
+      root.style.setProperty(COLLAPSE_Y_PROPERTY, String(collapseRatio(needle.offsetHeight, panelHeight)));
     };
     remeasure();
     const sizes = new ResizeObserver(remeasure);
@@ -279,19 +243,9 @@ export function SupportRail({
   }, [side]);
 
   useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root || !open) return;
-    root.style.setProperty(DRAG_PROPERTY, NO_DRAG);
-    root.removeAttribute(DRAGGING_ATTRIBUTE);
+    const panel = panelRef.current;
+    if (panel) holdFoldingBox(panel, open);
   }, [open]);
-
-  useLayoutEffect(
-    () => () => {
-      detach.current?.();
-      detach.current = null;
-    },
-    [],
-  );
 
   return (
     <div
@@ -309,11 +263,10 @@ export function SupportRail({
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-controls={open ? panelId : undefined}
+        aria-label={title}
         onClick={() => setOpen(!open)}
       >
-        {live && <span className="zc-support-rail__live" aria-hidden="true" />}
-        <span className="zc-support-rail__needle-label">{needleLabel}</span>
-        <span className="zc-support-rail__needle-rule" aria-hidden="true" />
+        {trigger ?? <Icon name="chat" />}
       </button>
 
       <div ref={panelRef as RefObject<HTMLDivElement>} className="zc-support-rail__panel">
@@ -329,7 +282,6 @@ export function SupportRail({
               titleId={titleId}
               panelRef={panelRef}
               needleRef={needleRef}
-              onGrab={onGrab}
               requestClose={requestClose}
               onSelect={onSelect}
             >
