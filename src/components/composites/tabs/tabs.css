@@ -26,7 +26,7 @@
     scrollbar-width: none;
     margin-inline: calc(var(--space-2) * -1);
     padding-inline: var(--space-2);
-    padding-block: calc(var(--tabs-ink-h) + var(--space-px));
+    padding-block: max(var(--ring-gutter), calc(var(--tabs-ink-h) + var(--space-px)));
     scroll-padding-inline: var(--space-2);
 
     --tabs-fade-start: 0px;
@@ -193,6 +193,7 @@
   .zc-tab-panel {
     outline: none;
     overflow: hidden;
+    padding: var(--ring-gutter);
   }
   .zc-tab-panel:focus-visible {
     outline: var(--ring-accent);

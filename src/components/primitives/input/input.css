@@ -205,8 +205,6 @@
     display: grid;
     grid-template-rows: 1fr 1fr;
     border-left: var(--border-hairline) solid var(--border-default);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    overflow: hidden;
   }
   .zc-numf__step {
     border: 0;
@@ -217,6 +215,12 @@
     cursor: pointer;
     transition: var(--transition-control);
     padding: 0;
+  }
+  .zc-numf__step:first-child {
+    border-start-end-radius: var(--radius-md);
+  }
+  .zc-numf__step:last-child {
+    border-end-end-radius: var(--radius-md);
   }
   .zc-numf__step:hover {
     background: var(--neutral-wash);

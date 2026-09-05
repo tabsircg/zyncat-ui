@@ -617,10 +617,12 @@ export interface TokenProperties {
   '--ring-color-warning'?: string | number;
   /** `--ring-color-success`. Default: `color-mix(in oklab, var(--success) 30%, transparent)`. Re-derived on every theme root. */
   '--ring-color-success'?: string | number;
-  /** `--ring-rest` - The rings themselves - outline values, so a ring never shares box-shadow with elevation and a clipping ancestor can reserve exactly --ring-width. Outlines follow border-radius everywhere this library supports. --ring-rest is the resting ring a control fades in from; --ring-inset is the offset that turns a ring inward, for a control flush with a clipping edge. Default: `var(--ring-width) solid transparent`. Re-derived on every theme root. */
+  /** `--ring-rest` - The rings themselves - outline values, so a ring never shares box-shadow with elevation and a clipping ancestor can reserve exactly --ring-gutter. Outlines follow border-radius everywhere this library supports. --ring-rest is the resting ring a control fades in from; --ring-inset is the offset that turns a ring inward, for a control flush with a clipping edge; --ring-gutter is the room a container that clips holds open so a child's outward ring survives, and the one value to zero when rings turn inward. Default: `var(--ring-width) solid transparent`. Re-derived on every theme root. */
   '--ring-rest'?: string | number;
   /** `--ring-inset`. Default: `calc(var(--ring-width) * -1)`. Re-derived on every theme root. */
   '--ring-inset'?: string | number;
+  /** `--ring-gutter`. Default: `var(--ring-width)`. Re-derived on every theme root. */
+  '--ring-gutter'?: string | number;
   /** `--ring-accent`. Default: `var(--ring-width) solid var(--ring-color-accent)`. Re-derived on every theme root. */
   '--ring-accent'?: string | number;
   /** `--ring-danger`. Default: `var(--ring-width) solid var(--ring-color-danger)`. Re-derived on every theme root. */

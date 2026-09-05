@@ -55,9 +55,14 @@
 
   /* min-size:0 is what lets the grid track collapse to 0. */
   .zc-collapse__inner {
-    overflow: hidden;
+    overflow-x: visible;
+    overflow-y: clip;
     min-height: 0;
     min-width: 0;
+  }
+  .zc-collapse[data-axis='width'] .zc-collapse__inner {
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   .zc-collapse--fade .zc-collapse__inner {

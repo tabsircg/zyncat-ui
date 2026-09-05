@@ -1480,7 +1480,6 @@ body {
   border-radius: var(--radius-xl);
   background: var(--bg-app);
   box-shadow: var(--shadow-xs);
-  overflow: clip;
 }
 
 .playground__body {

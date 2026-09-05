@@ -41,7 +41,7 @@
     min-height: 0;
     overflow: auto;
     overscroll-behavior-x: contain;
-    scroll-padding: var(--ring-width);
+    scroll-padding: var(--ring-gutter);
   }
   .zc-tbl[data-y-scroll] .zc-tbl__scroll {
     overscroll-behavior-y: contain;

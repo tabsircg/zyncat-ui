@@ -68,7 +68,7 @@
 
   .zc-tiktok__viewport {
     position: absolute;
-    inset: 0;
+    inset: var(--ring-gutter);
     touch-action: pan-y;
   }
 

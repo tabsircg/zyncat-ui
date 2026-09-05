@@ -59,28 +59,40 @@
   `box-shadow` stays the base rule's, and the two never share a property.
 - A control whose base rule transitions with `var(--transition-control)` adds
   `outline: var(--ring-rest)` so the ring fades in instead of snapping.
-- A ring reaches `--ring-width` past the border box. Any container in the component that clips -
-  `overflow` other than `visible`, or a mask - has to leave that room, or the ring is cut:
-  - a scroller adds `scroll-padding: var(--ring-width)` so sequential focus never lands flush;
-  - a scroller whose children sit flush to its content edge also adds `padding` of
-    `var(--ring-width)` with a matching negative `margin`, but only when no clipping ancestor
-    would swallow it again;
-  - `overflow: clip` plus `overflow-clip-margin: var(--ring-width)` needs `clip` on both axes, and
-    Safari does not implement it, so it degrades to a cut ring on the browsers in our baseline.
 - Every ring in the library is outward. That is what an outline is for, and it is the shape a
   consumer's own focus rule takes, so a ring that goes inward reads as a different control.
   `outline-offset` appears on no component.
-- Collapse is the one place a ring can still be cut: clipping the collapsing axis is how it
-  collapses, so content flush to its edge loses the outer part of its ring.
+- A ring reaches `--ring-width` past the border box, so a container that clips - `overflow` other
+  than `visible`, or a mask - cuts it unless the container holds that room open. `--ring-gutter` is
+  that room. It is the one value to zero when rings turn inward, which is why it is a token of its
+  own and not `--ring-width` spelled twice.
+- The gutter belongs to the element carrying `overflow`. Its padding box is the clip rectangle, so
+  padding on the clipper is the only placement that works; padding on its parent or on the child
+  does not move the rectangle.
+- Take the gutter out of the gap that already sits on the other side of the clip edge rather than
+  adding 3px. `Dialog` moves it from the header's `padding-bottom` into the body's `padding-top`,
+  so the header/body rhythm is unchanged and the body's first control gains its runway.
+- A scroller needs `padding` **and** `scroll-padding`, both `var(--ring-gutter)`. Padding covers the
+  scroll extremes, where a child sits flush and cannot be scrolled away from the edge.
+  `scroll-padding` covers mid-travel, where sequential focus otherwise parks a child flush against
+  the scrollport. Neither is sufficient alone.
+- Do not reach for `padding` plus a matching negative `margin`. It inflates the clipper past its own
+  clipping ancestor, and the ring is lost again - which is the normal case here, since most of these
+  scrollers sit inside a second clipper.
+- `overflow: clip` plus `overflow-clip-margin` needs `clip` on both axes, and Safari does not
+  implement it, so it degrades to a cut ring on the browsers in our baseline.
+- Where a clip exists only to round a child's corners, put the radius on the child and drop the
+  clip - `NumberField`'s steppers do this. Nothing is reserved because nothing is cut.
+- Where only one axis has to clip, say so: `overflow-x: visible` survives next to `overflow-y: clip`
+  (it is coerced to `auto` only next to `hidden`, `scroll` or `auto`). `Collapse` clips the
+  collapsing axis and leaves the other visible, so a ring is cut on that axis only.
 
-Two things are owed here, both open:
+One thing is still owed here:
 
-- `--ring-inset` is still a token but nothing uses it. An inward ring is the right answer for a
-  full-bleed panel, region or row, where there is no outward space to paint in. It should be an
-  opt-in the consumer can toggle, not a per-component decision taken for them.
-- Every container the library ships that clips has to carry the spacing its children's rings need.
-  Reserving it in the clipper is the only mechanism that works, because the negative-margin variant
-  above pushes the box past a clipping ancestor and loses the ring again.
+- `--ring-inset` is a token nothing uses. An inward ring is the right answer for a full-bleed panel,
+  region or row, where there is no outward space to paint in. It should be an opt-in the consumer
+  can toggle - and the same switch has to zero `--ring-gutter`, or every container keeps holding
+  room open for a ring that no longer needs it.
 
 ### Invariants
 

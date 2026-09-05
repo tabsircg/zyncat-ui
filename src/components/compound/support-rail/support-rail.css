@@ -209,7 +209,7 @@
 
   .zc-support-rail__body {
     position: absolute;
-    inset: 0;
+    inset: 0 var(--ring-gutter);
     display: flex;
     outline: none;
   }
@@ -258,7 +258,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-3);
-    padding: var(--space-5) var(--space-5) var(--space-4);
+    padding: var(--space-5) calc(var(--space-5) - var(--ring-gutter)) var(--space-4);
   }
   .zc-support-rail__heading {
     min-width: 0;
@@ -315,7 +315,7 @@
     grid-template-columns: var(--icon-md) 1fr auto;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--support-rail-row-pad-block) var(--support-rail-row-pad-inline);
+    padding: var(--support-rail-row-pad-block) calc(var(--support-rail-row-pad-inline) - var(--ring-gutter));
     background: transparent;
     border: 0;
     border-bottom: var(--border-hairline) solid var(--support-rail-line-soft);
@@ -329,11 +329,11 @@
   }
   .zc-support-rail__row:hover {
     background: var(--neutral-wash);
-    padding-left: calc(var(--support-rail-row-pad-inline) + var(--_support-rail-row-nudge));
+    padding-left: calc(var(--support-rail-row-pad-inline) - var(--ring-gutter) + var(--_support-rail-row-nudge));
   }
   .zc-support-rail[data-side='left'] .zc-support-rail__row:hover {
-    padding-left: var(--support-rail-row-pad-inline);
-    padding-right: calc(var(--support-rail-row-pad-inline) + var(--_support-rail-row-nudge));
+    padding-left: calc(var(--support-rail-row-pad-inline) - var(--ring-gutter));
+    padding-right: calc(var(--support-rail-row-pad-inline) - var(--ring-gutter) + var(--_support-rail-row-nudge));
   }
   .zc-support-rail__row:active {
     background: var(--neutral-wash-press);
@@ -378,13 +378,13 @@
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
-    scroll-padding: var(--ring-width);
+    scroll-padding: var(--ring-gutter);
   }
   .zc-support-rail__extra:focus-visible {
     outline: var(--focus-ring);
   }
   .zc-support-rail__extra:not(:empty) {
-    padding: var(--space-4) var(--space-5) var(--space-5);
+    padding: var(--space-4) calc(var(--space-5) - var(--ring-gutter)) var(--space-5);
   }
 
   .zc-support-rail__footer {
@@ -392,7 +392,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-4) calc(var(--space-5) - var(--ring-gutter));
     border-top: var(--border-hairline) solid var(--support-rail-line);
     font: var(--type-caption);
     color: var(--text-secondary);
