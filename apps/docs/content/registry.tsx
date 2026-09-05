@@ -83,17 +83,19 @@ export const GROUPS: DocGroup[] = [
         slug: 'theming',
         label: 'Theming & Overrides',
         blurb:
-          'The four ways to override Zyncat UI: cascade layers, tokens, scoped custom properties, and props - ' +
-          'with a typed theme file behind the token layer.',
+          'Four ways to override Zyncat UI: your own CSS, the tokens, one component\u2019s knobs, one instance\u2019s props. ' +
+          'Take the lowest one that does the job.',
         Content: ThemingDoc,
         toc: [
-          { id: 'override-levels', title: 'The four override levels', level: 2 },
-          { id: 'level-0', title: 'Level 0 — Cascade layers', level: 2 },
+          { id: 'override-levels', title: 'Four ways in', level: 2 },
+          { id: 'level-0', title: 'Level 0 — Your CSS wins', level: 2 },
           { id: 'level-1', title: 'Level 1 — Tokens', level: 2 },
-          { id: 'vocabulary', title: 'The vocabulary you use', level: 2 },
+          { id: 'dark', title: 'Dark mode', level: 2 },
+          { id: 'vocabulary', title: 'The tokens you use', level: 2 },
           { id: 'typed-theme', title: 'The typed theme', level: 2 },
-          { id: 'level-2', title: 'Level 2 — Scoped properties', level: 2 },
-          { id: 'level-3', title: 'Level 3 — Instance props', level: 2 },
+          { id: 'tailwind', title: 'With Tailwind', level: 2 },
+          { id: 'level-2', title: 'Level 2 — One component', level: 2 },
+          { id: 'level-3', title: 'Level 3 — One instance', level: 2 },
           { id: 'replicas', title: 'Replicas', level: 2 },
         ],
       },
