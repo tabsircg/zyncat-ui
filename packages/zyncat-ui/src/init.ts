@@ -20,6 +20,7 @@ import {
 } from './detect';
 import { runInstall, type InstallFailure, type InstallProgress } from './install';
 import { accentDeep, bold, dim, red } from './palette';
+import { parseDecisions, themeDrift, type Drift, type Flagged } from './theme-file';
 import {
   arrow,
   bar,
@@ -94,7 +95,44 @@ interface Plan {
 interface Wired {
   line: string;
   done: boolean;
-  hint?: string;
+  hints?: string[];
+  warn?: string;
+}
+
+export function removedWarning(removed: Flagged[]): string {
+  const one = removed.length === 1;
+  const named = removed
+    .map(({ name, note }) => `${name} (removed in ${note.removed}${note.use ? ` - use ${note.use}` : ''})`)
+    .join(', ');
+  const lead = one
+    ? 'A token your theme file sets no longer exists'
+    : `${removed.length} tokens your theme file sets no longer exist`;
+  return `${lead}: ${named}. Nothing reads ${one ? 'it' : 'them'} now, so ${one ? 'that line is' : 'those lines are'} dead.`;
+}
+
+export function deprecatedNote(deprecated: Flagged[]): string {
+  const one = deprecated.length === 1;
+  const named = deprecated
+    .map(({ name, note }) => `${name} (deprecated in ${note.deprecated}${note.use ? ` - now feeds ${note.use}` : ''})`)
+    .join(', ');
+  const lead = one ? 'A token your theme file sets is deprecated' : `${deprecated.length} tokens are deprecated`;
+  return `${lead}: ${named}. ${one ? 'It still works' : 'They still work'} - rename ${one ? 'it' : 'them'} before the alias goes.`;
+}
+
+const minorOf = (version: string): number => Number(version.split('.')[1] ?? 0);
+
+export function crossedVersions(before: string, after: string): string {
+  const minors = minorOf(after) - minorOf(before);
+  if (minors < 1) return row('Upgraded', `${before} ${arrow} ${after}`);
+  const releases = `${minors} minor release${minors === 1 ? '' : 's'}`;
+  return row('Upgraded', `${before} ${arrow} ${after} · ${releases}, each breaking before 1.0`);
+}
+
+export function driftHint(drift: Drift, command: string): string {
+  const one = drift.added.length === 1;
+  const names = drift.added.map((decision) => decision.name).join(', ');
+  const running = one ? 'it already runs on its default' : 'each already runs on its default';
+  return `${names} - ${running}, so nothing is broken. ${command} adds ${one ? 'it' : 'them'} to your file.`;
 }
 
 async function planInstall(cwd: string, targetPkg: PackageJson, flags: InitFlags, version: string): Promise<Plan> {
@@ -227,7 +265,7 @@ async function alignVersion(pm: PackageManager, cwd: string, version: string): P
   if (upgraded) log.message(upgraded.line, { symbol: check });
 }
 
-function sourceRoot(cwd: string, ownRoot: string): string {
+export function sourceRoot(cwd: string, ownRoot: string): string {
   const installed = join(cwd, 'node_modules', PACKAGE);
   if (existsSync(join(installed, 'skills'))) return installed;
   return ownRoot;
@@ -240,7 +278,7 @@ function wireSkill(cwd: string, packageRoot: string, pm: PackageManager): Wired 
     return {
       line: row('Agent skill', `skipped · ${PACKAGE}${onDisk ? ` ${onDisk}` : ''} ships no skills/`),
       done: false,
-      hint: `Upgrade it with ${ADD_COMMAND[pm]} ${PACKAGE}@latest, then re-run init.`,
+      hints: [`Upgrade it with ${ADD_COMMAND[pm]} ${PACKAGE}@latest, then re-run init.`],
     };
   }
   const dest = join(cwd, '.claude/skills');
@@ -265,10 +303,12 @@ function wireMcp(cwd: string): Wired {
   return { line: row('MCP server', existed ? '.mcp.json · kept' : `.mcp.json ${arrow} zyncat-ui`), done: true };
 }
 
-function themeFileText(packageRoot: string): string | null {
+export function shippedDecisionsCss(packageRoot: string): string | null {
   const source = join(packageRoot, THEME_SOURCE);
-  if (!existsSync(source)) return null;
-  const css = readFileSync(source, 'utf8');
+  return existsSync(source) ? readFileSync(source, 'utf8') : null;
+}
+
+function themeFileText(css: string, version: string): string | null {
   const rule = /^\s*:root\s*\{/m.exec(css);
   if (!rule) return null;
   const open = rule.index + rule[0].length - 1;
@@ -283,7 +323,8 @@ function themeFileText(packageRoot: string): string | null {
   return [
     `/* ${THEME_FILE} - the decisions every other token derives from, written by zyncat-ui init.`,
     '   Loaded after @zyncat/ui/styles.css, so a value here wins; whatever you delete keeps the default.',
-    "   A [data-theme='dark'] block here extends the shipped dark theme. Docs: https://ui.zyncat.app/theming */",
+    "   A [data-theme='dark'] block here extends the shipped dark theme. Docs: https://ui.zyncat.app/theming",
+    `   @zyncat-ui ${version} - the version whose decisions this mirrors; \`npx zyncat-ui update\` refreshes it. */`,
     ':root {',
     body,
     '}',
@@ -291,17 +332,42 @@ function themeFileText(packageRoot: string): string | null {
   ].join('\n');
 }
 
-function wireTheme(cwd: string, packageRoot: string, pm: PackageManager, entry: string | null): Wired {
+export const themePath = (cwd: string, entry: string | null): { rel: string; path: string } => {
   const dir = entry ? dirname(entry) : '.';
   const rel = dir === '.' ? THEME_FILE : `${dir}/${THEME_FILE}`;
-  const path = join(cwd, rel);
-  if (existsSync(path)) return { line: row('Theme file', `${rel} · kept`), done: true };
-  const text = themeFileText(packageRoot);
-  if (!text)
+  return { rel, path: join(cwd, rel) };
+};
+
+function wireTheme(cwd: string, packageRoot: string, pm: PackageManager, entry: string | null, version: string): Wired {
+  const { rel, path } = themePath(cwd, entry);
+  const css = shippedDecisionsCss(packageRoot);
+  if (!css)
     return {
       line: row('Theme file', `skipped · ${PACKAGE} ships no ${THEME_SOURCE}`),
       done: false,
-      hint: `Upgrade it with ${ADD_COMMAND[pm]} ${PACKAGE}@latest, then re-run init.`,
+      hints: [`Upgrade it with ${ADD_COMMAND[pm]} ${PACKAGE}@latest, then re-run init.`],
+    };
+  if (existsSync(path)) {
+    const drift = themeDrift(readFileSync(path, 'utf8'), parseDecisions(css));
+    const news = drift.added.length
+      ? ` · ${drift.added.length} new decision${drift.added.length === 1 ? '' : 's'} available`
+      : '';
+    const hints: string[] = [];
+    if (drift.added.length) hints.push(driftHint(drift, 'npx zyncat-ui update'));
+    if (drift.deprecated.length) hints.push(deprecatedNote(drift.deprecated));
+    return {
+      line: row('Theme file', `${rel} · kept${news}`),
+      done: true,
+      hints,
+      warn: drift.removed.length ? removedWarning(drift.removed) : undefined,
+    };
+  }
+  const text = themeFileText(css, version);
+  if (!text)
+    return {
+      line: row('Theme file', `skipped · ${THEME_SOURCE} has no :root block`),
+      done: false,
+      hints: [`Upgrade it with ${ADD_COMMAND[pm]} ${PACKAGE}@latest, then re-run init.`],
     };
   writeFileSync(path, text);
   return { line: row('Theme file', `${rel} · written`), done: true };
@@ -324,7 +390,7 @@ function wireStyles(cwd: string, entry: string | null, tailwindEntry: string | n
     return {
       line: row('Stylesheet', 'no app entry found · add the imports yourself'),
       done: false,
-      hint: `Put ${STYLES_IMPORT} then ${THEME_IMPORT} at your app root, ${below}.`,
+      hints: [`Put ${STYLES_IMPORT} then ${THEME_IMPORT} at your app root, ${below}.`],
     };
   const path = join(cwd, entry);
   const text = readFileSync(path, 'utf8');
@@ -358,14 +424,14 @@ function wireTailwind(cwd: string, targetPkg: PackageJson): (Wired & { bridge?: 
     return {
       line: row('Tailwind', `skipped · Tailwind ${major} has no @theme`),
       done: false,
-      hint: `The bridge needs Tailwind v4 - ${DOCS_URL}/theming#tailwind.`,
+      hints: [`The bridge needs Tailwind v4 - ${DOCS_URL}/theming#tailwind.`],
     };
   const entry = findTailwindEntry(cwd);
   if (!entry)
     return {
       line: row('Tailwind', 'no stylesheet imports tailwindcss · add the line yourself'),
       done: false,
-      hint: `Put @import '${TAILWIND_BRIDGE}'; above @import 'tailwindcss'; in the stylesheet Tailwind compiles.`,
+      hints: [`Put @import '${TAILWIND_BRIDGE}'; above @import 'tailwindcss'; in the stylesheet Tailwind compiles.`],
     };
   const path = join(cwd, entry);
   const text = readFileSync(path, 'utf8');
@@ -404,6 +470,7 @@ export async function init(flags: InitFlags): Promise<void> {
   const project = targetPkg.name ?? 'unnamed project';
   log.message(dim(`${project} · ${pm}${pmVer ? ` ${pmVer}` : ''}`));
 
+  const before = installedVersion(cwd, PACKAGE);
   const plan = await planInstall(cwd, targetPkg, flags, version);
   const installed = await installPhase(pm, plan, cwd);
   installTouchedProject = true;
@@ -412,18 +479,21 @@ export async function init(flags: InitFlags): Promise<void> {
   await alignVersion(pm, cwd, version);
 
   const packageRoot = sourceRoot(cwd, ownRoot);
+  const landed = installedVersion(cwd, PACKAGE) ?? version;
+  if (before && isOlder(before, landed)) log.message(crossedVersions(before, landed), { symbol: check });
   const entry = findAppEntry(cwd);
   const tailwind = wireTailwind(cwd, targetPkg);
   const rows: Wired[] = [
     wireSkill(cwd, packageRoot, pm),
     wireMcp(cwd),
-    wireTheme(cwd, packageRoot, pm, entry),
+    wireTheme(cwd, packageRoot, pm, entry, landed),
     wireStyles(cwd, entry, tailwind?.bridge ?? null),
     ...(tailwind ? [tailwind] : []),
   ];
   for (const [index, entry] of rows.entries()) {
     log.message(entry.line, { symbol: entry.done ? check : skip, spacing: index === 0 ? 1 : 0 });
-    if (entry.hint) log.message(dim(entry.hint), { spacing: 0 });
+    for (const hint of entry.hints ?? []) log.message(dim(hint), { spacing: 0 });
+    if (entry.warn) log.warn(entry.warn);
   }
 
   log.message(`${dim('Docs')} ${arrow} ${accentDeep(DOCS_URL)}`);

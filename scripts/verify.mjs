@@ -14,6 +14,7 @@ const STANDALONE = [
   'contracts',
   'skill',
   'theme',
+  'history',
   'shim',
 ];
 const DIST_DEPENDENT = ['usage', 'props'];

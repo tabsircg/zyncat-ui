@@ -8,6 +8,7 @@ export const CHECKS = {
   contracts: script('check:contracts', 'check-contracts.mjs'),
   skill: script('check:skill', 'gen-skill.mjs', '--check'),
   theme: script('check:theme', 'gen-theme.mjs', '--check'),
+  history: script('check:history', 'check-token-history.mjs'),
   shim: script('check:shim', 'gen-shim.mjs', '--check'),
   usage: script('check:usage', 'check-usage.mjs'),
   props: script('check:props', 'gen-props.mjs', '--check'),

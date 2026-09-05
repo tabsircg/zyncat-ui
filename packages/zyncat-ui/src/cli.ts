@@ -2,6 +2,7 @@ import { findOwnRoot, PACKAGE_MANAGERS, type PackageManager } from './detect';
 import { init, type InitFlags } from './init';
 import { accentDeep, bold, dim } from './palette';
 import { arrow, wordmark } from './ui';
+import { update } from './update';
 
 function parseFlags(args: string[]): InitFlags | null {
   const flags: InitFlags = { yes: false };
@@ -27,11 +28,12 @@ function help(version: string): string {
     `  ${dim('and, under Tailwind v4, the utility bridge.')}`,
     '',
     `  ${bold('Usage')}`,
-    `    zyncat-ui init ${dim('[flags]')}`,
+    `    zyncat-ui init ${dim('[flags]')}     ${dim('set the project up, or re-wire it after an upgrade')}`,
+    `    zyncat-ui update ${dim('[flags]')}   ${dim('add decisions the library gained since your theme file')}`,
     '',
     `  ${bold('Flags')}`,
     `    --yes, -y     ${dim('accept every default, never prompt')}`,
-    `    --pm <name>   ${dim(`force the package manager (${PACKAGE_MANAGERS.join(', ')})`)}`,
+    `    --pm <name>   ${dim(`force the package manager (${PACKAGE_MANAGERS.join(', ')}) - init only`)}`,
     '',
     `  ${dim('Docs')} ${arrow} ${accentDeep('https://ui.zyncat.app')}`,
     '',
@@ -44,13 +46,14 @@ const { version } = findOwnRoot();
 
 if (command === '--version' || command === '-v') {
   console.log(version);
-} else if (command === 'init') {
+} else if (command === 'init' || command === 'update') {
   const flags = parseFlags(rest);
   if (!flags) {
     console.error(help(version));
     process.exit(1);
   }
-  await init(flags);
+  if (command === 'init') await init(flags);
+  else await update({ yes: flags.yes });
 } else {
   console.log(help(version));
   process.exit(command ? 1 : 0);
