@@ -300,7 +300,7 @@ manual steps, not gate failures.
    rather than the deck's self-animating demo, physics as named module constants, JS writing
    `translate` plus custom properties while CSS derives colour through `color-mix` — the
    pattern already used at `checkbox.css:76`.
-3. **Roadmap is durable:** Phases 4–7 are summarized in `docs/authoring/design-system.md` roadmap section. This file (ROADMAP.md) is the expanded breakdown.
+3. **Roadmap is durable:** every phase above is complete; this file is the record.
 4. **Memory files:** The local memory at `~/.claude/projects/-home-tabsir-ap-reactp-zyncat-ui/memory/MEMORY.md` won't transfer to cloud. Create a new memory session by resuming the URL above.
 5. **Verify always:** `pnpm verify` is the gate, and it is not sufficient. Check the component
    in a live browser too — a green build once passed while css-loader silently dropped every

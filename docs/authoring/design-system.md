@@ -2,97 +2,52 @@
 
 ## Goal
 
-- Ship a premium, motion-first React 19 design system.
-- Modern CSS, a closed token vocabulary, a small WAAPI engine, zero runtime dependencies.
-- Be both: a complete system to build products on, and expressive components with real motion.
+- A premium, motion-first React 19 design system: modern CSS, a closed token vocabulary, a small WAAPI engine, zero runtime dependencies.
+- Both a complete system to build products on and expressive components with real motion.
 - Design every state. Make every motion interruptible.
 
 ## The two contracts
 
-- The tier decides which contract binds a component.
-- The invariants below bind every tier.
+- The tier decides the contract. The invariants bind every tier.
 
 ### System contract
 
-- Applies to `src/components/primitives/` and `src/components/composites/`.
-- Every value is a named token. No literals.
-- No component-local fonts. No filters. No canvas. No per-frame JS.
-- Motion comes from the engine presets and duration bands only.
-- Prefer fewer variants and fewer props.
-- Pick the nearest token step. Never invent a value.
+- `src/components/primitives/` and `src/components/composites/`.
+- Every value is a named token. No literals, no local fonts, no filters, no canvas, no per-frame JS.
+- Motion comes from the engine presets and the duration bands only.
+- Fewer variants, fewer props. Pick the nearest token step; never invent a value.
 
 ### Expressive contract
 
-- Applies to `src/components/expressive/` and opted-in `src/components/compound/` patterns.
-- Open axes: geometry, filters, canvas, variable fonts, particles, simulation, physics.
-- Also open: colour ramps and lighting models - gradient stops, specular bands, shading curves.
-- Freedom props are allowed: accent, speed, intensity.
-- Name every arbitrary value.
-- A value used once becomes a named module constant.
-- A value a consumer may tune is a `--<component>-<name>` property on the root class with a doc line above it; a constant, a derivation or per-frame state is `--_<component>-<name>`, private and untyped.
-- Scoped custom properties are the component's public theming contract.
-- Default scoped properties from semantic tokens where a semantic exists.
-- Never declare anything on `:root`.
-- Never leak into another component's stylesheet.
-- Ink, surface and accent as roles resolve from semantic tokens: `--text-strong`, `--bg-surface`, `--accent`.
-- Ink as material does not. A ramp's stops are a lighting model, not nine ink roles.
-- Snapping a material to the nearest token is a system-tier habit and it deletes the component.
-- A material is still named: module constants, or scoped properties a theme opts into.
-- A freedom prop defaults from a token, never a hex.
-- Type reads `--font-body` / `--font-code` and the `--size-*` scale.
-- No bundled font faces. No local font stacks.
-- Run simulations only on the engine `loop` primitive (motion.md).
-- A compound component declares its contract in its registry row. Undeclared means system.
+- `src/components/expressive/`, and a `src/components/compound/` pattern that declares it in its registry row. Undeclared means system.
+- Open axes: geometry, filters, canvas, variable fonts, particles, simulation, physics, colour ramps and lighting models.
+- Freedom props are allowed - accent, speed, intensity - and default from a token, never a hex.
+- Name every value. Used once: a module constant. Tunable by a consumer: a public `--<component>-<name>` property on the root class with a doc line above it. A constant, a derivation or per-frame state: `--_<component>-<name>`, private and untyped.
+- Scoped properties are the component's theming contract. Default them from semantic tokens where one exists.
+- Ink, surface and accent as roles resolve from semantic tokens. Ink as material does not: a ramp's stops are a lighting model, and snapping them to tokens deletes the component. A material is still named.
+- Never declare anything on `:root`. Never leak into another component's stylesheet.
+- Type reads `--font-body` / `--font-code` and the `--size-*` scale. No bundled faces, no local stacks.
+- Simulations run only on the engine `loop` primitive (motion.md).
 
 ### Replica addendum
 
 - A replica reproduces an external platform's surface. Fidelity is the contract.
-- Pin platform metrics as named constants, not tokens.
-- Consumer theming must not move replica metrics.
-- Replicas live in the expressive tier, marked as replicas in their docs.
-- A11y, focus, reduced motion and zero dependencies still bind.
+- Platform metrics are named constants, not tokens. Consumer theming must not move them.
+- Replicas live in the expressive tier, marked as replicas in their docs. A11y, focus, reduced motion and zero dependencies still bind.
 
 ### The focus ring
 
-- A ring is an `outline`, never a `box-shadow`: `outline: var(--ring-accent)` (or `--ring-danger`,
-  `--ring-warning`, `--ring-success`, `--focus-ring`). Never re-list elevation in a focus rule -
-  `box-shadow` stays the base rule's, and the two never share a property.
-- A control whose base rule transitions with `var(--transition-control)` adds
-  `outline: var(--ring-rest)` so the ring fades in instead of snapping.
-- Every ring in the library is outward. That is what an outline is for, and it is the shape a
-  consumer's own focus rule takes, so a ring that goes inward reads as a different control.
-  `outline-offset` appears on no component.
-- A ring reaches `--ring-width` past the border box, so a container that clips - `overflow` other
-  than `visible`, or a mask - cuts it unless the container holds that room open. `--ring-gutter` is
-  that room. It is the one value to zero when rings turn inward, which is why it is a token of its
-  own and not `--ring-width` spelled twice.
-- The gutter belongs to the element carrying `overflow`. Its padding box is the clip rectangle, so
-  padding on the clipper is the only placement that works; padding on its parent or on the child
-  does not move the rectangle.
-- Take the gutter out of the gap that already sits on the other side of the clip edge rather than
-  adding 3px. `Dialog` moves it from the header's `padding-bottom` into the body's `padding-top`,
-  so the header/body rhythm is unchanged and the body's first control gains its runway.
-- A scroller needs `padding` **and** `scroll-padding`, both `var(--ring-gutter)`. Padding covers the
-  scroll extremes, where a child sits flush and cannot be scrolled away from the edge.
-  `scroll-padding` covers mid-travel, where sequential focus otherwise parks a child flush against
-  the scrollport. Neither is sufficient alone.
-- Do not reach for `padding` plus a matching negative `margin`. It inflates the clipper past its own
-  clipping ancestor, and the ring is lost again - which is the normal case here, since most of these
-  scrollers sit inside a second clipper.
-- `overflow: clip` plus `overflow-clip-margin` needs `clip` on both axes, and Safari does not
-  implement it, so it degrades to a cut ring on the browsers in our baseline.
-- Where a clip exists only to round a child's corners, put the radius on the child and drop the
-  clip - `NumberField`'s steppers do this. Nothing is reserved because nothing is cut.
-- Where only one axis has to clip, say so: `overflow-x: visible` survives next to `overflow-y: clip`
-  (it is coerced to `auto` only next to `hidden`, `scroll` or `auto`). `Collapse` clips the
-  collapsing axis and leaves the other visible, so a ring is cut on that axis only.
-
-One thing is still owed here:
-
-- `--ring-inset` is a token nothing uses. An inward ring is the right answer for a full-bleed panel,
-  region or row, where there is no outward space to paint in. It should be an opt-in the consumer
-  can toggle - and the same switch has to zero `--ring-gutter`, or every container keeps holding
-  room open for a ring that no longer needs it.
+- A ring is an `outline`, never a `box-shadow`: `outline: var(--ring-accent)`, or `--ring-danger`, `--ring-warning`, `--ring-success`, `--focus-ring`. `box-shadow` stays the base rule's.
+- A control transitioning with `var(--transition-control)` adds `outline: var(--ring-rest)` so the ring fades in.
+- Every ring is outward, like a consumer's own focus rule. `outline-offset` appears on no component.
+- A ring reaches `--ring-width` past the border box. A clipping container - `overflow` other than `visible`, or a mask - cuts it unless it holds `--ring-gutter` of room; the gutter is its own token because it is the one value to zero when rings turn inward.
+- The gutter is padding on the element carrying `overflow`, whose padding box is the clip rectangle. Padding on the parent or the child does not move it.
+- Take the gutter out of the gap on the other side of the clip edge instead of adding 3px: `Dialog` moves it from the header's `padding-bottom` into the body's `padding-top`.
+- A scroller needs `padding` and `scroll-padding`, both `var(--ring-gutter)`: padding for the scroll extremes, `scroll-padding` for mid-travel focus.
+- Never `padding` plus a negative `margin`: it inflates the clipper past its own clipping ancestor and the ring is cut again.
+- `overflow: clip` plus `overflow-clip-margin` needs `clip` on both axes, and Safari lacks it.
+- A clip that only rounds a child's corners goes; put the radius on the child (`NumberField`'s steppers). Clip one axis when only one has to: `overflow-x: visible` survives next to `overflow-y: clip` (`Collapse`).
+- Owed: `--ring-inset` is unused. An inward ring belongs to a full-bleed panel or row, as a consumer opt-in that also zeroes `--ring-gutter`.
 
 ### Invariants
 
@@ -100,185 +55,92 @@ One thing is still owed here:
 - Never trade roles, keyboard contracts or aria for looks.
 - Reduced motion collapses transitions and snaps simulations to their settled state.
 - Every motion is interruptible. One writer owns a property (motion.md).
-- Keep perceived settle inside the `--duration-*` bands.
+- Perceived settle stays inside the `--duration-*` bands.
 - Zero runtime dependencies.
 - Every component ships its own subpath, stylesheet, props JSDoc and usage doc.
 
 ## Tokens
 
-- Tokens are custom properties on `:root` in `src/tokens/*.css`, served verbatim by `get_tokens`.
-- The `.css` file is the source of truth and the documentation.
-- A token file starts with the layer order statement and wraps its rules in `@layer zyncat.tokens`.
-- Eight values are decisions, in `decisions.css`: `--accent`, `--success`, `--warning`, `--danger`,
-  `--neutral`, `--radius`, `--font-body`, `--font-code`. Everything else derives from them: colour with
-  relative colour syntax, the `--radius-*` steps as fixed ratios, the `--type-*` bundles from the faces.
-  A new colour token derives; it never pins a hue. `--radius-full` is a shape, not a step, and stays literal.
-- The `--duration-*` tokens stay literal: `UIMotion` and the slow-mo devtool read them off the DOM as
-  numbers, and an unregistered `calc()` never resolves in a computed value. `UIMotion` reads them at
-  `<body>` once at load and again, in place, when `data-theme` changes on any element,
-  `prefers-reduced-motion` flips or `ZyncatTheme` renders; a theme on a subtree retimes CSS only.
-- A decision sits on `:root` alone, never on the theme-root block; `gen-theme` fails on one there. `init`
-  copies the `:root` block of `decisions.css` into the consumer's `zyncat.theme.css`.
-- Three blocks per file, by how a theme reaches a token. Literal, polarity-free values sit on `:root`.
-  A polarity - a value the dark theme changes: the neutral roles, the shadow ink, the three
-  strengths - sits on `:root, [data-theme='light']`, and `dark.css` sets the same name on
-  `[data-theme='dark']`, so either attribute works on `<html>` or on any subtree root. Tokens that
-  derive from another token sit on `:root, [data-theme]`, so an element carrying a theme attribute
-  re-derives them from its own decisions. A custom property is substituted where it is declared, so a
-  derived token on `:root` alone inherits already resolved to the root's decision.
-- `gen-theme` holds the two sides together: every light-block token has a dark value, and `dark.css`
-  sets only polarities and derived tokens - a `:root`-only token it changes is a polarity and moves.
-- The dark theme is the same decisions on dark surfaces: it never sets a decision, and a hue step it
-  re-derives still follows its decision. Surfaces step lighter as they rise, ink steps down from
-  near-white, and the lighting model scales by number - `--shadow-strength` up, `--sheen-strength`
-  down, `--glow-strength` on - so no shadow, highlight or glow is restated.
-- A filled face is its own role - `--accent-fill`, `--danger-fill` - never the decision: the dark
-  theme drops it a step, since the light face reads as a light source on a dark canvas, and leaves
-  `--accent-lift` where it is, so a hover on dark travels further. A control that paints a hue face
-  reads the fill; a hairline or a marker reads the decision.
-- Never put a literal on the theme-root block: it resets the consumer's `:root` decision inside every
-  themed subtree. `gen-theme` fails the build on one.
-- Never `@import` with `layer()`. Bundler css-loaders rewrite it into a dead `@media`. Files wrap their own rules.
-- `decisions.css`: the eight decisions. `color.css`: the neutral ramp, the shadow ink. `semantic.css`: the roles, derived.
-- `dark.css`: the dark polarity. `base.css`: the `zyncat.base` layer that paints `body` in the app
-  surface, the body ink and the body type - after the other layers, under any unlayered body rule.
-- `spacing.css`: one 4px base, a short scale, the control and icon sizes.
-- `typography.css`, `fonts.css`: the type scale and the font faces.
-- `radius.css`, `elevation.css`: radii; shadows, rings, the lighting strengths and the `z-index` bands.
-- `motion.css`: durations, easings, distances, rest scales.
-- `glass.css`: the frosted-surface pieces.
-- A component-owned palette - the avatar's six identity hues - is declared on the component's root
-  class and flips polarity with `light-dark()`, keyed on the `color-scheme` the polarity blocks set;
-  the token layer holds no per-component values. `light-dark()` sets the browser floor: Chrome 123,
-  Safari 17.5, Firefox 120.
-- TypeScript reads tokens off the DOM: `UIMotion`, `tokenPx`.
-- Never duplicate a token value as a TypeScript literal.
+- Custom properties on `:root` in `src/tokens/*.css`, served verbatim by `get_tokens`. The `.css` file is the source of truth and the documentation.
+- A token file opens with the layer order statement and wraps its rules in `@layer zyncat.tokens`. Never `@import` with `layer()`: bundler css-loaders rewrite it into a dead `@media`.
+- Eight decisions in `decisions.css`: `--accent`, `--success`, `--warning`, `--danger`, `--neutral`, `--radius`, `--font-body`, `--font-code`. Everything else derives: colour by relative colour syntax, `--radius-*` as fixed ratios, `--type-*` from the faces. A new colour token never pins a hue. `--radius-full` is a shape and stays literal.
+- `--duration-*` stay literal: `UIMotion` and the slow-mo devtool read them off the DOM as numbers, and an unregistered `calc()` never resolves in a computed value. `UIMotion` reads them at `<body>` at load and again when `data-theme` changes anywhere, `prefers-reduced-motion` flips or `ZyncatTheme` renders; a subtree theme retimes CSS only.
+- A decision sits on `:root` alone; `init` copies that block into the consumer's `zyncat.theme.css`. `gen-theme` fails on a decision or a literal on the theme-root block, which would reset the consumer's decision inside every themed subtree.
+- Three blocks per file. Polarity-free literals on `:root`. A polarity - the neutral roles, the shadow ink, the three strengths - on `:root, [data-theme='light']`, with `dark.css` setting the same name on `[data-theme='dark']`. Derived tokens on `:root, [data-theme]`, so a themed subtree re-derives them from its own decisions; a derived token on `:root` alone inherits already resolved.
+- `gen-theme` holds the sides together: every light-block token has a dark value, and `dark.css` sets only polarities and derived tokens.
+- Dark is the same decisions on dark surfaces and never sets one. Surfaces step lighter as they rise, ink steps down from near-white, and the lighting model scales by number: `--shadow-strength` up, `--sheen-strength` down, `--glow-strength` on.
+- A filled face - `--accent-fill`, `--danger-fill` - is its own role, never the decision: dark drops it a step and leaves `--accent-lift` alone. A hue face reads the fill; a hairline or a marker reads the decision.
+- Files: `decisions.css` the eight; `color.css` the neutral ramp and shadow ink; `semantic.css` the roles; `dark.css` the dark polarity; `base.css` the `zyncat.base` layer painting `body`, under any unlayered body rule; `spacing.css` a 4px base and the control and icon sizes; `typography.css`, `fonts.css`; `radius.css`, `elevation.css` - shadows, rings, strengths, `z-index` bands; `motion.css` durations, easings, distances, rest scales; `glass.css` the frosted pieces.
+- A component-owned palette (the avatar's identity hues) lives on its root class and flips with `light-dark()`, keyed on the `color-scheme` the polarity blocks set. `light-dark()` is the browser floor: Chrome 123, Safari 17.5, Firefox 120.
+- TypeScript reads tokens off the DOM: `UIMotion`, `tokenPx`. Never duplicate a token value as a literal.
 
 ### Token, or constant?
 
-- Ownership decides. Ask whether a theme is entitled to move this value.
-- Repointing `--accent` should move it: it is a role. Use a semantic token, every tier.
-- Repointing `--accent` should leave it alone: it is a material or a metric. Use a constant.
-- The replica addendum is this rule, scoped. It binds outside replicas too.
-- Range check before you snap: compare the range you need to the range the scale covers.
-- Outside that range, "nearest" is truncation. It ships a duller version of your component.
-- Substitution check after you snap: put the token in and look at it.
-- If the swap turns the component into a blander thing, the value was never a role.
-- Assertions cannot run this check. Screenshot before the metrics pass, not after.
+- Ownership decides: is a theme entitled to move this value?
+- Repointing `--accent` should move it: a role. Use a semantic token, every tier.
+- Repointing `--accent` should leave it alone: a material or a metric. Use a constant. The replica addendum is this rule, and it binds outside replicas too.
+- Range check before you snap: outside the scale's range, "nearest" is truncation and ships a duller component.
+- Substitution check after: put the token in and look. If the swap blands the component, the value was never a role. Screenshot before the metrics pass, not after.
 
 ### Use an existing token, or add one?
 
-- Default to an existing token. Snap to the nearest step.
-- Add a token only when all four hold:
-  1. It is a new kind of thing, not a new value of an existing kind.
-  2. More than one component needs it.
-  3. A theme would plausibly retune it.
-  4. You can write the one-line "when to pick it" comment.
+- Default to an existing token, nearest step.
+- Add one only when all four hold: a new kind of thing, not a new value; more than one component needs it; a theme would plausibly retune it; you can write its one-line "when to pick it" comment.
 - A single component's value is a constant or a scoped property, never `:root`.
-- Declare new tokens in the right `src/tokens/*.css` file with that comment.
-- Mirror into the TypeScript reader if code needs it.
+- Declare it in the right `src/tokens/*.css` file with that comment. Mirror into the TypeScript reader if code needs it.
 
 ### Naming
 
-- CSS spells the concept out. TypeScript abbreviates it: `--duration-fast` is `dur.fast`.
+- CSS spells the concept out; TypeScript abbreviates it: `--duration-fast` is `dur.fast`.
 - Name a scale by magnitude or by target, never both.
 - Scoped properties: `--<component>-<name>` public, `--_<component>-<name>` private; kebab-case, root class only.
 
 ## Overrides
 
-- Level 0: all shipped CSS sits in the `zyncat` cascade layers, so plain consumer CSS wins.
-- Level 1: retheme in `zyncat.theme.css`, the decisions `init` writes into the project; any token on `:root` works. JS follows via the DOM readers.
-- Level 1, dark: `data-theme="dark"` on `<html>` or a subtree root, `data-theme="light"` for a light island inside it. Extend the shipped dark in a `[data-theme='dark']` block of the same file.
-- Level 1, typed: `defineTheme` + `ZyncatTheme` from `src/tokens/theme.tsx`, for a theme that is data. Four categories - `color`, `type`, `shape`, `motion` - each grouped by what it holds, then `components` and every other token by CSS name under `custom`; the path is the CSS name.
-- Level 1, Tailwind: `tailwind.css` at the package root is the vocabulary as Tailwind v4 utilities, one per
-  role, named after the token. Every entry is `inline reference`: `inline` so a utility reads the token
-  itself and a themed subtree re-derives it, `reference` so Tailwind writes nothing onto `:root`, where
-  its own `--radius-*`, `--shadow-*` and `--tracking-*` would overwrite the tokens the components read.
-  The file opens with the layer statement that puts Tailwind's utilities above the component rules, so
-  it goes above `tailwindcss` in the stylesheet Tailwind compiles; `init` writes that line.
-- `scripts/gen-theme.mjs` generates the token types, the per-component `style` types and the Tailwind
-  bridge from the CSS.
-- Token names are derived, never tabulated: the generator fails if a name stops round-tripping.
+- Level 0: shipped CSS sits in the `zyncat` cascade layers, so plain consumer CSS wins.
+- Level 1: retheme in `zyncat.theme.css`, the decisions `init` writes into the project. Any token on `:root` works and JS follows via the DOM readers. `data-theme="dark"` on `<html>` or a subtree root, `data-theme="light"` for a light island; extend dark in a `[data-theme='dark']` block of the same file.
+- Level 1, typed: `defineTheme` + `ZyncatTheme` from `src/tokens/theme.tsx`. Four categories - `color`, `type`, `shape`, `motion` - then `components`, then every other token by CSS name under `custom`. The path is the CSS name.
+- Level 1, Tailwind: `tailwind.css` at the package root is the vocabulary as Tailwind v4 utilities, one per role, named after the token. Every entry is `inline reference`: `inline` so a utility reads the token itself, `reference` so Tailwind writes nothing onto `:root`, where its own `--radius-*`, `--shadow-*` and `--tracking-*` would overwrite the tokens. It opens with the layer statement that puts utilities above component rules, so it goes above `tailwindcss`; `init` writes that line.
+- `scripts/gen-theme.mjs` generates the token types, the per-component `style` types and the Tailwind bridge from the CSS. Names are derived, never tabulated; the generator fails when one stops round-tripping.
 - Level 2: retune one component through its scoped custom properties.
-- Level 3: restyle with `className` and `style` - direct props on primitives and fields, `htmlProps` on an overlay's panel.
-- Replicas answer to none of these, by design.
+- Level 3: `className` and `style`, direct on primitives and fields, `htmlProps` on an overlay's panel.
+- Replicas answer to none of these.
 
 ## Compose, or build new?
 
 - Compose first. A new component is permanent public surface.
-- Build new only for own semantics, an own state machine, or existing duplication.
-- Never build new because a prop is missing. Add the prop if it is a real axis.
+- Build new only for own semantics, an own state machine, or existing duplication. Never because a prop is missing: add the prop if it is a real axis.
 
 ### Which tier
 
-- Primitive: one control or visual atom. `src/components/primitives/`.
-- Composite: primitives plus behaviour and keyboard contracts. `src/components/composites/`.
-- Compound: whole assembled patterns. `src/components/compound/`.
-- Expressive: creative components and replicas. `src/components/expressive/`.
-- Internal: shared machinery, never exported. `src/components/internal/`.
-- Behaviour that outlives one event handler means composite.
-- Utility belongs in composites. Delight belongs in expressive.
+- Primitive: one control or visual atom. Composite: primitives plus behaviour and keyboard contracts. Compound: whole assembled patterns. Expressive: creative components and replicas. Internal: shared machinery, never exported.
+- Behaviour that outlives one event handler means composite. Utility belongs in composites, delight in expressive.
 
 ## Behaviour that already exists
 
 - Controlled state: `useControllable`.
-- Overlay root and stacking: `OverlayPortal`, `useOverlayEntry`, `ovIsTop`.
-- Click-outside dismissal: `useOutsidePress`.
-- Trigger cloning with aria: `ovCloneTrigger`.
-- Floating panel anchoring: `useAnchorPosition`.
-- Focus return: `useReturnFocus`. Focus trap: `useFocusTrap`.
-- Scrim, scroll lock, `inert`, panel shell: `ModalShell`.
+- Overlay root and stacking: `OverlayPortal`, `useOverlayEntry`, `ovIsTop`. Click-outside: `useOutsidePress`. Trigger cloning with aria: `ovCloneTrigger`. Anchoring: `useAnchorPosition`.
+- Focus return: `useReturnFocus`. Focus trap: `useFocusTrap`. Scrim, scroll lock, `inert`, panel shell: `ModalShell`.
 - Token as a number: `tokenPx`. Scroller edges: `useScrollEdges`. Class names: `cx`.
-- Listbox keyboard navigation: `useListbox`. Generalise it for new shapes, never fork it.
-- Scroll-into-view lives inline in `use-listbox.ts`. A second consumer lifts it out.
+- Listbox keyboard navigation: `useListbox`. Generalise it, never fork it. Scroll-into-view lives inline in `use-listbox.ts`; a second consumer lifts it out.
 - Trigger activation: `activationProps`. Never hand-wire `onClick` on a trigger the library owns.
 
 ### Activation
 
-A library-owned trigger fires on pointerdown, one frame ahead of click. `activationProps(activate, opts)`
-returns the `onPointerDown` + `onClick` pair that makes that safe:
-
-- Mouse and pen activate on pointerdown. Touch and keyboard fall through to click, so a tap can still
-  scroll and Enter/Space still work. The two never both fire - the click handler reads the event's
-  pointer type and stands down for the gesture the pointerdown already took.
-- A modified or non-primary press (shift, meta, middle, right) declines the pointerdown and waits for the
-  click, so modifier-aware handlers behave as before.
-- `disabled` and `aria-disabled` targets never activate, on either event.
-- The press takes focus itself, because focus otherwise lands on `mousedown` - one event too late for an
-  overlay that reads `document.activeElement` when it mounts.
-- `holdFocus: true` for a row inside a panel that places focus itself (select options, menu rows). It
-  cancels the pointerdown instead, which drops the compatibility mouse events and leaves focus untouched.
-- Every component exposing this takes `activateOn`, and a consumer's own `onPointerDown` cancels the
-  built-in activation by calling preventDefault on the event - the click then activates as usual.
-
-The helper defaults to click. A component opts in by defaulting its own `activateOn` to `'pointerdown'`,
-which is `Select`, `MultiSelect`, `Dropdown`, `Tabs`, the date fields and `Table`'s sort headers - the
-surfaces where a menu, a panel or a reorder follows the press and the wait is felt. Everywhere else the
-prop is there to opt in, not opted in.
-
-A cloned trigger that opens on pointerdown loses its press transform and takes the expanded treatment
-`.zc-select__trigger` and `.zc-dtf__trigger` already carry - `trigger.css`, keyed on the `data-activate` mark
-`ovCloneTrigger` sets. Those rules out-specify the primitive's own press rule on purpose; they never
-touch another component's scoped custom properties, so a consumer's trigger keeps its own resting look.
-
-A library-owned trigger keeps whatever press state it already had. A dip that lands after the surface
-has already opened is a judgement call per component, not a rule - `.zc-tab` keeps its.
-
-Out of scope by design: `Button` and anything rendered as one, native form controls, content surfaces
-where a press-drag means selection or reordering, and dismiss buttons - a surface leaving the screen
-gains nothing from arriving a frame early.
+- A library-owned trigger fires on pointerdown, one frame ahead of click. `activationProps(activate, opts)` returns the `onPointerDown` + `onClick` pair.
+- Mouse and pen activate on pointerdown; touch and keyboard fall through to click, so a tap still scrolls and Enter/Space work. The click handler reads the pointer type and stands down for a gesture the pointerdown took.
+- A modified or non-primary press (shift, meta, middle, right) waits for the click. `disabled` and `aria-disabled` never activate.
+- The press takes focus itself: focus otherwise lands on `mousedown`, one event too late for an overlay reading `document.activeElement` on mount. `holdFocus: true` for a row inside a panel that places focus itself; it cancels the pointerdown and leaves focus untouched.
+- Every component exposing it takes `activateOn`. A consumer's own `onPointerDown` cancels the built-in activation with preventDefault, and the click then activates.
+- The helper defaults to click. `Select`, `MultiSelect`, `Dropdown`, `Tabs`, the date fields and `Table`'s sort headers default to `'pointerdown'`; everywhere else the prop is there to opt in.
+- A cloned trigger opening on pointerdown loses its press transform and takes the expanded treatment `.zc-select__trigger` and `.zc-dtf__trigger` carry: `trigger.css`, keyed on the `data-activate` mark `ovCloneTrigger` sets. Those rules never touch another component's scoped properties.
+- Whether a press dip lands after the surface opened is a per-component call, not a rule; `.zc-tab` keeps its.
+- Out of scope: `Button` and anything rendered as one, native form controls, surfaces where a press-drag means selection or reordering, and dismiss buttons.
 
 ## Conventions
 
 - Sentence case. No emoji. No exclamation marks in UI copy.
 - One primary `Button` per view.
-- Numbers, times, IDs and status read mono and tabular.
-- Status hues mark genuine status only.
+- Numbers, times, IDs and status read mono and tabular. Status hues mark genuine status only.
 - Every component imports its own stylesheet. No barrel entry.
-
-## Roadmap
-
-- Phase 4: wire `src/components/expressive/` into the tsup scan. Port the motion primitives.
-- Phase 5: support widgets into `src/components/compound/`.
-- Phase 6: replicas. Phase 7: docs coverage, publish gate.
 - Legacy debt (comments, px literals, rAF call sites) is ratcheted by `check contracts` against `scripts/contracts-baseline.json`.
