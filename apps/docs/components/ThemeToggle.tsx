@@ -12,11 +12,11 @@ export const THEME_STORAGE_KEY = 'zyncat-docs-theme';
 
 const subscribe = (onChange: () => void) => {
   const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, { attributeFilter: ['data-theme'] });
+  observer.observe(document.documentElement, { attributeFilter: ['data-polarity'] });
   return () => observer.disconnect();
 };
 
-const readPolarity = (): Polarity => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+const readPolarity = (): Polarity => (document.documentElement.dataset.polarity === 'dark' ? 'dark' : 'light');
 
 const serverPolarity = (): Polarity => 'light';
 
@@ -26,7 +26,7 @@ export function ThemeToggle() {
 
   const toggle = () => {
     const next: Polarity = dark ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
+    document.documentElement.dataset.polarity = next;
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {}

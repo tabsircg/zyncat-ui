@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: '#0b0b0c' };
 
-const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('zyncat-docs-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}})()`;
+const THEME_SCRIPT = `(function(){var p='light';try{var t=localStorage.getItem('zyncat-docs-theme');p=t==='dark'||t==='light'?t:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){}document.documentElement.dataset.polarity=p})()`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

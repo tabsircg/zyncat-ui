@@ -280,15 +280,15 @@ const REDUCED_MOTION_CODE = `/* escapes the reduced-motion collapse */
   --duration-fast: 90ms;
 }`;
 
-const DARK_CODE = `<html lang="en" data-theme="dark">
+const DARK_CODE = `<html lang="en" data-polarity="dark">
 
 {/* a light island inside it */}
-<section data-theme="light">
+<section data-polarity="light">
   <Button variant="primary">Light in here</Button>
 </section>`;
 
 const DARK_EXTEND_CODE = `/* zyncat.theme.css */
-[data-theme='dark'] {
+[data-polarity='dark'] {
   --accent: oklch(0.72 0.14 292); /* a lighter accent for dark surfaces */
   --shadow-strength: 2.5; /* the lighting model: shadows, highlights, glow */
   --sheen-strength: 0.3;
@@ -298,7 +298,7 @@ const DARK_EXTEND_CODE = `/* zyncat.theme.css */
 const THEME_FILE_CODE = `// zyncat.theme.ts
 import { defineTheme } from '@zyncat/ui/theme';
 
-export const base = defineTheme({
+export const light = defineTheme({
   color: { accent: 'oklch(0.58 0.19 292)' },
   shape: { radius: '0.75rem' },
   type: { font: { body: "'Inter', system-ui, sans-serif" } },
@@ -306,7 +306,7 @@ export const base = defineTheme({
   components: { odometer: { accent: 'var(--warning)' }, supportRail: { width: '22rem' } },
 });
 
-// extends the shipped dark theme - only what differs on dark surfaces
+// a delta over light - only what differs on dark surfaces
 export const dark = defineTheme({
   color: { accent: 'oklch(0.72 0.14 292)' },
   custom: { '--shadow-strength': 2.5 },
@@ -316,23 +316,24 @@ const THEME_MOUNT_CODE = `// app/layout.tsx
 import '@zyncat/ui/styles.css';
 
 import { ZyncatTheme } from '@zyncat/ui/theme';
-import { base, dark, ocean } from '../zyncat.theme';
+import { light, dark, ocean } from '../zyncat.theme';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <ZyncatTheme theme={{ base, dark, ocean }} />
+        <ZyncatTheme themes={{ default: { light, dark }, ocean }} />
         {children}
       </body>
     </html>
   );
 }`;
 
-const THEME_SWITCH_CODE = `document.documentElement.dataset.theme = 'dark';
+const THEME_SWITCH_CODE = `document.documentElement.dataset.polarity = 'dark';
+document.documentElement.dataset.theme = 'ocean';
 
-{/* or one subtree */}
-<section data-theme="ocean">
+{/* or one subtree - a palette needs both attributes on the element */}
+<section data-theme="ocean" data-polarity="light">
   <Button variant="primary">Ocean accent in here only</Button>
 </section>`;
 
@@ -396,17 +397,17 @@ const playgroundCode = (
   polarity: Polarity,
 ) => `import { defineTheme, ZyncatTheme } from '@zyncat/ui/theme';
 
-const base = defineTheme({
+const light = defineTheme({
   color: { accent: 'oklch(0.63 0.118 ${hue})' },
   shape: { radius: '${CORNERS[corner]}' },
   components: { odometer: { accent: 'var(--${ink})' } },
 });
 
 // once, at the app root
-<ZyncatTheme theme={{ base }} />;
+<ZyncatTheme themes={{ default: { light } }} />;
 
 // dark ships in the package
-<html lang="en"${polarity === 'dark' ? ' data-theme="dark"' : ''}>`;
+<html lang="en" data-polarity="${polarity}">`;
 
 export function ThemingPlayground() {
   const [hue, setHue] = useState(292);
@@ -415,7 +416,7 @@ export function ThemingPlayground() {
   const [ink, setInk] = useState<OdometerInk>('accent');
   const [total, setTotal] = useState(4820);
 
-  const base = defineTheme({
+  const light = defineTheme({
     color: { accent: `oklch(0.63 0.118 ${hue})` },
     shape: { radius: CORNERS[corner] },
     components: { odometer: { accent: `var(--${ink})` } },
@@ -435,9 +436,9 @@ export function ThemingPlayground() {
       }
       stage="fill"
     >
-      <ZyncatTheme theme={{ [PREVIEW]: base }} />
-      <div data-theme={PREVIEW}>
-        <div className="theming-stage" data-theme={polarity}>
+      <ZyncatTheme themes={{ default: {}, [PREVIEW]: { light } }} />
+      <div>
+        <div className="theming-stage" data-theme={PREVIEW} data-polarity={polarity}>
           <div className="theming-cell__row">
             <Button variant="primary">Publish</Button>
             <Button variant="secondary">Save draft</Button>
