@@ -9,6 +9,7 @@ import { Dropdown, type DropdownProps } from '@zyncat/ui/dropdown';
 import { EmojiPickerPanel, getEmojiUrl, loadEmojiData } from '@zyncat/ui/emoji-picker';
 import { Popover, type PopoverProps } from '@zyncat/ui/popover';
 import { Sheet, type SheetProps } from '@zyncat/ui/sheet';
+import { ThemeSwitcher, type ThemeSwitcherProps } from '@zyncat/ui/theme-switcher';
 import { toast } from '@zyncat/ui/toast';
 import { Tooltip, type TooltipProps } from '@zyncat/ui/tooltip';
 
@@ -598,5 +599,31 @@ export function EmojiPickerHero() {
         trigger={<Button variant="secondary">Add reaction</Button>}
       />
     </div>
+  );
+}
+
+type ThemeSwitcherSide = NonNullable<ThemeSwitcherProps['side']>;
+type ThemeSwitcherAlign = NonNullable<ThemeSwitcherProps['align']>;
+
+export function ThemeSwitcherPlayground() {
+  const [side, setSide] = useState<ThemeSwitcherSide>('bottom');
+  const [align, setAlign] = useState<ThemeSwitcherAlign>('end');
+
+  const code = `<ThemeSwitcher side="${side}" align="${align}" />`;
+
+  return (
+    <Playground
+      code={code}
+      note="The chip in the header is this component. Both read and write the site's own theme, so a pick here turns the whole page and stays open to compare; arrow keys walk the grid, Enter or Escape closes it."
+      stageStyle={{ minHeight: '24rem' }}
+      rail={
+        <>
+          <KnobSegment label="side" value={side} onChange={setSide} options={['top', 'bottom', 'left', 'right']} />
+          <KnobSegment label="align" value={align} onChange={setAlign} options={['start', 'center', 'end']} />
+        </>
+      }
+    >
+      <ThemeSwitcher key={`${side}-${align}`} side={side} align={align} />
+    </Playground>
   );
 }

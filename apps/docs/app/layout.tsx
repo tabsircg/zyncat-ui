@@ -1,7 +1,10 @@
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import { Geist, Newsreader } from 'next/font/google';
 
+import { ZyncatTheme } from '@zyncat/ui/theme';
+
 import { SiteJsonLd } from '@/components/JsonLd';
+import { DOCS_THEMES } from '@/lib/themes';
 
 import '@/styles/docs.css';
 import '@zyncat/ui/styles.css';
@@ -51,15 +54,11 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: '#0b0b0c' };
-
-const THEME_SCRIPT = `(function(){var p='light';try{var t=localStorage.getItem('zyncat-docs-theme');p=t==='dark'||t==='light'?t:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){}document.documentElement.dataset.polarity=p})()`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${newsreader.variable} ${geist.variable}`}>
       <body>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <ZyncatTheme themes={DOCS_THEMES} />
         <SiteJsonLd />
         {children}
       </body>

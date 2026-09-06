@@ -54,6 +54,8 @@
       "@zyncat/ui/sheet": ["../../src/components/composites/sheet/Sheet.tsx"],
       "@zyncat/ui/table": ["../../src/components/composites/table/Table.tsx"],
       "@zyncat/ui/tabs": ["../../src/components/composites/tabs/Tabs.tsx"],
+      "@zyncat/ui/theme-grid": ["../../src/components/composites/theme-switcher/ThemeGrid.tsx"],
+      "@zyncat/ui/theme-switcher": ["../../src/components/composites/theme-switcher/ThemeSwitcher.tsx"],
       "@zyncat/ui/toast": ["../../src/components/composites/toast/Toast.tsx"],
       "@zyncat/ui/tooltip": ["../../src/components/composites/tooltip/Tooltip.tsx"],
       "@zyncat/ui/support-rail": ["../../src/components/compound/support-rail/SupportRail.tsx"],
@@ -75,6 +77,13 @@
       "@zyncat/ui/theme": ["../../src/tokens/theme.tsx"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next-env.d.ts", ".next-dev/types/**/*.ts"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next-dev/types/**/*.ts",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    ".next-verify/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

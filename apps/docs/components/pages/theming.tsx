@@ -329,8 +329,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }`;
 
-const THEME_SWITCH_CODE = `document.documentElement.dataset.polarity = 'dark';
-document.documentElement.dataset.theme = 'ocean';
+const THEME_SWITCH_CODE = `import { useTheme } from '@zyncat/ui/theme';
+import { ThemeSwitcher } from '@zyncat/ui/theme-switcher';
+
+{/* the shipped control - every declared palette, light, dark and system */}
+<ThemeSwitcher labels={{ default: 'Acme', ocean: 'Ocean' }} />
+
+{/* the same state as a hook */}
+const { theme, polarity, resolvedPolarity, setTheme, setPolarity } = useTheme();
+setTheme('ocean');
+setPolarity('system'); // follows the OS, live
 
 {/* or one subtree - a palette needs both attributes on the element */}
 <section data-theme="ocean" data-polarity="light">
@@ -436,7 +444,7 @@ export function ThemingPlayground() {
       }
       stage="fill"
     >
-      <ZyncatTheme themes={{ default: {}, [PREVIEW]: { light } }} />
+      <ZyncatTheme themes={{ default: {}, [PREVIEW]: { light } }} boot={false} />
       <div>
         <div className="theming-stage" data-theme={PREVIEW} data-polarity={polarity}>
           <div className="theming-cell__row">
@@ -563,7 +571,8 @@ export function ThemingDoc() {
         <h2 className="guide-section__title">Dark mode</h2>
         <p className="guide-section__p">
           Dark ships in the package. One attribute turns the page or any subtree, and{' '}
-          <Code>data-theme=&quot;light&quot;</Code> inside it makes a light island.
+          <Code>data-polarity=&quot;light&quot;</Code> inside it makes a light island. <Code>ThemeSwitcher</Code> writes
+          it for you, persists the choice and follows the OS; <Code>useTheme</Code> is the same state as a hook.
         </p>
 
         <CodeBlock code={DARK_CODE} language="tsx" />
@@ -610,16 +619,18 @@ export function ThemingDoc() {
         <CodeBlock code={THEME_FILE_CODE} language="tsx" />
 
         <p className="guide-section__p">
-          Render <Code>ZyncatTheme</Code> once at the root. It renders a <Code>&lt;style&gt;</Code> element on the
-          server, about a kilobyte: no provider, no flash, nothing to configure. Durations you set here keep their
-          reduced-motion collapse.
+          Render <Code>ZyncatTheme</Code> once, first in <Code>&lt;body&gt;</Code>. It renders a{' '}
+          <Code>&lt;style&gt;</Code> element and an inline script that paints the stored choice onto{' '}
+          <Code>&lt;html&gt;</Code> before first paint: no provider, no flash, nothing to configure. Durations you set
+          here keep their reduced-motion collapse.
         </p>
 
         <CodeBlock code={THEME_MOUNT_CODE} language="tsx" />
 
         <p className="guide-section__p">
-          <Code>base</Code> lands on <Code>:root</Code>. Every other key becomes a{' '}
-          <Code>[data-theme=&apos;&lt;key&gt;&apos;]</Code> block, so switching is one attribute.
+          <Code>default</Code> lands on <Code>:root</Code>. Every other key becomes a{' '}
+          <Code>[data-theme=&apos;&lt;key&gt;&apos;]</Code> block, and the boot script keeps the choice on{' '}
+          <Code>&lt;html&gt;</Code>, so a switch is one call.
         </p>
 
         <CodeBlock code={THEME_SWITCH_CODE} language="tsx" />
@@ -662,7 +673,7 @@ export function ThemingDoc() {
 
         <p className="guide-section__p">
           Each utility reads the token itself, so themes and <Code>dark:</Code> reach it, and <Code>dark:</Code> follows{' '}
-          <Code>data-theme</Code>. Tailwind&rsquo;s own <Code>rounded-md</Code> and <Code>shadow-md</Code> read the
+          <Code>data-polarity</Code>. Tailwind&rsquo;s own <Code>rounded-md</Code> and <Code>shadow-md</Code> read the
           zyncat token of the same name. Spacing stays Tailwind&rsquo;s scale.
         </p>
 

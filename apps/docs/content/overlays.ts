@@ -218,6 +218,17 @@ const [open, setOpen] = useState(false);
 </Popover>`,
   },
 
+  'theme-switcher': {
+    example: `import { ZyncatTheme } from '@zyncat/ui/theme';
+import { ThemeSwitcher } from '@zyncat/ui/theme-switcher';
+
+// Once, first in <body>: the palettes, and the boot script that paints the stored choice before first paint.
+<ZyncatTheme themes={{ default: { light, dark }, ocean: { light: oceanLight, dark: oceanDark } }} />
+
+// Anywhere: the chip opens a grid with one card per palette and side, plus a split System card.
+<ThemeSwitcher labels={{ default: 'Acme', ocean: 'Ocean' }} align="end" />`,
+  },
+
   sheet: {
     example: `import { useState } from 'react';
 import { Sheet } from '@zyncat/ui/sheet';

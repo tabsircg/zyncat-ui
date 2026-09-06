@@ -2112,6 +2112,39 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
       description: 'The ENTIRE surface - paint AND semantics. Drive dismissal with `open`/`onOpenChange`.',
     },
   ],
+  'theme-switcher': [
+    {
+      name: 'labels',
+      type: 'Record<string, string>',
+      description: 'Display names per palette, keyed like `themes`. A missing key shows title-cased.',
+    },
+    { name: 'label', type: 'string', default: "'Theme'", description: 'Accessible name of the control and its grid.' },
+    {
+      name: 'side',
+      type: "'top' | 'bottom' | 'left' | 'right'",
+      default: "'bottom'",
+      description: 'Preferred side of the panel; flips to the opposite side when cramped.',
+    },
+    {
+      name: 'align',
+      type: "'start' | 'center' | 'end'",
+      default: "'end'",
+      description: 'Cross-axis alignment of the panel against the chip.',
+    },
+    {
+      name: 'animation',
+      type: 'DisableableAnimation',
+      default: "open 'base'/'entrance', close 'fast'/'exit'",
+      description: 'Open/close timing - motion tokens only, or `null` to disable.',
+    },
+    { name: 'className', type: 'string', description: 'Extra class(es) merged onto the chip.' },
+    { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the chip.' },
+    {
+      name: 'htmlProps',
+      type: "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style' | 'type'> & DataAttributes",
+      description: 'Standard <button> attributes (aria-*, data-*, ...) forwarded to the chip.',
+    },
+  ],
   dropdown: [
     {
       name: 'items',

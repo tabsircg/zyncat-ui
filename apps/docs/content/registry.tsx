@@ -25,7 +25,7 @@ export interface TocItem {
   level: number;
 }
 
-export const NEW_SLUGS = new Set(['count-badge', 'emoji-picker', 'date-range', 'multi-select']);
+export const NEW_SLUGS = new Set(['count-badge', 'emoji-picker', 'date-range', 'multi-select', 'theme-switcher']);
 
 export interface Doc {
   slug: string;
@@ -451,6 +451,14 @@ export const GROUPS: DocGroup[] = [
           'Headless anchored panel, non-modal - flips and clamps to the viewport. You own the surface; drive dismissal with open/onOpenChange.',
         Playground: O.PopoverPlayground,
         heroCode: `import { Popover } from '@zyncat/ui/popover';\n\n<Popover trigger={<Button variant="secondary">Snooze</Button>} side="bottom" align="start" open={open} onOpenChange={setOpen}>\n  <div className="snooze-panel">...</div>\n</Popover>`,
+      },
+      {
+        slug: 'theme-switcher',
+        label: 'ThemeSwitcher',
+        blurb:
+          'The theme control - a chip in the live palette opens a grid of miniatures, one per palette and side. Persists the choice, follows the OS, no flash on load.',
+        Playground: O.ThemeSwitcherPlayground,
+        heroCode: `import { ThemeSwitcher } from '@zyncat/ui/theme-switcher';\n\n<ThemeSwitcher labels={{ default: 'Zyncat', ember: 'Ember', iris: 'Iris' }} align="end" />`,
       },
       {
         slug: 'dropdown',

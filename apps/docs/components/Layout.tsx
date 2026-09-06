@@ -8,12 +8,12 @@ import { Badge } from '@zyncat/ui/badge';
 import { Button } from '@zyncat/ui/button';
 import { Collapse } from '@zyncat/ui/collapse';
 import { MotionDevtools } from '@zyncat/ui/motion-devtools';
+import { ThemeSwitcher } from '@zyncat/ui/theme-switcher';
 import { Toaster } from '@zyncat/ui/toast';
 
 import { GROUPS, NEW_SLUGS } from '../content/registry';
 import { CommandMenu } from './CommandMenu';
 import { Icon } from './icon';
-import { ThemeToggle } from './ThemeToggle';
 
 export function DocsShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -119,7 +119,7 @@ export function DocsShell({ children }: { children: ReactNode }) {
               </a>
             </nav>
 
-            <ThemeToggle />
+            <ThemeSwitcher align="end" />
 
             <button
               type="button"
