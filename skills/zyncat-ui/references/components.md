@@ -54,6 +54,8 @@ Alert - @zyncat/ui/alert - Persistent, in-flow status.
 Toast - @zyncat/ui/toast - Imperative transient notifications: mount <Toaster /> once at the app root, then call toast() from anywhere.
 toast-store - @zyncat/ui/toast-store - The headless store behind Toast: subscribe to the toast queue and drive it without rendering <Toaster />.
 EmojiPickerPanel - @zyncat/ui/emoji-picker - Searchable emoji panel - grid, scrollspy category rail, recents in localStorage - living in a Popover, becoming a bottom Sheet on narrow viewports.
+ThemeSwitcher - @zyncat/ui/theme-switcher - The theme control: a chip painted in the live palette opens a grid of miniatures, one card per palette and side plus a split System card, each drawn from that theme's real tokens.
+ThemeGrid - @zyncat/ui/theme-grid - The theme picker without a surface: a radio grid of miniatures, one card per palette and side plus a split System card, each drawn from that theme's real tokens.
 
 == Expressive ==
 Creative motion components. Each publishes scoped --<component>-* custom properties as its theming surface.

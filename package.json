@@ -298,6 +298,16 @@
       "types": "./dist/types/tokens/theme.d.ts",
       "import": "./dist/theme.js"
     },
+    "./theme-switcher": {
+      "source": "./src/components/composites/theme-switcher/ThemeSwitcher.tsx",
+      "types": "./dist/types/components/composites/theme-switcher/ThemeSwitcher.d.ts",
+      "import": "./dist/theme-switcher.js"
+    },
+    "./theme-grid": {
+      "source": "./src/components/composites/theme-switcher/ThemeGrid.tsx",
+      "types": "./dist/types/components/composites/theme-switcher/ThemeGrid.d.ts",
+      "import": "./dist/theme-grid.js"
+    },
     "./styles.css": "./src/styles.css",
     "./tailwind.css": "./tailwind.css",
     "./next": {
