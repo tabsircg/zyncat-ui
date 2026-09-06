@@ -13,6 +13,7 @@
 
     --mdt-offset: 16px;
     --mdt-surface: color-mix(in oklab, var(--bg-surface, #fff) 88%, transparent);
+    --_mdt-body-max: calc(100dvh - var(--mdt-offset) * 2 - 3.25rem);
 
     position: fixed;
     z-index: 2147483000;
@@ -88,6 +89,17 @@
   .zc-mdt__head:focus-visible {
     outline: var(--ring-accent, 3px solid oklch(0.7 0.12 185 / 0.35));
   }
+  .zc-mdt--draggable .zc-mdt__head {
+    cursor: grab;
+    touch-action: none;
+  }
+  .zc-mdt[data-dragging] {
+    user-select: none;
+  }
+  .zc-mdt[data-dragging] .zc-mdt__head {
+    cursor: grabbing;
+    background: var(--neutral-wash, oklch(0.5 0.01 264 / 0.07));
+  }
 
   .zc-mdt__glyph {
     color: var(--text-subtle, oklch(0.6 0.01 264));
@@ -135,6 +147,10 @@
     box-sizing: border-box;
     width: 100%;
     min-width: 208px; /* wider than the collapsed pill on purpose: the controls never reflow while it opens */
+    max-height: var(--_mdt-body-max);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scroll-padding-block: var(--ring-gutter, 3px);
     display: flex;
     flex-direction: column;
     gap: 0.8125rem;
@@ -238,6 +254,65 @@
     font-size: 0.6875rem;
     line-height: 1.45;
     color: var(--text-subtle, oklch(0.6 0.01 264));
+    margin: 0.5rem 0 0;
+  }
+
+  .zc-mdt__more {
+    appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.125rem 0;
+    border: 0;
+    border-radius: var(--radius-sm, 0.25rem);
+    background: transparent;
+    color: var(--text-subtle, oklch(0.6 0.01 264));
+    font: inherit;
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .zc-mdt__more:hover {
+    color: var(--text-body, oklch(0.35 0.01 264));
+  }
+  .zc-mdt__more:focus-visible {
+    outline: var(--ring-accent, 3px solid oklch(0.7 0.12 185 / 0.35));
+  }
+
+  .zc-mdt__keys {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem;
+    margin: 0.125rem 0 0;
+  }
+  .zc-mdt__keyrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .zc-mdt__keyrow dt {
+    font-size: 0.6875rem;
+    color: var(--text-muted, oklch(0.55 0.01 264));
+  }
+  .zc-mdt__keyrow dd {
+    display: flex;
+    gap: 0.1875rem;
     margin: 0;
+  }
+  .zc-mdt__key {
+    min-width: 1.125rem;
+    padding: 0.0625rem 0.25rem;
+    border: 1px solid var(--border-subtle, oklch(0.92 0.004 264));
+    border-radius: var(--radius-sm, 0.25rem);
+    background: var(--bg-muted, oklch(0.97 0.004 264));
+    color: var(--text-subtle, oklch(0.6 0.01 264));
+    font-family: var(--font-code, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.625rem;
+    line-height: 1.4;
+    text-align: center;
   }
 }
