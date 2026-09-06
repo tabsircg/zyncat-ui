@@ -6,7 +6,8 @@
   }
 
   :root,
-  [data-theme] {
+  [data-theme],
+  [data-polarity] {
     --radius-sm: calc(var(--radius) * 0.5);
     --radius-md: calc(var(--radius) * 0.75);
     --radius-lg: var(--radius);

@@ -124,8 +124,8 @@ export const UIMotion: MotionTokens = hasDom ? readFromDom() : build(DEFAULTS);
 
 /**
  * Re-reads the motion tokens into `UIMotion` in place, so every held reference sees the new values. Runs on
- * a `data-theme` change, a `prefers-reduced-motion` flip and after `ZyncatTheme` renders; call it yourself
- * after injecting a stylesheet that retimes the `--duration-*` tokens.
+ * a `data-theme` or `data-polarity` change, a `prefers-reduced-motion` flip and after `ZyncatTheme`
+ * renders; call it yourself after injecting a stylesheet that retimes the `--duration-*` tokens.
  */
 export function refreshMotionTokens(): MotionTokens {
   if (hasDom)
@@ -139,7 +139,7 @@ if (hasDom) {
   if (typeof MutationObserver === 'function')
     new MutationObserver(() => refreshMotionTokens()).observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-theme'],
+      attributeFilter: ['data-theme', 'data-polarity'],
       subtree: true,
     });
 }

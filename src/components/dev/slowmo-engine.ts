@@ -58,7 +58,7 @@ function applyCssTokens() {
     const ms = state.paused ? FROZEN_MS : baseMs[token] * state.factor;
     return `${token}: ${ms}ms !important;`;
   });
-  overrideSheet.textContent = `:root, [data-theme] { ${declarations.join(' ')} }`;
+  overrideSheet.textContent = `:root, [data-theme], [data-polarity] { ${declarations.join(' ')} }`;
 }
 
 function clearCssTokens() {

@@ -55,7 +55,7 @@
 - Durations are seconds, not milliseconds.
 - `Timing` fields: `duration`, `ease`, `delay`, `times`, `type`, `fill`, `release`. Springs: `type: 'spring'` with `visualDuration` and `bounce`. `fill` defaults to `'both'`, `release` to `false`.
 - Prefer `UIMotion.t`: `t.enter`, `t.exit`, `t.layout`, `t.settle`, `t.glide`.
-- Read `UIMotion` at call time, never into a module constant. It re-reads when `data-theme` changes, `prefers-reduced-motion` flips and after `ZyncatTheme` renders; a subtree theme retimes CSS only, and a hand-injected stylesheet needs `refreshMotionTokens()`.
+- Read `UIMotion` at call time, never into a module constant. It re-reads when `data-theme` or `data-polarity` changes, `prefers-reduced-motion` flips and after `ZyncatTheme` renders; a subtree theme retimes CSS only, and a hand-injected stylesheet needs `refreshMotionTokens()`.
 - A component with an `animation` prop never reads `UIMotion` directly: `resolveMotionTiming(animation, defaults)`.
 
 ## Ownership: one writer per property

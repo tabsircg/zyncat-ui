@@ -1,5 +1,5 @@
 /* Semantic layer - the intent-named roles components consume.
-   Neutral roles are a polarity: light values on `:root, [data-theme='light']`, dark ones in dark.css.
+   Neutral roles are a polarity: light values on `:root, [data-polarity='light']`, dark ones in dark.css.
    Derived roles sit on every theme root, so a subtree that repoints a decision re-derives them. */
 
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
@@ -12,7 +12,7 @@
   }
 
   :root,
-  [data-theme='light'] {
+  [data-polarity='light'] {
     color-scheme: light;
 
     /* The canvas is the top of the ramp and cards and panels share it, separated by hairlines and
@@ -42,7 +42,8 @@
   }
 
   :root,
-  [data-theme] {
+  [data-theme],
+  [data-polarity] {
     /* Accent family. Fill is the resting face of a filled control, a step down on dark where it reads
      as a light source; hover, active and lift step lightness from the accent, the tints take only its hue. */
     --accent-fill: var(--accent);

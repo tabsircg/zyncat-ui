@@ -33,7 +33,8 @@
   }
 
   :root,
-  [data-theme] {
+  [data-theme],
+  [data-polarity] {
     --transition-control:
       color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard),
       border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard),

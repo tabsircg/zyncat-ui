@@ -816,19 +816,27 @@ export interface ThemeTokens {
 }
 
 /**
- * The themes an app ships. `base` lands on `:root`; every other key becomes a
- * `[data-theme='<key>']` block, activated by setting that attribute on any element.
- * The package ships `light` and `dark` under those attributes already, so a `dark` key
- * here extends the shipped dark theme rather than starting one.
+ * One palette, both polarities. `light` carries the palette itself - its decisions and the
+ * light roles; `dark` carries only what differs on dark surfaces, and every key `light`
+ * sets that `dark` leaves out is copied into it.
+ */
+export interface ThemePalette {
+  /** The palette - its decisions, and the roles the light polarity sets. */
+  light?: ThemeTokens;
+  /** What differs on dark surfaces. A delta over `light`, never a second palette. */
+  dark?: ThemeTokens;
+}
+
+/**
+ * The palettes an app ships. `default` lands on `:root` and is the base every other
+ * palette layers over; every other key becomes a `[data-theme='<key>']` block, activated
+ * by setting that attribute on `<html>` or any subtree root. Polarity is the separate
+ * `data-polarity` attribute, so every palette carries both sides.
  */
 export interface ThemeSet {
-  /** The always-applied foundation - whatever the app defaults to, light or dark. */
-  base?: ThemeTokens;
-  /** Extends the shipped dark theme - the values that differ under `data-theme="dark"`. */
-  dark?: ThemeTokens;
-  /** Extends the shipped light theme, where a light island sits inside a dark page. */
-  light?: ThemeTokens;
-  [name: string]: ThemeTokens | undefined;
+  /** The base palette - what applies when `data-theme` names no other. */
+  default: ThemePalette;
+  [palette: string]: ThemePalette;
 }
 
 export const reducedMotionTokens: Readonly<Record<string, string>> = {

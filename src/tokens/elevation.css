@@ -20,7 +20,7 @@
   }
 
   :root,
-  [data-theme='light'] {
+  [data-polarity='light'] {
     /* Multiplies every shadow alpha - 1 on the white canvas; black on dark needs 3-4x to read. */
     --shadow-strength: 1;
     /* Multiplies every white top-light highlight - 1 on the white canvas, a fifth on dark. */
@@ -30,7 +30,8 @@
   }
 
   :root,
-  [data-theme] {
+  [data-theme],
+  [data-polarity] {
     --shadow-xs: 0 1px 1px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength)));
     --shadow-sm:
       0 1px 2px rgb(var(--shadow-rgb) / calc(0.05 * var(--shadow-strength))),
@@ -79,7 +80,8 @@
    sit on every control as a permanent border. It costs the fade-in, not the ring. */
   @media (forced-colors: active) {
     :root,
-    [data-theme] {
+    [data-theme],
+    [data-polarity] {
       --ring-rest: none;
     }
   }

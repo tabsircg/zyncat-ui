@@ -3,7 +3,7 @@
    and keep `@zyncat/ui/styles.css` on its JS import at the app root.
 
    Every entry is `inline reference`. `inline` makes the utility read the zyncat token itself,
-   so a `data-theme` subtree re-derives it; `reference` keeps Tailwind from writing the entry
+   so a themed subtree re-derives it; `reference` keeps Tailwind from writing the entry
    onto `:root`, where the names Tailwind also ships - `--radius-*`, `--shadow-*`,
    `--tracking-*` - would overwrite the token the components read, and where the entries
    that carry the same name on both sides would be a cycle.
@@ -17,7 +17,7 @@
 
 @layer theme, zyncat.reset, base, zyncat.tokens, zyncat.components, zyncat.base, components, utilities;
 
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant dark (&:where([data-polarity='dark'], [data-polarity='dark'] *));
 
 @theme inline reference {
   /* Surfaces - bg-<role> */

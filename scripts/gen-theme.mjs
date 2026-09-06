@@ -16,7 +16,7 @@ const fail = (message) => {
 
 const DECISIONS_FILE = 'decisions.css';
 const DARK_FILE = 'dark.css';
-const DARK_SELECTOR = "[data-theme='dark']";
+const DARK_SELECTOR = "[data-polarity='dark']";
 
 const THEME_TREE = [
   {
@@ -97,7 +97,7 @@ const blockInner = (text, selectorIndex) => {
   return text.slice(open + 1, close);
 };
 
-const ROOT_SELECTOR_RE = /(:root(?:\s*,\s*\[data-theme(?:='light')?\])?)\s*\{/g;
+const ROOT_SELECTOR_RE = /(:root(?:\s*,\s*\[data-theme\])?(?:\s*,\s*\[data-polarity(?:='light')?\])?)\s*\{/g;
 
 const blockKind = (selector) => {
   if (selector.includes("='light'")) return 'light';
@@ -175,7 +175,7 @@ for (const file of files) {
       if (byCssName.has(cssName)) fail(`${cssName} is declared in both ${byCssName.get(cssName).file} and ${file}.`);
       if (block.kind === 'themed' && !value.includes('var('))
         fail(
-          `${cssName} in ${file} sits on the theme-root block with a literal value - a literal there resets the consumer's :root decision inside every [data-theme] subtree. Only tokens that derive from another token belong on ":root, [data-theme]".`,
+          `${cssName} in ${file} sits on the theme-root block with a literal value - a literal there resets the consumer's :root decision inside every themed subtree. Only tokens that derive from another token belong on ":root, [data-theme], [data-polarity]".`,
         );
       if (file === DECISIONS_FILE && block.kind !== 'root')
         fail(
@@ -216,7 +216,7 @@ for (const [cssName, value] of Object.entries(dark)) {
   if (!token) fail(`${DARK_FILE} sets ${cssName}, which no token file declares.`);
   if (token.kind === 'root')
     fail(
-      `${DARK_FILE} sets ${cssName}, which ${token.file} declares on :root alone - a value the dark theme changes is a polarity, so declare its light value on ":root, [data-theme='light']" or derive it on ":root, [data-theme]".`,
+      `${DARK_FILE} sets ${cssName}, which ${token.file} declares on :root alone - a value the dark polarity changes is a polarity, so declare its light value on ":root, [data-polarity='light']" or derive it on ":root, [data-theme], [data-polarity]".`,
     );
   if (token.kind === 'themed' && !value.includes('var('))
     fail(
@@ -486,19 +486,28 @@ tokensLines.push('}');
 tokensLines.push('');
 
 tokensLines.push('/**');
-tokensLines.push(' * The themes an app ships. `base` lands on `:root`; every other key becomes a');
-tokensLines.push(" * `[data-theme='<key>']` block, activated by setting that attribute on any element.");
-tokensLines.push(' * The package ships `light` and `dark` under those attributes already, so a `dark` key');
-tokensLines.push(' * here extends the shipped dark theme rather than starting one.');
+tokensLines.push(' * One palette, both polarities. `light` carries the palette itself - its decisions and the');
+tokensLines.push(' * light roles; `dark` carries only what differs on dark surfaces, and every key `light`');
+tokensLines.push(' * sets that `dark` leaves out is copied into it.');
+tokensLines.push(' */');
+tokensLines.push('export interface ThemePalette {');
+tokensLines.push('  /** The palette - its decisions, and the roles the light polarity sets. */');
+tokensLines.push('  light?: ThemeTokens;');
+tokensLines.push('  /** What differs on dark surfaces. A delta over `light`, never a second palette. */');
+tokensLines.push('  dark?: ThemeTokens;');
+tokensLines.push('}');
+tokensLines.push('');
+
+tokensLines.push('/**');
+tokensLines.push(' * The palettes an app ships. `default` lands on `:root` and is the base every other');
+tokensLines.push(" * palette layers over; every other key becomes a `[data-theme='<key>']` block, activated");
+tokensLines.push(' * by setting that attribute on `<html>` or any subtree root. Polarity is the separate');
+tokensLines.push(' * `data-polarity` attribute, so every palette carries both sides.');
 tokensLines.push(' */');
 tokensLines.push('export interface ThemeSet {');
-tokensLines.push('  /** The always-applied foundation - whatever the app defaults to, light or dark. */');
-tokensLines.push('  base?: ThemeTokens;');
-tokensLines.push('  /** Extends the shipped dark theme - the values that differ under `data-theme="dark"`. */');
-tokensLines.push('  dark?: ThemeTokens;');
-tokensLines.push('  /** Extends the shipped light theme, where a light island sits inside a dark page. */');
-tokensLines.push('  light?: ThemeTokens;');
-tokensLines.push('  [name: string]: ThemeTokens | undefined;');
+tokensLines.push('  /** The base palette - what applies when `data-theme` names no other. */');
+tokensLines.push('  default: ThemePalette;');
+tokensLines.push('  [palette: string]: ThemePalette;');
 tokensLines.push('}');
 tokensLines.push('');
 
@@ -624,7 +633,7 @@ const TYPE_BUNDLE_RE =
   /^var\((--weight-[\w-]+)\) var\((--size-[\w-]+)\)\/var\((--leading-[\w-]+)\) var\((--font-[\w-]+)\)$/;
 const TAILWIND_LAYER_ORDER =
   '@layer theme, zyncat.reset, base, zyncat.tokens, zyncat.components, zyncat.base, components, utilities;';
-const DARK_VARIANT = "@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));";
+const DARK_VARIANT = "@custom-variant dark (&:where([data-polarity='dark'], [data-polarity='dark'] *));";
 
 const inFile = (file, prefix) => tokens.filter((token) => token.file === file && token.cssName.startsWith(prefix));
 const after = (token, prefix) => token.cssName.slice(prefix.length);
@@ -740,7 +749,7 @@ const tailwindLines = [
   '   and keep `@zyncat/ui/styles.css` on its JS import at the app root.',
   '',
   '   Every entry is `inline reference`. `inline` makes the utility read the zyncat token itself,',
-  '   so a `data-theme` subtree re-derives it; `reference` keeps Tailwind from writing the entry',
+  '   so a themed subtree re-derives it; `reference` keeps Tailwind from writing the entry',
   '   onto `:root`, where the names Tailwind also ships - `--radius-*`, `--shadow-*`,',
   '   `--tracking-*` - would overwrite the token the components read, and where the entries',
   '   that carry the same name on both sides would be a cycle.',

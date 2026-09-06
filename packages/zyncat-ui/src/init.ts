@@ -323,7 +323,8 @@ function themeFileText(css: string, version: string): string | null {
   return [
     `/* ${THEME_FILE} - the decisions every other token derives from, written by zyncat-ui init.`,
     '   Loaded after @zyncat/ui/styles.css, so a value here wins; whatever you delete keeps the default.',
-    "   A [data-theme='dark'] block here extends the shipped dark theme. Docs: https://ui.zyncat.app/theming",
+    "   A [data-polarity='dark'] block here extends the dark polarity, a [data-theme='<name>'] one adds a",
+    '   palette. Docs: https://ui.zyncat.app/theming',
     `   @zyncat-ui ${version} - the version whose decisions this mirrors; \`npx zyncat-ui update\` refreshes it. */`,
     ':root {',
     body,

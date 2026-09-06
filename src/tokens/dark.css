@@ -1,11 +1,12 @@
-/* The dark theme - `data-theme="dark"` on <html> or any subtree root, `data-theme="light"` for a
-   light island inside it. Every value here is a polarity with a light twin, and gen-theme holds
-   the two sides together. Surfaces step lighter as they rise; ink steps down from near-white. */
+/* The dark polarity - `data-polarity="dark"` on <html> or any subtree root, `data-polarity="light"`
+   for a light island inside it. Polarity is its own attribute so a palette on `data-theme` picks up
+   either side. Every value here is a polarity with a light twin, and gen-theme holds the two sides
+   together. Surfaces step lighter as they rise; ink steps down from near-white. */
 
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
-  [data-theme='dark'] {
+  [data-polarity='dark'] {
     color-scheme: dark;
 
     --bg-app: oklch(from var(--neutral) 0.165 0.006 h);

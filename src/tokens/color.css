@@ -25,7 +25,7 @@
   }
 
   :root,
-  [data-theme='light'] {
+  [data-polarity='light'] {
     /* Cool near-black shadow ink on the white canvas; the dark theme casts pure black. */
     --shadow-rgb: 15 22 25;
   }

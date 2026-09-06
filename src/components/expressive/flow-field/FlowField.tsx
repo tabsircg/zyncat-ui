@@ -41,7 +41,7 @@ const WIDTH_GAIN = 1.2;
 const ALPHA_REST = 0.42;
 const ALPHA_GAIN = 0.58;
 
-const THEME_ATTRIBUTES: MutationObserverInit = { attributeFilter: ['class', 'style', 'data-theme'] };
+const THEME_ATTRIBUTES: MutationObserverInit = { attributeFilter: ['class', 'style', 'data-theme', 'data-polarity'] };
 
 const JITTER_X = 12.9898;
 const JITTER_Y = 78.233;
