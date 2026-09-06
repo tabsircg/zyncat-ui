@@ -79,7 +79,7 @@ YouTube - @zyncat/ui/youtube - Replica of three YouTube surfaces, picked with su
 == Dev tools ==
 motion-tokens - @zyncat/ui/motion-tokens - TypeScript readers for the motion token vocabulary - duration/ease/distance/scale token names resolved to the live CSS values.
 MotionDevtools - @zyncat/ui/motion-devtools - Dev-only floating panel that slows or freezes EVERY animation at once (CSS and WAAPI) for motion debugging.
-Theme - @zyncat/ui/theme - Typed theming - defineTheme is the shape of a theme, not a list of every token; ZyncatTheme renders the set as unlayered CSS with no build step.
+Theme - @zyncat/ui/theme - Typed theming and the theme state: defineTheme shapes a theme, ZyncatTheme emits the CSS and the pre-paint boot script, useTheme reads and sets the choice.
 
 == Types-only modules (documented by their .d.ts alone) ==
 @zyncat/ui/next - get_component("next")

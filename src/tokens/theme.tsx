@@ -1,7 +1,10 @@
+import { bootTheme, DEFAULT_THEME, THEME_STORAGE_KEY, type PolarityPreference, type ThemeState } from './theme-store';
 import { ThemeSync } from './theme-sync';
 import { reducedMotionTokens, type ThemePalette, type ThemeSet, type ThemeTokens } from './theme-tokens.generated';
 
 export type * from './theme-tokens.generated';
+export type { Polarity, PolarityPreference, ThemeControls, ThemeState } from './theme-store';
+export { useTheme } from './theme-sync';
 
 export interface ZyncatThemeProps {
   /**
@@ -11,13 +14,21 @@ export interface ZyncatThemeProps {
    * `data-polarity`, and `dark` is a delta - what `light` sets and `dark` leaves out carries over.
    */
   themes?: ThemeSet;
+  /** The palette a first visit gets, before a choice is stored. @default 'default' */
+  defaultTheme?: string;
+  /** The side a first visit gets. `system` follows the OS setting, and keeps following it. @default 'system' */
+  defaultPolarity?: PolarityPreference;
+  /** The localStorage key the choice persists under. @default 'zyncat-theme' */
+  storageKey?: string;
+  /** Write the stored choice onto `<html>` before first paint and register the palettes with `useTheme`.
+   *  Off for a second `ZyncatTheme` whose palettes serve one subtree. @default true */
+  boot?: boolean;
 }
 
 type TokenTree = { [key: string]: string | number | TokenTree | undefined };
 type Declaration = [string, string];
 type Polarity = 'light' | 'dark';
 
-const DEFAULT = 'default';
 const POLARITIES: Polarity[] = ['light', 'dark'];
 
 const kebabize = (key: string) =>
@@ -56,8 +67,10 @@ const cssBlock = (selectors: string[], declarations: Declaration[], indent = '')
 };
 
 const selectorsFor = (palette: string, polarity: Polarity): string[] => {
-  if (palette !== DEFAULT) return [`[data-theme='${palette}'][data-polarity='${polarity}']`];
-  return polarity === 'light' ? [':root', "[data-polarity='light']"] : ["[data-polarity='dark']"];
+  if (palette !== DEFAULT_THEME) return [`[data-theme='${palette}'][data-polarity='${polarity}']`];
+  return polarity === 'light'
+    ? [':root', `[data-theme='${DEFAULT_THEME}']`, "[data-polarity='light']"]
+    : ["[data-polarity='dark']"];
 };
 
 const inheritLight = (light: Declaration[], dark: Declaration[]): Declaration[] => {
@@ -77,7 +90,7 @@ const paletteBlocks = (palette: string, tokens: ThemePalette) => {
 
 const renderThemeCss = (themes?: ThemeSet): string => {
   const blocks = Object.entries(themes ?? {})
-    .sort(([a], [b]) => Number(b === DEFAULT) - Number(a === DEFAULT))
+    .sort(([a], [b]) => Number(b === DEFAULT_THEME) - Number(a === DEFAULT_THEME))
     .flatMap(([palette, tokens]) => (tokens ? paletteBlocks(palette, tokens) : []));
   if (!blocks.length) return '';
 
@@ -99,17 +112,35 @@ const renderThemeCss = (themes?: ThemeSet): string => {
   return parts.join('\n');
 };
 
+const paletteName = (key: string, palette?: ThemePalette) =>
+  palette?.name ?? key.charAt(0).toUpperCase() + key.slice(1).replace(/[-_]+/g, ' ');
+
 export function defineTheme(tokens: ThemeTokens): ThemeTokens {
   return tokens;
 }
 
-export function ZyncatTheme({ themes }: ZyncatThemeProps) {
+export function ZyncatTheme({
+  themes,
+  defaultTheme = DEFAULT_THEME,
+  defaultPolarity = 'system',
+  storageKey = THEME_STORAGE_KEY,
+  boot = true,
+}: ZyncatThemeProps) {
   const css = renderThemeCss(themes);
-  if (!css) return null;
+  const names = [DEFAULT_THEME, ...Object.keys(themes ?? {}).filter((palette) => palette !== DEFAULT_THEME)];
+  const declared: ThemeState = {
+    theme: names.includes(defaultTheme) ? defaultTheme : DEFAULT_THEME,
+    polarity: defaultPolarity,
+    resolvedPolarity: defaultPolarity === 'dark' ? 'dark' : 'light',
+    themes: names,
+    themeNames: Object.fromEntries(names.map((key) => [key, paletteName(key, themes?.[key])])),
+  };
+  const config = boot ? JSON.stringify({ key: storageKey, declared }).replace(/</g, '\\u003c') : null;
   return (
     <>
-      <style data-zyncat-theme="">{css}</style>
-      <ThemeSync css={css} />
+      {css && <style data-zyncat-theme="">{css}</style>}
+      {config && <script dangerouslySetInnerHTML={{ __html: `(${bootTheme})(${config})` }} />}
+      <ThemeSync css={css} config={config} />
     </>
   );
 }

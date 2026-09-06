@@ -309,7 +309,7 @@ export function shippedDecisionsCss(packageRoot: string): string | null {
 }
 
 function themeFileText(css: string, version: string): string | null {
-  const rule = /^\s*:root\s*\{/m.exec(css);
+  const rule = /^\s*:root\b[^{]*\{/m.exec(css);
   if (!rule) return null;
   const open = rule.index + rule[0].length - 1;
   const close = css.indexOf('}', open);
@@ -324,9 +324,11 @@ function themeFileText(css: string, version: string): string | null {
     `/* ${THEME_FILE} - the decisions every other token derives from, written by zyncat-ui init.`,
     '   Loaded after @zyncat/ui/styles.css, so a value here wins; whatever you delete keeps the default.',
     "   A [data-polarity='dark'] block here extends the dark polarity, a [data-theme='<name>'] one adds a",
-    '   palette. Docs: https://ui.zyncat.app/theming',
+    '   palette, and data-theme="default" on a subtree brings these back inside another palette.',
+    '   Docs: https://ui.zyncat.app/theming',
     `   @zyncat-ui ${version} - the version whose decisions this mirrors; \`npx zyncat-ui update\` refreshes it. */`,
-    ':root {',
+    ':root,',
+    "[data-theme='default'] {",
     body,
     '}',
     '',

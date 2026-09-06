@@ -97,7 +97,8 @@ const blockInner = (text, selectorIndex) => {
   return text.slice(open + 1, close);
 };
 
-const ROOT_SELECTOR_RE = /(:root(?:\s*,\s*\[data-theme\])?(?:\s*,\s*\[data-polarity(?:='light')?\])?)\s*\{/g;
+const ROOT_SELECTOR_RE =
+  /(:root(?:\s*,\s*\[data-theme(?:='default')?\])?(?:\s*,\s*\[data-polarity(?:='light')?\])?)\s*\{/g;
 
 const blockKind = (selector) => {
   if (selector.includes("='light'")) return 'light';
@@ -179,7 +180,7 @@ for (const file of files) {
         );
       if (file === DECISIONS_FILE && block.kind !== 'root')
         fail(
-          `${cssName} is a decision and sits on the ${block.kind} block - decisions are set, never derived, and are polarity-free, so they live on :root alone.`,
+          `${cssName} is a decision and sits on the ${block.kind} block - decisions are set, never derived, and are polarity-free, so they live on ":root, [data-theme='default']" alone.`,
         );
       const key = camelize(cssName.slice(2));
       if (`--${kebabize(key)}` !== cssName)
@@ -495,6 +496,8 @@ tokensLines.push('  /** The palette - its decisions, and the roles the light pol
 tokensLines.push('  light?: ThemeTokens;');
 tokensLines.push('  /** What differs on dark surfaces. A delta over `light`, never a second palette. */');
 tokensLines.push('  dark?: ThemeTokens;');
+tokensLines.push('  /** How the palette is named in a picker. Defaults to its key, title-cased. */');
+tokensLines.push('  name?: string;');
 tokensLines.push('}');
 tokensLines.push('');
 

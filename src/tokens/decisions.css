@@ -1,10 +1,12 @@
 /* The decisions - the values the rest of the vocabulary derives from. zyncat-ui init copies the
-   :root block below, comments included, into the project as zyncat.theme.css. */
+   block below, comments included, into the project as zyncat.theme.css. The block also answers to
+   `data-theme="default"`, so a subtree naming the default palette inside another one resets to it. */
 
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
-  :root {
+  :root,
+  [data-theme='default'] {
     /* The brand hue - hover, active, lift, subtle, border, wash, the focus ring and info follow. */
     --accent: oklch(0.63 0.118 198);
     /* Positive status - its subtle, text and wash follow. */

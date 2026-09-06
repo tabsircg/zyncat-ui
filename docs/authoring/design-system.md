@@ -65,8 +65,10 @@
 - A token file opens with the layer order statement and wraps its rules in `@layer zyncat.tokens`. Never `@import` with `layer()`: bundler css-loaders rewrite it into a dead `@media`.
 - Eight decisions in `decisions.css`: `--accent`, `--success`, `--warning`, `--danger`, `--neutral`, `--radius`, `--font-body`, `--font-code`. Everything else derives: colour by relative colour syntax, `--radius-*` as fixed ratios, `--type-*` from the faces. A new colour token never pins a hue. `--radius-full` is a shape and stays literal.
 - `--duration-*` stay literal: `UIMotion` and the slow-mo devtool read them off the DOM as numbers, and an unregistered `calc()` never resolves in a computed value. `UIMotion` reads them at `<body>` at load and again when `data-theme` or `data-polarity` changes anywhere, `prefers-reduced-motion` flips or `ZyncatTheme` renders; a subtree theme retimes CSS only.
-- A decision sits on `:root` alone; `init` copies that block into the consumer's `zyncat.theme.css`. `gen-theme` fails on a decision or a literal on the theme-root block, which would reset the consumer's decision inside every themed subtree.
+- A decision sits on `:root, [data-theme='default']` and nowhere else; `init` copies that block into the consumer's `zyncat.theme.css`. `gen-theme` fails on a decision or a literal on the theme-root block, which would reset the consumer's decision inside every themed subtree.
 - Palette and polarity are two attributes. `data-theme='<name>'` picks the palette, `data-polarity='light|dark'` picks the side; a palette block is `[data-theme='<name>'][data-polarity='<side>']`, so it always outranks the default palette's own blocks and the two never tie.
+- `default` is a palette name too. `data-theme='default'` on a subtree matches the decisions block and `ZyncatTheme`'s default blocks, so a preview of the default palette resets inside a page painted in another one; `ThemeSwitcher`'s cards rely on it.
+- `ZyncatTheme` owns `<html>`: its inline script is `bootTheme` serialised into the page, so it paints the stored choice before first paint, and `useTheme` reads the result back as an external store. The DOM carries only a resolved polarity; `system` lives in storage and re-resolves on the OS change.
 - Three blocks per file. Polarity-free literals on `:root`. A polarity - the neutral roles, the shadow ink, the three strengths - on `:root, [data-polarity='light']`, with `dark.css` setting the same name on `[data-polarity='dark']`. Derived tokens on `:root, [data-theme], [data-polarity]`, so a subtree that sets either attribute re-derives them from its own decisions; a derived token on `:root` alone inherits already resolved.
 - `gen-theme` holds the sides together: every light-block token has a dark value, and `dark.css` sets only polarities and derived tokens.
 - Dark is the same decisions on dark surfaces and never sets one. Surfaces step lighter as they rise, ink steps down from near-white, and the lighting model scales by number: `--shadow-strength` up, `--sheen-strength` down, `--glow-strength` on.
@@ -132,6 +134,7 @@
 - Token as a number: `tokenPx`. Scroller edges: `useScrollEdges`. Class names: `cx`.
 - Listbox keyboard navigation: `useListbox`. Generalise it, never fork it. Scroll-into-view lives inline in `use-listbox.ts`; a second consumer lifts it out.
 - Trigger activation: `activationProps`. Never hand-wire `onClick` on a trigger the library owns.
+- Theme state: `useTheme` for a component that reads or sets it, `setThemePreference` in `src/tokens/theme-store.ts` to set palette and side in one write. Never write `data-theme` or `data-polarity` onto `<html>` by hand.
 
 ### Activation
 

@@ -825,6 +825,8 @@ export interface ThemePalette {
   light?: ThemeTokens;
   /** What differs on dark surfaces. A delta over `light`, never a second palette. */
   dark?: ThemeTokens;
+  /** How the palette is named in a picker. Defaults to its key, title-cased. */
+  name?: string;
 }
 
 /**

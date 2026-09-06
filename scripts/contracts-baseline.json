@@ -47,7 +47,8 @@
     "src/components/primitives/toggle/Toggle.tsx": 9,
     "src/motion/use-motion.ts": 4,
     "src/tokens/motion-defaults.generated.ts": 1,
-    "src/tokens/motion-tokens.ts": 1
+    "src/tokens/motion-tokens.ts": 1,
+    "src/tokens/theme-store.ts": 1
   },
   "px-in-system-css": {
     "src/components/composites/alert/alert.css": 1,
