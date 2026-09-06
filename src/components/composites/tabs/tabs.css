@@ -193,7 +193,6 @@
   .zc-tab-panel {
     outline: none;
     overflow: hidden;
-    padding: var(--ring-gutter);
   }
   .zc-tab-panel:focus-visible {
     outline: var(--ring-accent);
