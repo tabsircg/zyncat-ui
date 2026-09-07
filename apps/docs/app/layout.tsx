@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${newsreader.variable} ${geist.variable}`}>
       <body>
-        <ZyncatTheme themes={DOCS_THEMES} />
+        <ZyncatTheme themes={DOCS_THEMES} transition={{ effect: 'tide' }} />
         <SiteJsonLd />
         {children}
       </body>
