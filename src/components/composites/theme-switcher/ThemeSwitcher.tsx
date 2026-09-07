@@ -52,7 +52,7 @@ export function ThemeSwitcher({
       side={side}
       align={align}
       animation={animation}
-      htmlProps={{ className: 'zc-theme-switcher__panel' }}
+      htmlProps={{ className: 'zc-theme-switcher__panel', 'data-theme-lead': '' }}
       trigger={
         <Button
           variant="ghost"
@@ -60,7 +60,7 @@ export function ThemeSwitcher({
           className={cx('zc-theme-switcher', className)}
           style={style}
           aria-label={`${label}: ${labels?.[theme] ?? themeNames[theme] ?? theme}, ${CAPTIONS[polarity]}`}
-          htmlProps={htmlProps}
+          htmlProps={{ 'data-theme-lead': '', ...htmlProps }}
         >
           <span className="zc-theme-switcher__preview zc-theme-switcher__preview--chip" aria-hidden="true">
             <span className="zc-theme-switcher__mini" />

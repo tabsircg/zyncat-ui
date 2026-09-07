@@ -296,6 +296,24 @@ export interface OdometerTokens {
   weight?: string | number;
 }
 
+/** The `--theme-transition-glow-*` knobs. */
+export interface ThemeTransitionGlowTokens {
+  /** `--theme-transition-glow-dark` - The crest and its halo on a flip into dark. Default: `oklch(0.84 0.14 72)`. */
+  dark?: string | number;
+  /** `--theme-transition-glow-light` - The crest and its halo on a flip into light. Default: `oklch(0.93 0.09 88)`. */
+  light?: string | number;
+  /** `--theme-transition-glow-palette` - The crest on a palette change; the arriving accent. Default: `var(--accent)`. */
+  palette?: string | number;
+}
+
+/** The scoped properties ThemeTransition publishes as its theming contract. */
+export interface ThemeTransitionTokens {
+  /** The `--theme-transition-glow-*` knobs. */
+  glow?: ThemeTransitionGlowTokens;
+  /** `--theme-transition-layer` - The z-index the crest paints at; it has to clear every panel it lights. Default: `var(--layer-tooltip)`. */
+  layer?: string | number;
+}
+
 /** The `--typing-lines-caret-*` knobs. */
 export interface TypingLinesCaretTokens {
   /** `--typing-lines-caret-ink` - The caret. Default: `var(--accent)`. */
@@ -390,6 +408,8 @@ export interface ComponentTokens {
   morphingText?: MorphingTextTokens;
   /** Odometer - its `--odometer-*` properties. */
   odometer?: OdometerTokens;
+  /** ThemeTransition - its `--theme-transition-*` properties. */
+  themeTransition?: ThemeTransitionTokens;
   /** TypingLines - its `--typing-lines-*` properties. */
   typingLines?: TypingLinesTokens;
   /** WeightField - its `--weight-field-*` properties. */

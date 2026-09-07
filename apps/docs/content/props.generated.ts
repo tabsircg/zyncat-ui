@@ -2115,8 +2115,8 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
   'theme-switcher': [
     {
       name: 'labels',
-      type: 'Record<string, string>',
-      description: 'Display names per palette, keyed like `themes`. A missing key shows title-cased.',
+      type: "ThemeGridProps['labels']",
+      description: "Overrides the palette's own `name`, keyed like `themes`. For names that come from a translation.",
     },
     { name: 'label', type: 'string', default: "'Theme'", description: 'Accessible name of the control and its grid.' },
     {
@@ -2141,7 +2141,7 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the chip.' },
     {
       name: 'htmlProps',
-      type: "Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style' | 'type'> & DataAttributes",
+      type: "ButtonProps['htmlProps']",
       description: 'Standard <button> attributes (aria-*, data-*, ...) forwarded to the chip.',
     },
   ],

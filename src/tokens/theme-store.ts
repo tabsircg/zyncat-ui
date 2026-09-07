@@ -25,6 +25,15 @@ export interface ThemeControls extends ThemeState {
 
 export type ThemeBootConfig = { key: string; declared: ThemeState };
 
+export interface ThemeChange {
+  current: ThemeState;
+  next: ThemeState;
+  commit(): void;
+  revert(): void;
+}
+
+export type ThemeTransitionRunner = (change: ThemeChange) => void;
+
 export const DEFAULT_THEME = 'default';
 export const THEME_STORAGE_KEY = 'zyncat-theme';
 
@@ -78,6 +87,7 @@ const store = sharedSlot('tokens.theme@1', () => ({
   state: null as ThemeState | null,
   attached: false,
   listeners: new Set<() => void>(),
+  transition: null as ThemeTransitionRunner | null,
 }));
 
 export function configureThemeStore(json: string): void {
@@ -96,14 +106,34 @@ export function applyTheme(stored?: unknown): void {
 export const getThemeSnapshot = (): ThemeState => store.state ?? store.config.declared;
 export const getServerThemeSnapshot = (): ThemeState => store.config.declared;
 
+export function setThemeTransition(runner: ThemeTransitionRunner | null): void {
+  store.transition = runner;
+}
+
+const resolvePolarity = (polarity: PolarityPreference): Polarity =>
+  polarity === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : polarity;
+
+const persistTheme = (choice: Pick<ThemeState, 'theme' | 'polarity'>) => {
+  try {
+    localStorage.setItem(store.config.key, JSON.stringify(choice));
+  } catch {}
+  applyTheme(choice);
+};
+
 export function setThemePreference(patch: Partial<Pick<ThemeState, 'theme' | 'polarity'>>): void {
   const current = getThemeSnapshot();
   const theme = patch.theme && current.themes.includes(patch.theme) ? patch.theme : current.theme;
-  const next = { theme, polarity: patch.polarity ?? current.polarity };
-  try {
-    localStorage.setItem(store.config.key, JSON.stringify(next));
-  } catch {}
-  applyTheme(next);
+  const polarity = patch.polarity ?? current.polarity;
+  if (!store.transition) {
+    persistTheme({ theme, polarity });
+    return;
+  }
+  store.transition({
+    current,
+    next: { ...current, theme, polarity, resolvedPolarity: resolvePolarity(polarity) },
+    commit: () => persistTheme({ theme, polarity }),
+    revert: () => persistTheme({ theme: current.theme, polarity: current.polarity }),
+  });
 }
 
 export function subscribeTheme(listener: () => void): () => void {

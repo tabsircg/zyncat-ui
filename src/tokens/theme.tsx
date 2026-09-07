@@ -1,8 +1,14 @@
+import type { ThemeTransitionSetting } from '../components/expressive/theme-transition/theme-transition';
 import { bootTheme, DEFAULT_THEME, THEME_STORAGE_KEY, type PolarityPreference, type ThemeState } from './theme-store';
 import { ThemeSync } from './theme-sync';
 import { reducedMotionTokens, type ThemePalette, type ThemeSet, type ThemeTokens } from './theme-tokens.generated';
 
 export type * from './theme-tokens.generated';
+export type {
+  ThemeTransitionEffect,
+  ThemeTransitionOptions,
+  ThemeTransitionSetting,
+} from '../components/expressive/theme-transition/theme-transition';
 export type { Polarity, PolarityPreference, ThemeControls, ThemeState } from './theme-store';
 export { useTheme } from './theme-sync';
 
@@ -23,6 +29,13 @@ export interface ZyncatThemeProps {
   /** Write the stored choice onto `<html>` before first paint and register the palettes with `useTheme`.
    *  Off for a second `ZyncatTheme` whose palettes serve one subtree. @default true */
   boot?: boolean;
+  /**
+   * Animate every theme change as a full-page reveal: `tide` sweeps a lit wave across the page,
+   * `bloom` grows a honeycomb from the control that was pressed, `paint` throws splats that run
+   * together. An object adds `speed`, `intensity` and `glow`. Runs on the View Transitions API and
+   * falls back to the instant swap without it or under reduced motion; the code loads on demand.
+   */
+  transition?: ThemeTransitionSetting;
 }
 
 type TokenTree = { [key: string]: string | number | TokenTree | undefined };
@@ -125,6 +138,7 @@ export function ZyncatTheme({
   defaultPolarity = 'system',
   storageKey = THEME_STORAGE_KEY,
   boot = true,
+  transition,
 }: ZyncatThemeProps) {
   const css = renderThemeCss(themes);
   const names = [DEFAULT_THEME, ...Object.keys(themes ?? {}).filter((palette) => palette !== DEFAULT_THEME)];
@@ -140,7 +154,7 @@ export function ZyncatTheme({
     <>
       {css && <style data-zyncat-theme="">{css}</style>}
       {config && <script dangerouslySetInnerHTML={{ __html: `(${bootTheme})(${config})` }} />}
-      <ThemeSync css={css} config={config} />
+      <ThemeSync css={css} config={config} transition={transition} />
     </>
   );
 }

@@ -75,6 +75,7 @@ export function ThemeGrid({
   return (
     <div
       {...htmlProps}
+      data-theme-lead=""
       role="radiogroup"
       aria-label={label}
       style={style}
