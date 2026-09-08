@@ -2,12 +2,12 @@
 
 import './theme-switcher.css';
 
-import { useId, type CSSProperties, type HTMLAttributes, type KeyboardEvent } from 'react';
+import { useId, type CSSProperties, type HTMLAttributes, type KeyboardEvent, type MouseEvent } from 'react';
 
 import type { DataAttributes } from '../../../dom-props';
 import { Motion } from '../../../motion/element';
 import { setThemePreference, type Polarity, type PolarityPreference } from '../../../tokens/theme-store';
-import { useTheme } from '../../../tokens/theme-sync';
+import { useTheme, useThemeTarget } from '../../../tokens/theme-sync';
 import { cx } from '../../internal/utils/cx';
 
 const POLARITIES: readonly PolarityPreference[] = ['system', 'light', 'dark'];
@@ -15,6 +15,11 @@ const CAPTIONS: Record<PolarityPreference, string> = { system: 'System', light: 
 const STEPS: Record<string, number[]> = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
 
 const focusOnMount = (node: HTMLElement | null) => node?.focus({ preventScroll: true });
+
+const centreOf = (element: Element): [number, number] => {
+  const box = element.getBoundingClientRect();
+  return [box.left + box.width / 2, box.top + box.height / 2];
+};
 
 export interface ThemeGridProps {
   /** Overrides the palette's own `name`, keyed like `themes`. For names that come from a translation. */
@@ -52,7 +57,8 @@ export function ThemeGrid({
   style,
   htmlProps,
 }: ThemeGridProps) {
-  const { theme, polarity, themes, themeNames } = useTheme();
+  const { themes, themeNames } = useTheme();
+  const { theme, polarity } = useThemeTarget();
   const ringId = useId();
   const nameOf = (palette: string) => labels?.[palette] ?? themeNames[palette] ?? palette;
 
@@ -66,11 +72,17 @@ export function ThemeGrid({
     const step = STEPS[event.key];
     if (!step) return;
     event.preventDefault();
-    setThemePreference({
-      theme: themes[(row + step[0] + themes.length) % themes.length],
-      polarity: POLARITIES[(col + step[1] + POLARITIES.length) % POLARITIES.length],
-    });
+    setThemePreference(
+      {
+        theme: themes[(row + step[0] + themes.length) % themes.length],
+        polarity: POLARITIES[(col + step[1] + POLARITIES.length) % POLARITIES.length],
+      },
+      { origin: centreOf(event.currentTarget) },
+    );
   };
+
+  const onPick = (event: MouseEvent<HTMLButtonElement>, palette: string, choice: PolarityPreference) =>
+    setThemePreference({ theme: palette, polarity: choice }, { origin: centreOf(event.currentTarget) });
 
   return (
     <div
@@ -100,7 +112,7 @@ export function ThemeGrid({
                 aria-label={`${nameOf(palette)}, ${CAPTIONS[choice]}`}
                 tabIndex={checked ? 0 : -1}
                 className={cx('zc-theme-switcher__card', checked && 'zc-is-selected')}
-                onClick={() => setThemePreference({ theme: palette, polarity: choice })}
+                onClick={(event) => onPick(event, palette, choice)}
                 onKeyDown={(event) => onKeyDown(event, row, col)}
               >
                 <span className="zc-theme-switcher__preview">

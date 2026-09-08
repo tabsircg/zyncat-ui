@@ -5,7 +5,7 @@ import './theme-switcher.css';
 import { useState, type CSSProperties } from 'react';
 
 import type { DisableableAnimation } from '../../../motion/timing';
-import { useTheme } from '../../../tokens/theme-sync';
+import { useTheme, useThemeTarget } from '../../../tokens/theme-sync';
 import { cx } from '../../internal/utils/cx';
 import { Button, type ButtonProps } from '../../primitives/button/Button';
 import { Popover } from '../popover/Popover';
@@ -43,7 +43,8 @@ export function ThemeSwitcher({
   htmlProps,
 }: ThemeSwitcherProps) {
   const [open, setOpen] = useState(false);
-  const { theme, polarity, themeNames } = useTheme();
+  const { themeNames } = useTheme();
+  const { theme, polarity } = useThemeTarget();
 
   return (
     <Popover

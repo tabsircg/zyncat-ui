@@ -28,8 +28,14 @@ export type ThemeBootConfig = { key: string; declared: ThemeState };
 export interface ThemeChange {
   current: ThemeState;
   next: ThemeState;
+  origin?: readonly [number, number];
   commit(): void;
   revert(): void;
+}
+
+export interface ThemePreferenceOptions {
+  /** Viewport point the change spreads from - the centre of the pressed control. */
+  origin?: readonly [number, number];
 }
 
 export type ThemeTransitionRunner = (change: ThemeChange) => void;
@@ -88,7 +94,12 @@ const store = sharedSlot('tokens.theme@1', () => ({
   attached: false,
   listeners: new Set<() => void>(),
   transition: null as ThemeTransitionRunner | null,
+  pending: null as ThemeState | null,
 }));
+
+const notify = () => {
+  for (const listener of store.listeners) listener();
+};
 
 export function configureThemeStore(json: string): void {
   if (json === store.json) return;
@@ -100,10 +111,11 @@ export function configureThemeStore(json: string): void {
 export function applyTheme(stored?: unknown): void {
   const { themes, themeNames } = store.config.declared;
   store.state = { ...bootTheme(store.config, stored), themes, themeNames };
-  for (const listener of store.listeners) listener();
+  notify();
 }
 
 export const getThemeSnapshot = (): ThemeState => store.state ?? store.config.declared;
+export const getThemeTargetSnapshot = (): ThemeState => store.pending ?? getThemeSnapshot();
 export const getServerThemeSnapshot = (): ThemeState => store.config.declared;
 
 export function setThemeTransition(runner: ThemeTransitionRunner | null): void {
@@ -120,19 +132,40 @@ const persistTheme = (choice: Pick<ThemeState, 'theme' | 'polarity'>) => {
   applyTheme(choice);
 };
 
-export function setThemePreference(patch: Partial<Pick<ThemeState, 'theme' | 'polarity'>>): void {
+const settlePending = (choice: Pick<ThemeState, 'theme' | 'polarity'>) => {
+  if (store.pending && store.pending.theme === choice.theme && store.pending.polarity === choice.polarity) {
+    store.pending = null;
+  }
+};
+
+export function setThemePreference(
+  patch: Partial<Pick<ThemeState, 'theme' | 'polarity'>>,
+  options: ThemePreferenceOptions = {},
+): void {
   const current = getThemeSnapshot();
-  const theme = patch.theme && current.themes.includes(patch.theme) ? patch.theme : current.theme;
-  const polarity = patch.polarity ?? current.polarity;
+  const base = store.pending ?? current;
+  const theme = patch.theme && current.themes.includes(patch.theme) ? patch.theme : base.theme;
+  const polarity = patch.polarity ?? base.polarity;
+  const choice = { theme, polarity };
   if (!store.transition) {
-    persistTheme({ theme, polarity });
+    persistTheme(choice);
     return;
   }
+  const next: ThemeState = { ...current, theme, polarity, resolvedPolarity: resolvePolarity(polarity) };
+  store.pending = next;
+  notify();
   store.transition({
     current,
-    next: { ...current, theme, polarity, resolvedPolarity: resolvePolarity(polarity) },
-    commit: () => persistTheme({ theme, polarity }),
-    revert: () => persistTheme({ theme: current.theme, polarity: current.polarity }),
+    next,
+    origin: options.origin,
+    commit: () => {
+      settlePending(choice);
+      persistTheme(choice);
+    },
+    revert: () => {
+      store.pending = null;
+      notify();
+    },
   });
 }
 

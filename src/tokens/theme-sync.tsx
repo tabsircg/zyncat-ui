@@ -16,6 +16,10 @@ export function useTheme(): store.ThemeControls {
   return useMemo(() => ({ ...state, setTheme, setPolarity }), [state]);
 }
 
+export function useThemeTarget(): store.ThemeState {
+  return useSyncExternalStore(store.subscribeTheme, store.getThemeTargetSnapshot, store.getServerThemeSnapshot);
+}
+
 export function ThemeSync({
   css,
   config,
