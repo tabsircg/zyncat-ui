@@ -1,4 +1,4 @@
-import { clamp, TAU, type EffectFactory } from './scene';
+import { clamp, sample, TAU, type EffectFactory } from './scene';
 
 const DURATION = { polarity: 2200, palette: 800 };
 const PLANS = {
@@ -21,7 +21,7 @@ const ZONE_JITTER = 0.6;
 const SECOND_PICK_CHANCE = 0.3;
 const RUN_CURVE = 1.4;
 const ROUNDING = 0.6;
-const EMPTY_CLIP = 'polygon(0 0,0 0,0 0)';
+const SPLAT_SAMPLE_MS = 32;
 
 const f = (v: number) => Math.round(v * 10) / 10;
 
@@ -247,9 +247,7 @@ export const paint: EffectFactory = (scene) => {
   const shape = (p: number) => {
     let d = '';
     for (const s of splats) {
-      const u = (p - s.t0) / L;
-      if (u <= 0) continue;
-      const uu = Math.min(1, u);
+      const uu = clamp((p - s.t0) / L, 0, 1);
       let sc: number;
       let v = 0;
       let mix = 0;
@@ -273,29 +271,26 @@ export const paint: EffectFactory = (scene) => {
       let b = `M${f(x + (mm * s.x0 + mix * s.xr0) * k)} ${f(y + (mm * s.y0 + mix * s.yr0) * k)}`;
       for (let o = 0; o < g.length; o += 6) b += `C${X(o)} ${Y(o + 1)} ${X(o + 2)} ${Y(o + 3)} ${X(o + 4)} ${Y(o + 5)}`;
       d += b + 'Z';
-      if (v > 0) {
-        for (const dr of s.drops) {
-          const w = Math.max(0, Math.min(1, (v - dr.delay) / (1 - dr.delay)));
-          if (w <= 0) continue;
-          const e = 1 - Math.pow(1 - w, 3);
-          const dist = s.R * (sc * 0.9 * (1 - e) + dr.d * e);
-          const rr = s.R * dr.r * Math.min(1, w * 4);
-          const rx = rr * (1 + 1.8 * (1 - e));
-          const ca = Math.cos(dr.a);
-          const sa = Math.sin(dr.a);
-          const px = x + ca * dist;
-          const py = y + sa * dist;
-          const x1 = f(px - ca * rx);
-          const y1 = f(py - sa * rx);
-          const x2 = f(px + ca * rx);
-          const y2 = f(py + sa * rx);
-          const deg = f((dr.a * 180) / Math.PI);
-          d += `M${x1} ${y1}A${f(rx)} ${f(rr)} ${deg} 1 1 ${x2} ${y2}A${f(rx)} ${f(rr)} ${deg} 1 1 ${x1} ${y1}Z`;
-        }
+      for (const dr of s.drops) {
+        const w = clamp((v - dr.delay) / (1 - dr.delay), 0, 1);
+        const e = 1 - Math.pow(1 - w, 3);
+        const dist = s.R * (sc * 0.9 * (1 - e) + dr.d * e);
+        const rr = s.R * dr.r * Math.min(1, w * 4);
+        const rx = rr * (1 + 1.8 * (1 - e));
+        const ca = Math.cos(dr.a);
+        const sa = Math.sin(dr.a);
+        const px = x + ca * dist;
+        const py = y + sa * dist;
+        const x1 = f(px - ca * rx);
+        const y1 = f(py - sa * rx);
+        const x2 = f(px + ca * rx);
+        const y2 = f(py + sa * rx);
+        const deg = f((dr.a * 180) / Math.PI);
+        d += `M${x1} ${y1}A${f(rx)} ${f(rr)} ${deg} 1 1 ${x2} ${y2}A${f(rx)} ${f(rr)} ${deg} 1 1 ${x1} ${y1}Z`;
       }
     }
-    return d ? `path("${d}")` : EMPTY_CLIP;
+    return `path("${d}")`;
   };
 
-  return { duration: DURATION[kind], frame: (p) => ({ clip: shape(p) }) };
+  return { duration: DURATION[kind], clips: sample(DURATION[kind], SPLAT_SAMPLE_MS, shape) };
 };

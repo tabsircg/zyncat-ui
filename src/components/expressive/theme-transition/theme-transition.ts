@@ -1,21 +1,23 @@
 import './theme-transition.css';
 
-import { loop, type Playback } from '../../../engine';
+import { clock, loop } from '../../../engine';
 import { UIMotion } from '../../../tokens/motion-tokens';
-import type { ThemeChange, ThemeState } from '../../../tokens/theme-store';
-import { clamp, type Effect, type EffectFactory, type Frame, type RGB, type Scene, type SweepDirection } from './scene';
+import { DEFAULT_THEME, getThemeSnapshot, type ThemeChange, type ThemeState } from '../../../tokens/theme-store';
+import { type BloomShape, type EffectFactory, type Scene, type SweepDirection } from './scene';
 
-export type ThemeTransitionEffect = 'tide' | 'bloom' | 'paint';
+export type ThemeTransitionEffect = 'tide' | 'paint' | `bloom-${BloomShape}`;
 
 export interface ThemeTransitionOptions {
-  /** `tide` sweeps a lit wave across the page, `bloom` grows a honeycomb from the pressed control, `paint` throws splats that run together. */
+  /**
+   * `tide` sweeps a wave across the page; `paint` throws splats that run together; `bloom-circle`,
+   * `bloom-hexagon`, `bloom-star`, `bloom-petal` and `bloom-blob` grow that outline from the
+   * pressed control.
+   */
   effect: ThemeTransitionEffect;
   /** Divides the effect's own duration - `2` runs it twice as fast. @default 1 */
   speed?: number;
-  /** Scales the wave, the tilt of the scales and the size of the splats. @default 1 */
+  /** Scales the wave, the relief and spin of the bloom outline and the size of the splats. @default 1 */
   intensity?: number;
-  /** Light the leading edge. @default true */
-  glow?: boolean;
 }
 
 export type ThemeTransitionSetting = ThemeTransitionEffect | ThemeTransitionOptions;
@@ -24,13 +26,6 @@ interface Settings {
   effect: ThemeTransitionEffect;
   speed: number;
   intensity: number;
-  glow: boolean;
-}
-
-interface Palette {
-  background: RGB;
-  ink: RGB;
-  accent: RGB;
 }
 
 interface Run {
@@ -40,31 +35,55 @@ interface Run {
   finish(): void;
 }
 
-const ACTIVE = 'data-theme-transition';
+interface Plan {
+  change: ThemeChange;
+  current: ThemeState;
+  settings: Settings;
+  factory: EffectFactory;
+}
+
+interface Overlay {
+  root: HTMLElement;
+  inner: HTMLElement;
+  left: number;
+  top: number;
+  scrollX: number;
+  scrollY: number;
+}
+
 const SETTLING = 'data-theme-settling';
 const LEAD = '[data-theme-lead]';
-const LEAD_NAME = 'zc-theme-lead-';
-const NEW_ROOT = '::view-transition-new(root)';
-const MAX_PIXEL_RATIO = 1.5;
 const ORIGIN_ABOVE_BOTTOM = 48;
-const HALO_SHIFT = 4096;
-const GLOW = {
-  polarity: { halo: 28, blur: 12, edge: 1.5, haloAlpha: 0.55, edgeAlpha: 0.95 },
-  palette: { halo: 14, blur: 8, edge: 1, haloAlpha: 0.22, edgeAlpha: 0.6 },
+const NEVER_CLONED = 'script, style, link, template, noscript, .zc-theme-transition';
+const EMBEDS = 'iframe, video, object, embed';
+const BLOOM_SHAPES: Partial<Record<ThemeTransitionEffect, BloomShape>> = {
+  'bloom-circle': 'circle',
+  'bloom-hexagon': 'hexagon',
+  'bloom-star': 'star',
+  'bloom-petal': 'petal',
+  'bloom-blob': 'blob',
 };
-
+const loadBloom = () => import('./bloom').then((module) => module.bloom);
 const LOADERS: Record<ThemeTransitionEffect, () => Promise<EffectFactory>> = {
   tide: () => import('./tide').then((module) => module.tide),
-  bloom: () => import('./bloom').then((module) => module.bloom),
   paint: () => import('./paint').then((module) => module.paint),
+  'bloom-circle': loadBloom,
+  'bloom-hexagon': loadBloom,
+  'bloom-star': loadBloom,
+  'bloom-petal': loadBloom,
+  'bloom-blob': loadBloom,
 };
-const loaded = new Map<ThemeTransitionEffect, Promise<EffectFactory>>();
+const loading = new Map<ThemeTransitionEffect, Promise<EffectFactory>>();
+const ready = new Map<ThemeTransitionEffect, EffectFactory>();
 
 const loadEffect = (effect: ThemeTransitionEffect) => {
-  let pending = loaded.get(effect);
+  let pending = loading.get(effect);
   if (!pending) {
-    pending = LOADERS[effect]();
-    loaded.set(effect, pending);
+    pending = LOADERS[effect]().then((factory) => {
+      ready.set(effect, factory);
+      return factory;
+    });
+    loading.set(effect, pending);
   }
   return pending;
 };
@@ -77,7 +96,6 @@ const resolveSettings = (setting: ThemeTransitionSetting): Settings => {
     effect,
     speed: Number.isFinite(speed) && speed > 0 ? speed : 1,
     intensity: Number.isFinite(Number(options.intensity)) ? Number(options.intensity) : 1,
-    glow: options.glow !== false,
   };
 };
 
@@ -85,33 +103,38 @@ export function preloadThemeTransition(setting: ThemeTransitionSetting): void {
   void loadEffect(resolveSettings(setting).effect);
 }
 
-let sampler: CanvasRenderingContext2D | null = null;
+const ACCENT_RAMP = 'var(--accent)';
 
-const rgbOf = (color: string): RGB => {
-  sampler ??= document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-  if (!sampler) return [0, 0, 0];
-  sampler.clearRect(0, 0, 1, 1);
-  sampler.fillStyle = 'black';
-  sampler.fillStyle = color;
-  sampler.fillRect(0, 0, 1, 1);
-  const data = sampler.getImageData(0, 0, 1, 1).data;
-  return [data[0], data[1], data[2]];
+type ThemeRoot = Pick<ThemeState, 'theme' | 'resolvedPolarity'>;
+
+const markThemeRoot = (element: HTMLElement, state: ThemeRoot, ramp: string | null) => {
+  element.setAttribute('data-theme', state.theme);
+  element.setAttribute('data-polarity', state.resolvedPolarity);
+  if (ramp) element.style.setProperty('--neutral', ramp);
 };
 
-const readPalette = (): Palette => {
+const probeOf = (state: ThemeRoot, ramp: string | null): HTMLSpanElement => {
   const probe = document.body.appendChild(document.createElement('span'));
   probe.className = 'zc-theme-transition__probe';
-  const style = getComputedStyle(probe);
-  const palette = {
-    background: rgbOf(style.color),
-    ink: rgbOf(style.backgroundColor),
-    accent: rgbOf(style.borderTopColor),
-  };
-  probe.remove();
-  return palette;
+  markThemeRoot(probe, state, ramp);
+  return probe;
 };
 
-const originOf = (width: number, height: number): [number, number] => {
+const neutralOf = (element: Element) => getComputedStyle(element).getPropertyValue('--neutral').trim();
+
+const rampOf = (next: ThemeState): string | null => {
+  const target = probeOf(next, null);
+  const pinned = neutralOf(target) !== neutralOf(document.documentElement);
+  target.remove();
+  if (pinned) return null;
+  const base = probeOf({ theme: DEFAULT_THEME, resolvedPolarity: next.resolvedPolarity }, null);
+  const tied = neutralOf(base) === getComputedStyle(base).getPropertyValue('--accent').trim();
+  base.remove();
+  return tied ? ACCENT_RAMP : null;
+};
+
+const originOf = (change: ThemeChange, width: number, height: number): [number, number] => {
+  if (change.origin) return [change.origin[0], change.origin[1]];
   const focused = document.activeElement;
   if (focused instanceof HTMLElement && focused.closest(LEAD)) {
     const box = focused.getBoundingClientRect();
@@ -127,169 +150,256 @@ const directionOf = (current: ThemeState, next: ThemeState): SweepDirection => {
   return next.themes.indexOf(next.theme) > current.themes.indexOf(current.theme) ? 'right' : 'left';
 };
 
-const createCanvas = (into: string, width: number, height: number) => {
-  const canvas = document.createElement('canvas');
-  canvas.className = 'zc-theme-transition';
-  canvas.setAttribute('data-into', into);
-  canvas.setAttribute('aria-hidden', 'true');
-  const ratio = Math.min(devicePixelRatio || 1, MAX_PIXEL_RATIO);
-  canvas.width = Math.round(width * ratio);
-  canvas.height = Math.round(height * ratio);
-  const context = canvas.getContext('2d');
-  context?.setTransform(ratio, 0, 0, ratio, 0, 0);
-  return { canvas, context, ratio };
+const mirrorState = (live: Element, copy: Element) => {
+  if (live instanceof HTMLInputElement) {
+    const input = copy as HTMLInputElement;
+    input.value = live.value;
+    input.checked = live.checked;
+    return;
+  }
+  if (live instanceof HTMLTextAreaElement) {
+    (copy as HTMLTextAreaElement).value = live.value;
+    return;
+  }
+  if (live instanceof HTMLSelectElement) {
+    (copy as HTMLSelectElement).selectedIndex = live.selectedIndex;
+    return;
+  }
+  if (live instanceof HTMLCanvasElement) {
+    try {
+      (copy as HTMLCanvasElement).getContext('2d')?.drawImage(live, 0, 0);
+    } catch {}
+    return;
+  }
+  if (live.matches(EMBEDS)) {
+    const box = live.getBoundingClientRect();
+    const stand = document.createElement('div');
+    stand.className = copy.className;
+    stand.setAttribute(
+      'style',
+      `${copy.getAttribute('style') ?? ''};display:inline-block;width:${box.width}px;height:${box.height}px`,
+    );
+    copy.replaceWith(stand);
+  }
 };
 
-interface Brush {
-  context: CanvasRenderingContext2D;
-  ratio: number;
-  color: string;
-  glow: boolean;
-}
+const RESERVED_KEYFRAME_KEYS = new Set(['offset', 'computedOffset', 'easing', 'composite']);
+const THEMED_PROPERTY = /color|background|shadow|fill|stroke|outline|border-image|caret/;
+const KEYFRAME_ALIASES: Record<string, string> = { cssOffset: 'offset', cssFloat: 'float' };
 
-const paintFrame = (brush: Brush, scene: Scene, frame: Frame, progress: number) => {
-  const { context: ctx, ratio, color } = brush;
-  ctx.clearRect(0, 0, scene.width, scene.height);
-  frame.draw?.(ctx);
-  if (!brush.glow || !frame.crest) return;
-  const q = Math.sqrt(Math.sin(Math.PI * progress));
-  const G = GLOW[scene.kind];
-  const haloWidth = scene.kind === 'polarity' ? G.halo * scene.intensity : G.halo;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.strokeStyle = color;
-  const halo = G.haloAlpha * q * (frame.halo ?? 1);
-  if (halo > 0) {
-    ctx.save();
-    ctx.globalAlpha = halo;
-    ctx.lineWidth = haloWidth;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = G.blur * 2 * ratio;
-    ctx.shadowOffsetY = HALO_SHIFT * ratio;
-    ctx.translate(0, -HALO_SHIFT);
-    ctx.stroke(frame.crest);
-    ctx.restore();
+const propertyOf = (key: string) =>
+  KEYFRAME_ALIASES[key] ?? (key.startsWith('--') ? key : key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`));
+
+const twinKey = (index: number, animation: CSSAnimation, pseudo: string | null) =>
+  `${index}|${animation.animationName}|${pseudo ?? ''}`;
+
+const unthemedKeyframes = (effect: KeyframeEffect): Keyframe[] | null => {
+  let carries = false;
+  const frames = effect.getKeyframes().map((keyframe) => {
+    const frame: Keyframe = { offset: keyframe.computedOffset, easing: keyframe.easing, composite: keyframe.composite };
+    for (const key of Object.keys(keyframe)) {
+      if (RESERVED_KEYFRAME_KEYS.has(key) || THEMED_PROPERTY.test(propertyOf(key))) continue;
+      frame[key] = keyframe[key];
+      carries = true;
+    }
+    return frame;
+  });
+  return carries ? frames : null;
+};
+
+const replicate = (target: Element, effect: KeyframeEffect): Animation | null => {
+  const frames = unthemedKeyframes(effect);
+  if (!frames) return null;
+  const { duration } = effect.getComputedTiming();
+  return target.animate(frames, {
+    ...effect.getTiming(),
+    duration: typeof duration === 'number' ? duration : 0,
+    composite: effect.composite,
+    pseudoElement: effect.pseudoElement,
+  });
+};
+
+const pace = (twin: Animation, lead: Animation) => {
+  if (lead.currentTime === null) return;
+  twin.playbackRate = lead.playbackRate;
+  twin.currentTime = lead.currentTime;
+  if (lead.playState === 'paused') twin.pause();
+};
+
+const finishable = (animation: Animation) => {
+  const rate = animation.playbackRate;
+  return rate < 0 || (rate > 0 && animation.effect?.getComputedTiming().endTime !== Infinity);
+};
+
+const syncAnimations = (live: NodeListOf<Element>, copy: NodeListOf<Element>) => {
+  const liveIndex = new Map<Element, number>();
+  const copyIndex = new Map<Element, number>();
+  live.forEach((element, index) => liveIndex.set(element, index));
+  copy.forEach((element, index) => copyIndex.set(element, index));
+  const animations = document.getAnimations();
+  const twins = new Map<string, CSSAnimation>();
+  const orphans = new Set<CSSAnimation>();
+  for (const animation of animations) {
+    const effect = animation.effect;
+    if (!(animation instanceof CSSAnimation) || !(effect instanceof KeyframeEffect) || !effect.target) continue;
+    const index = copyIndex.get(effect.target);
+    if (index === undefined) continue;
+    twins.set(twinKey(index, animation, effect.pseudoElement), animation);
+    orphans.add(animation);
   }
-  const edge = G.edgeAlpha * q * (frame.edge ?? 1);
-  if (edge > 0) {
-    ctx.globalAlpha = edge;
-    ctx.lineWidth = G.edge;
-    ctx.stroke(frame.crest);
-    ctx.globalAlpha = 1;
+  for (const animation of animations) {
+    const effect = animation.effect;
+    if (!(effect instanceof KeyframeEffect) || !effect.target) continue;
+    const index = liveIndex.get(effect.target);
+    if (index === undefined) continue;
+    if (animation instanceof CSSAnimation) {
+      const twin = twins.get(twinKey(index, animation, effect.pseudoElement));
+      if (!twin) continue;
+      orphans.delete(twin);
+      pace(twin, animation);
+    } else {
+      const replica = replicate(copy[index], effect);
+      if (replica) pace(replica, animation);
+    }
   }
+  for (const orphan of orphans) if (finishable(orphan)) orphan.finish();
+};
+
+const buildOverlay = (next: ThemeState, clip: string, ramp: string | null): Overlay => {
+  const body = document.body;
+  const inner = body.cloneNode(true) as HTMLElement;
+  const live = body.querySelectorAll('*');
+  const copy = inner.querySelectorAll('*');
+  const scrolled: [Element, number, number][] = [];
+  for (let i = 0; i < live.length; i++) {
+    const source = live[i];
+    if (source.scrollTop || source.scrollLeft) scrolled.push([copy[i], source.scrollTop, source.scrollLeft]);
+    mirrorState(source, copy[i]);
+  }
+  for (const dead of inner.querySelectorAll(NEVER_CLONED)) dead.remove();
+  inner.classList.add('zc-theme-transition__inner');
+  const box = body.getBoundingClientRect();
+  inner.style.cssText += `;position:absolute;left:${box.left}px;top:${box.top}px;width:${box.width}px;margin:0`;
+  const root = document.createElement('div');
+  root.className = 'zc-theme-transition';
+  markThemeRoot(root, next, ramp);
+  root.setAttribute('aria-hidden', 'true');
+  root.setAttribute('inert', '');
+  root.style.clipPath = clip;
+  root.appendChild(inner);
+  body.appendChild(root);
+  syncAnimations(live, copy);
+  for (const [element, top, left] of scrolled) {
+    element.scrollTop = top;
+    element.scrollLeft = left;
+  }
+  return { root, inner, left: box.left, top: box.top, scrollX: window.scrollX, scrollY: window.scrollY };
 };
 
 let active: Run | null = null;
 
-const start = (change: ThemeChange, settings: Settings): Run => {
-  const { current, next } = change;
+const build = (run: Run, { change, current, settings, factory }: Plan) => {
+  const { next } = change;
   const root = document.documentElement;
   const width = root.clientWidth;
   const height = root.clientHeight;
-  const [originX, originY] = originOf(width, height);
-  const from = readPalette();
-  const kind = current.resolvedPolarity === next.resolvedPolarity ? 'palette' : 'polarity';
-  const into = kind === 'palette' ? 'palette' : next.resolvedPolarity;
-  const leads = [...document.querySelectorAll<HTMLElement>(LEAD)];
-  leads.forEach((lead, index) => lead.style.setProperty('view-transition-name', LEAD_NAME + index));
-  root.setAttribute(ACTIVE, settings.effect);
-  const { canvas, context, ratio } = createCanvas(into, width, height);
+  const [originX, originY] = originOf(change, width, height);
+  const ramp = rampOf(next);
+  const scene: Scene = {
+    width,
+    height,
+    originX,
+    originY,
+    kind: current.resolvedPolarity === next.resolvedPolarity ? 'palette' : 'polarity',
+    direction: directionOf(current, next),
+    intensity: settings.intensity,
+    shape: BLOOM_SHAPES[settings.effect] ?? 'circle',
+  };
+  const effect = factory(scene);
+  const total = effect.duration / settings.speed;
+  const overlay = buildOverlay(next, effect.clips[0], ramp);
+  const reveal = overlay.root.animate(
+    effect.clips.map((clipPath) => ({ clipPath })),
+    { duration: total, easing: 'linear', fill: 'both' },
+  );
 
-  let factory: EffectFactory | null = null;
-  let effect: Effect | null = null;
-  let scene: Scene | null = null;
-  let brush: Brush | null = null;
-  let clip: Animation | null = null;
-  let playback: Playback | null = null;
   let done = false;
-  let time = 0;
-  let elapsed = 0;
+  const rateOf = () => run.direction / clock.scale;
+  reveal.playbackRate = rateOf();
 
-  const teardown = () => {
-    if (done) return;
-    done = true;
-    playback?.stop();
-    clip?.cancel();
-    canvas.remove();
-    for (const lead of leads) lead.style.removeProperty('view-transition-name');
-    root.removeAttribute(ACTIVE);
-    root.removeAttribute(SETTLING);
+  const follow = () => {
+    overlay.inner.style.left = `${overlay.left + overlay.scrollX - window.scrollX}px`;
+    overlay.inner.style.top = `${overlay.top + overlay.scrollY - window.scrollY}px`;
+  };
+  const resize = () => {
+    const box = document.body.getBoundingClientRect();
+    overlay.left = box.left;
+    overlay.top = box.top;
+    overlay.scrollX = window.scrollX;
+    overlay.scrollY = window.scrollY;
+    overlay.inner.style.width = `${box.width}px`;
+    follow();
+  };
+  const onVisibility = () => {
+    if (document.visibilityState === 'hidden') finish();
+  };
+
+  const release = () => {
+    window.removeEventListener('scroll', follow);
+    window.removeEventListener('resize', resize);
+    document.removeEventListener('visibilitychange', onVisibility);
+    overlay.root.remove();
     if (active === run) active = null;
   };
 
-  const transition = document.startViewTransition(async () => {
+  const finish = () => {
+    if (done) return;
+    done = true;
+    playback.stop();
+    reveal.cancel();
+    overlay.root.style.clipPath = 'none';
     root.setAttribute(SETTLING, '');
     change.commit();
-    document.body.appendChild(canvas);
-    factory = await loadEffect(settings.effect);
+    void document.body.offsetWidth;
+    root.removeAttribute(SETTLING);
+    release();
+  };
+
+  const cancel = () => {
+    if (done) return;
+    done = true;
+    playback.stop();
+    reveal.cancel();
+    release();
+    change.revert();
+  };
+
+  const playback = loop(() => {
+    const rate = rateOf();
+    if (reveal.playbackRate !== rate) reveal.playbackRate = rate;
   });
 
-  const finish = () => {
-    teardown();
-    transition.skipTransition();
-  };
+  reveal.finished.then(
+    () => (run.direction > 0 ? finish() : cancel()),
+    () => {},
+  );
+  run.finish = finish;
 
-  const revert = () => {
-    playback?.stop();
-    change.revert();
-    root.getBoundingClientRect();
-    finish();
-  };
+  window.addEventListener('scroll', follow, { passive: true });
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', onVisibility);
+};
 
-  const render = () => {
-    if (!effect || !scene || !clip) return;
-    const total = effect.duration / settings.speed;
-    const progress = clamp(time / total, 0, 1);
-    const frame = effect.frame(progress, elapsed);
-    (clip.effect as KeyframeEffect).setKeyframes([{ clipPath: frame.clip }, { clipPath: frame.clip }]);
-    if (brush) paintFrame(brush, scene, frame, progress);
-    if (run.direction > 0 && time >= total) finish();
-    else if (run.direction < 0 && time <= 0) revert();
-  };
-
-  const run: Run = { current, next, direction: 1, finish };
-
-  transition.ready
-    .then(() => {
-      if (done || !factory) return;
-      const to = readPalette();
-      scene = {
-        width,
-        height,
-        originX,
-        originY,
-        kind,
-        direction: directionOf(current, next),
-        intensity: settings.intensity,
-        from: from.background,
-        to: to.background,
-        ink: to.ink,
-        accent: to.accent,
-      };
-      effect = factory(scene);
-      if (context) brush = { context, ratio, color: getComputedStyle(canvas).color, glow: settings.glow };
-      const total = effect.duration / settings.speed;
-      const first = effect.frame(0, 0).clip;
-      clip = root.animate([{ clipPath: first }, { clipPath: first }], {
-        pseudoElement: NEW_ROOT,
-        duration: 1,
-        fill: 'both',
-      });
-      clip.pause();
-      playback = loop((_, dt) => {
-        elapsed += dt;
-        time = clamp(time + dt * run.direction, 0, total);
-        render();
-      });
-    })
-    .catch(teardown);
-  void transition.finished.then(teardown, teardown);
-
+const start = (plan: Plan): Run => {
+  const run: Run = { current: plan.current, next: plan.change.next, direction: 1, finish: () => {} };
+  queueMicrotask(() => {
+    if (active === run) build(run, plan);
+  });
   return run;
 };
 
 export function runThemeTransition(change: ThemeChange, setting: ThemeTransitionSetting): void {
-  const { current, next } = change;
+  const { next } = change;
   if (active) {
     if (sameState(active.next, next)) {
       active.direction = 1;
@@ -301,9 +411,13 @@ export function runThemeTransition(change: ThemeChange, setting: ThemeTransition
     }
     active.finish();
   }
-  if (sameState(current, next) || UIMotion.reduced || !document.startViewTransition) {
+  const current = getThemeSnapshot();
+  const settings = resolveSettings(setting);
+  const factory = ready.get(settings.effect);
+  if (!factory) void loadEffect(settings.effect);
+  if (!factory || sameState(current, next) || UIMotion.reduced || document.visibilityState === 'hidden') {
     change.commit();
     return;
   }
-  active = start(change, resolveSettings(setting));
+  active = start({ change, current, settings, factory });
 }

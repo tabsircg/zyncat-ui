@@ -2,32 +2,32 @@
 
 @layer zyncat.components {
   .zc-theme-transition {
-    /* The crest and its halo on a flip into dark. */
-    --theme-transition-glow-dark: oklch(0.84 0.14 72);
-    /* The crest and its halo on a flip into light. */
-    --theme-transition-glow-light: oklch(0.93 0.09 88);
-    /* The crest on a palette change; the arriving accent. */
-    --theme-transition-glow-palette: var(--accent);
-    /* The z-index the crest paints at; it has to clear every panel it lights. */
+    /* The z-index the arriving page paints at; it has to clear every panel it covers. */
     --theme-transition-layer: var(--layer-tooltip);
 
     position: fixed;
     inset: 0;
     z-index: var(--theme-transition-layer);
-    display: block;
-    width: 100%;
-    height: 100%;
     pointer-events: none;
-    view-transition-name: zc-theme-transition;
   }
-  .zc-theme-transition[data-into='dark'] {
-    color: var(--theme-transition-glow-dark);
+
+  .zc-theme-transition {
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--text-body);
+    background: var(--bg-app);
+    transition: none;
+    will-change: clip-path;
   }
-  .zc-theme-transition[data-into='light'] {
-    color: var(--theme-transition-glow-light);
+  .zc-theme-transition__inner {
+    box-sizing: border-box;
   }
-  .zc-theme-transition[data-into='palette'] {
-    color: var(--theme-transition-glow-palette);
+  .zc-theme-transition *,
+  .zc-theme-transition *::before,
+  .zc-theme-transition *::after {
+    transition: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   .zc-theme-transition__probe {
@@ -44,27 +44,5 @@
   [data-theme-settling] *::before,
   [data-theme-settling] *::after {
     transition: none !important;
-  }
-
-  html[data-theme-transition]::view-transition {
-    pointer-events: none;
-  }
-  html[data-theme-transition]::view-transition-group(*) {
-    animation-duration: var(--duration-slower);
-  }
-  html[data-theme-transition]::view-transition-group(root),
-  html[data-theme-transition]::view-transition-image-pair(root),
-  html[data-theme-transition]::view-transition-old(root),
-  html[data-theme-transition]::view-transition-new(root),
-  html[data-theme-transition]::view-transition-group(zc-theme-transition),
-  html[data-theme-transition]::view-transition-new(zc-theme-transition) {
-    animation: none;
-  }
-  html[data-theme-transition]::view-transition-old(root),
-  html[data-theme-transition]::view-transition-new(root) {
-    mix-blend-mode: normal;
-  }
-  html[data-theme-transition]::view-transition-new(root) {
-    clip-path: polygon(0 0, 0 0, 0 0);
   }
 }

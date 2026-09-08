@@ -30,10 +30,11 @@ export interface ZyncatThemeProps {
    *  Off for a second `ZyncatTheme` whose palettes serve one subtree. @default true */
   boot?: boolean;
   /**
-   * Animate every theme change as a full-page reveal: `tide` sweeps a lit wave across the page,
-   * `bloom` grows a honeycomb from the control that was pressed, `paint` throws splats that run
-   * together. An object adds `speed`, `intensity` and `glow`. Runs on the View Transitions API and
-   * falls back to the instant swap without it or under reduced motion; the code loads on demand.
+   * Animate every theme change as a full-page reveal: `tide` sweeps a wave across the page,
+   * `paint` throws splats that run together, and `bloom-circle`, `bloom-hexagon`, `bloom-star`,
+   * `bloom-petal` or `bloom-blob` grows that outline from the control that was pressed. An object
+   * adds `speed` and `intensity`. The arriving page is a live clone revealed by a clip; under
+   * reduced motion the swap is instant. The code loads on demand.
    */
   transition?: ThemeTransitionSetting;
 }
