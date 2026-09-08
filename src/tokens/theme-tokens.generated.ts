@@ -296,21 +296,9 @@ export interface OdometerTokens {
   weight?: string | number;
 }
 
-/** The `--theme-transition-glow-*` knobs. */
-export interface ThemeTransitionGlowTokens {
-  /** `--theme-transition-glow-dark` - The crest and its halo on a flip into dark. Default: `oklch(0.84 0.14 72)`. */
-  dark?: string | number;
-  /** `--theme-transition-glow-light` - The crest and its halo on a flip into light. Default: `oklch(0.93 0.09 88)`. */
-  light?: string | number;
-  /** `--theme-transition-glow-palette` - The crest on a palette change; the arriving accent. Default: `var(--accent)`. */
-  palette?: string | number;
-}
-
 /** The scoped properties ThemeTransition publishes as its theming contract. */
 export interface ThemeTransitionTokens {
-  /** The `--theme-transition-glow-*` knobs. */
-  glow?: ThemeTransitionGlowTokens;
-  /** `--theme-transition-layer` - The z-index the crest paints at; it has to clear every panel it lights. Default: `var(--layer-tooltip)`. */
+  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-tooltip)`. */
   layer?: string | number;
 }
 
@@ -439,31 +427,31 @@ export interface TokenProperties {
   '--font-body'?: string | number;
   /** `--font-code` - The code face - --type-code follows. Default: `'Geist Mono', ui-monospace, 'SF Mono', 'Menlo', monospace`. */
   '--font-code'?: string | number;
-  /** `--gray-0` - The top of the ramp, not pure white: it carries --neutral like every rung below it, so a project that warms the neutral warms the canvas and the controls together. Chroma stops at 0.002 because a warm hue leaves sRGB above that at this lightness. Default: `oklch(from var(--neutral) 0.995 0.002 h)`. */
+  /** `--gray-0` - The top of the ramp, not pure white: it carries --neutral like every rung below it, so a project that warms the neutral warms the canvas and the controls together. Every theme root derives its own rungs, so a subtree that repoints --neutral re-tints them. Chroma stops at 0.002 because a warm hue leaves sRGB above that at this lightness. Default: `oklch(from var(--neutral) 0.995 0.002 h)`. Re-derived on every theme root. */
   '--gray-0'?: string | number;
-  /** `--gray-50`. Default: `oklch(from var(--neutral) 0.984 0.003 h)`. */
+  /** `--gray-50`. Default: `oklch(from var(--neutral) 0.984 0.003 h)`. Re-derived on every theme root. */
   '--gray-50'?: string | number;
-  /** `--gray-100`. Default: `oklch(from var(--neutral) 0.97 0.004 h)`. */
+  /** `--gray-100`. Default: `oklch(from var(--neutral) 0.97 0.004 h)`. Re-derived on every theme root. */
   '--gray-100'?: string | number;
-  /** `--gray-150`. Default: `oklch(from var(--neutral) 0.954 0.005 h)`. */
+  /** `--gray-150`. Default: `oklch(from var(--neutral) 0.954 0.005 h)`. Re-derived on every theme root. */
   '--gray-150'?: string | number;
-  /** `--gray-200`. Default: `oklch(from var(--neutral) 0.924 0.006 h)`. */
+  /** `--gray-200`. Default: `oklch(from var(--neutral) 0.924 0.006 h)`. Re-derived on every theme root. */
   '--gray-200'?: string | number;
-  /** `--gray-300`. Default: `oklch(from var(--neutral) 0.874 0.007 h)`. */
+  /** `--gray-300`. Default: `oklch(from var(--neutral) 0.874 0.007 h)`. Re-derived on every theme root. */
   '--gray-300'?: string | number;
-  /** `--gray-400`. Default: `oklch(from var(--neutral) 0.765 0.009 h)`. */
+  /** `--gray-400`. Default: `oklch(from var(--neutral) 0.765 0.009 h)`. Re-derived on every theme root. */
   '--gray-400'?: string | number;
-  /** `--gray-500`. Default: `oklch(from var(--neutral) 0.642 0.011 h)`. */
+  /** `--gray-500`. Default: `oklch(from var(--neutral) 0.642 0.011 h)`. Re-derived on every theme root. */
   '--gray-500'?: string | number;
-  /** `--gray-600`. Default: `oklch(from var(--neutral) 0.532 0.012 h)`. */
+  /** `--gray-600`. Default: `oklch(from var(--neutral) 0.532 0.012 h)`. Re-derived on every theme root. */
   '--gray-600'?: string | number;
-  /** `--gray-700`. Default: `oklch(from var(--neutral) 0.422 0.012 h)`. */
+  /** `--gray-700`. Default: `oklch(from var(--neutral) 0.422 0.012 h)`. Re-derived on every theme root. */
   '--gray-700'?: string | number;
-  /** `--gray-800`. Default: `oklch(from var(--neutral) 0.305 0.01 h)`. */
+  /** `--gray-800`. Default: `oklch(from var(--neutral) 0.305 0.01 h)`. Re-derived on every theme root. */
   '--gray-800'?: string | number;
-  /** `--gray-900`. Default: `oklch(from var(--neutral) 0.225 0.008 h)`. */
+  /** `--gray-900`. Default: `oklch(from var(--neutral) 0.225 0.008 h)`. Re-derived on every theme root. */
   '--gray-900'?: string | number;
-  /** `--gray-950`. Default: `oklch(from var(--neutral) 0.165 0.007 h)`. */
+  /** `--gray-950`. Default: `oklch(from var(--neutral) 0.165 0.007 h)`. Re-derived on every theme root. */
   '--gray-950'?: string | number;
   /** `--shadow-rgb` - Cool near-black shadow ink on the white canvas; the dark theme casts pure black. Default: `15 22 25`. Dark: `0 0 0`. */
   '--shadow-rgb'?: string | number;

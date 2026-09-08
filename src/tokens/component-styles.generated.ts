@@ -121,13 +121,7 @@ export interface OdometerStyle extends CSSProperties {
 
 /** Inline styles for ThemeTransition, including its `--theme-transition-*` knobs. */
 export interface ThemeTransitionStyle extends CSSProperties {
-  /** `--theme-transition-glow-dark` - The crest and its halo on a flip into dark. Default: `oklch(0.84 0.14 72)`. */
-  '--theme-transition-glow-dark'?: string | number;
-  /** `--theme-transition-glow-light` - The crest and its halo on a flip into light. Default: `oklch(0.93 0.09 88)`. */
-  '--theme-transition-glow-light'?: string | number;
-  /** `--theme-transition-glow-palette` - The crest on a palette change; the arriving accent. Default: `var(--accent)`. */
-  '--theme-transition-glow-palette'?: string | number;
-  /** `--theme-transition-layer` - The z-index the crest paints at; it has to clear every panel it lights. Default: `var(--layer-tooltip)`. */
+  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-tooltip)`. */
   '--theme-transition-layer'?: string | number;
 }
 

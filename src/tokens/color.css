@@ -5,9 +5,12 @@
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
-  :root {
+  :root,
+  [data-theme],
+  [data-polarity] {
     /* The top of the ramp, not pure white: it carries --neutral like every rung below it, so a
-       project that warms the neutral warms the canvas and the controls together. Chroma stops at
+       project that warms the neutral warms the canvas and the controls together. Every theme root
+       derives its own rungs, so a subtree that repoints --neutral re-tints them. Chroma stops at
        0.002 because a warm hue leaves sRGB above that at this lightness. */
     --gray-0: oklch(from var(--neutral) 0.995 0.002 h);
     --gray-50: oklch(from var(--neutral) 0.984 0.003 h);
