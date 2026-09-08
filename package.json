@@ -1,7 +1,7 @@
 {
   "name": "@zyncat/ui",
   "version": "0.16.0",
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.26.0",
   "description": "A React 19 design system: accessible, animated UI components built on a small, closed CSS design-token vocabulary. No Tailwind, no CSS-in-JS.",
   "keywords": [
     "react",
