@@ -16,7 +16,7 @@
     --_mdt-body-max: calc(100dvh - var(--mdt-offset) * 2 - 3.25rem);
 
     position: fixed;
-    z-index: 2147483000;
+    z-index: var(--layer-infinity, 2147483647);
     display: flex;
     color: var(--text-body, oklch(0.35 0.01 264));
     font-family: var(--font-body, ui-sans-serif, system-ui, sans-serif);

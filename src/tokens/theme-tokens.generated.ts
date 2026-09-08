@@ -298,7 +298,7 @@ export interface OdometerTokens {
 
 /** The scoped properties ThemeTransition publishes as its theming contract. */
 export interface ThemeTransitionTokens {
-  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-tooltip)`. */
+  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-infinity)`. */
   layer?: string | number;
 }
 
@@ -593,6 +593,8 @@ export interface TokenProperties {
   '--layer-toast'?: string | number;
   /** `--layer-tooltip`. Default: `1100`. */
   '--layer-tooltip'?: string | number;
+  /** `--layer-infinity` - the top of the stack - the theme reveal and the devtools panel, nothing paints above. Default: `2147483647`. */
+  '--layer-infinity'?: string | number;
   /** `--shadow-strength` - Multiplies every shadow alpha - 1 on the white canvas; black on dark needs 3-4x to read. Default: `1`. Dark: `3.5`. */
   '--shadow-strength'?: string | number;
   /** `--sheen-strength` - Multiplies every white top-light highlight - 1 on the white canvas, a fifth on dark. Default: `1`. Dark: `0.2`. */

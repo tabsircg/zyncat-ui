@@ -17,6 +17,7 @@
     --layer-overlay: 1000; /* a band - each overlay adds its stack depth, so a later one paints above an earlier one */
     --layer-toast: 1050;
     --layer-tooltip: 1100;
+    --layer-infinity: 2147483647; /* the top of the stack - the theme reveal and the devtools panel, nothing paints above */
   }
 
   :root,

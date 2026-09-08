@@ -121,7 +121,7 @@ export interface OdometerStyle extends CSSProperties {
 
 /** Inline styles for ThemeTransition, including its `--theme-transition-*` knobs. */
 export interface ThemeTransitionStyle extends CSSProperties {
-  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-tooltip)`. */
+  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-infinity)`. */
   '--theme-transition-layer'?: string | number;
 }
 
