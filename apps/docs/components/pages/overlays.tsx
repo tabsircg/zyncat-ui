@@ -9,11 +9,13 @@ import { Dropdown, type DropdownProps } from '@zyncat/ui/dropdown';
 import { EmojiPickerPanel, getEmojiUrl, loadEmojiData } from '@zyncat/ui/emoji-picker';
 import { Popover, type PopoverProps } from '@zyncat/ui/popover';
 import { Sheet, type SheetProps } from '@zyncat/ui/sheet';
+import type { ThemeTransitionEffect, ThemeTransitionOptions } from '@zyncat/ui/theme';
 import { ThemeSwitcher, type ThemeSwitcherProps } from '@zyncat/ui/theme-switcher';
 import { toast } from '@zyncat/ui/toast';
 import { Tooltip, type TooltipProps } from '@zyncat/ui/tooltip';
 
-import { KnobSegment, KnobSwitch, Playground } from '../playground';
+import { setDocsTransition, useDocsTransition } from '../DocsTheme';
+import { KnobRange, KnobSegment, KnobSwitch, Playground } from '../playground';
 
 type DialogTone = NonNullable<DialogProps['tone']>;
 type DialogSize = NonNullable<DialogProps['size']>;
@@ -605,21 +607,60 @@ export function EmojiPickerHero() {
 type ThemeSwitcherSide = NonNullable<ThemeSwitcherProps['side']>;
 type ThemeSwitcherAlign = NonNullable<ThemeSwitcherProps['align']>;
 
+const TRANSITION_EFFECTS: ThemeTransitionEffect[] = [
+  'tide',
+  'paint',
+  'bloom-circle',
+  'bloom-hexagon',
+  'bloom-star',
+  'bloom-petal',
+  'bloom-blob',
+];
+
 export function ThemeSwitcherPlayground() {
   const [side, setSide] = useState<ThemeSwitcherSide>('bottom');
   const [align, setAlign] = useState<ThemeSwitcherAlign>('end');
+  const transition = useDocsTransition();
+  const { effect, speed = 1, intensity = 1 } = transition;
+  const patchTransition = (patch: Partial<ThemeTransitionOptions>) => setDocsTransition({ ...transition, ...patch });
 
-  const code = `<ThemeSwitcher side="${side}" align="${align}" />`;
+  const code = `<ZyncatTheme themes={themes} transition={{ effect: '${effect}', speed: ${speed}, intensity: ${intensity} }} />
+
+<ThemeSwitcher side="${side}" align="${align}" />`;
 
   return (
     <Playground
       code={code}
-      note="The chip in the header is this component. Both read and write the site's own theme, so a pick here turns the whole page and stays open to compare; arrow keys walk the grid, Enter or Escape closes it."
+      note="The chip in the header is this component. Both read and write the site's own theme, so a pick here turns the whole page and stays open to compare; arrow keys walk the grid, Enter or Escape closes it. The transition knobs set the site's ZyncatTheme, so every theme change runs the chosen effect until the page reloads."
       stageStyle={{ minHeight: '24rem' }}
       rail={
         <>
           <KnobSegment label="side" value={side} onChange={setSide} options={['top', 'bottom', 'left', 'right']} />
           <KnobSegment label="align" value={align} onChange={setAlign} options={['start', 'center', 'end']} />
+          <KnobSegment
+            label="transition.effect"
+            value={effect}
+            onChange={(value) => patchTransition({ effect: value })}
+            options={TRANSITION_EFFECTS}
+          />
+          <KnobRange
+            label="transition.speed"
+            value={speed}
+            onChange={(value) => patchTransition({ speed: value })}
+            min={0.25}
+            max={4}
+            step={0.25}
+            format={(value) => `${value}x`}
+          />
+          <KnobRange
+            label="transition.intensity"
+            value={intensity}
+            onChange={(value) => patchTransition({ intensity: value })}
+            min={0}
+            max={2}
+            step={0.1}
+            format={(value) => value.toFixed(1)}
+          />
         </>
       }
     >

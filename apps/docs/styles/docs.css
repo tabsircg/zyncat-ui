@@ -13,7 +13,9 @@
   }
 }
 
-:root {
+:root,
+[data-theme],
+[data-polarity] {
   --font-body: var(--font-geist), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --docs-serif: var(--font-newsreader), Georgia, 'Times New Roman', serif;
   --docs-card-border: var(--border-hairline) solid var(--border-default);

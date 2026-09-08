@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Newsreader } from 'next/font/google';
 
-import { ZyncatTheme } from '@zyncat/ui/theme';
-
+import { DocsTheme } from '@/components/DocsTheme';
 import { SiteJsonLd } from '@/components/JsonLd';
-import { DOCS_THEMES } from '@/lib/themes';
 
 import '@/styles/docs.css';
 import '@zyncat/ui/styles.css';
@@ -58,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${newsreader.variable} ${geist.variable}`}>
       <body>
-        <ZyncatTheme themes={DOCS_THEMES} transition={{ effect: 'tide' }} />
+        <DocsTheme />
         <SiteJsonLd />
         {children}
       </body>
