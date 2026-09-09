@@ -1,0 +1,115 @@
+@layer zyncat.reset, zyncat.tokens, zyncat.components;
+
+@layer zyncat.components {
+  .zc-spin {
+    --_spinner-size: 1em;
+    --_spinner-stroke: 0.125em;
+    --_spinner-dim: 0.16;
+    --_spinner-onset: var(--duration-slowest);
+
+    display: inline-block;
+    vertical-align: middle;
+    flex: none;
+    color: inherit;
+  }
+
+  .zc-spin--sm {
+    font-size: var(--size-caption);
+  }
+  .zc-spin--md {
+    font-size: var(--size-heading);
+  }
+  .zc-spin--lg {
+    font-size: var(--size-title-lg);
+  }
+
+  .zc-spin--thin {
+    --_spinner-stroke: 0.09em;
+  }
+  .zc-spin--bold {
+    --_spinner-stroke: 0.19em;
+  }
+
+  .zc-spin__figure {
+    position: relative;
+    display: block;
+    inline-size: var(--_spinner-size);
+    block-size: var(--_spinner-size);
+  }
+
+  .zc-spin--delayed .zc-spin__figure {
+    animation: zc-spin-appear var(--duration-base) var(--ease-standard) var(--_spinner-onset) backwards;
+  }
+  @keyframes zc-spin-appear {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .zc-spin--arc .zc-spin__figure {
+    border-radius: var(--radius-full);
+    border: var(--_spinner-stroke) solid currentColor;
+    border-inline-end-color: transparent;
+    animation: zc-spin-turn var(--duration-spin) linear infinite;
+  }
+  .zc-spin--delayed.zc-spin--arc .zc-spin__figure {
+    animation:
+      zc-spin-turn var(--duration-spin) linear infinite,
+      zc-spin-appear var(--duration-base) var(--ease-standard) var(--_spinner-onset) backwards;
+  }
+  @keyframes zc-spin-turn {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  .zc-spin--pulse .zc-spin__figure::before,
+  .zc-spin--pulse .zc-spin__figure::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    border: var(--_spinner-stroke) solid currentColor;
+    animation: zc-spin-ping var(--duration-spin) var(--ease-standard) infinite;
+  }
+  .zc-spin--pulse .zc-spin__figure::after {
+    animation-delay: calc(var(--duration-spin) / -2);
+  }
+  @keyframes zc-spin-ping {
+    from {
+      scale: 0.2;
+      opacity: 1;
+    }
+    to {
+      scale: 1;
+      opacity: 0;
+    }
+  }
+
+  .zc-spin--dots .zc-spin__figure {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    inline-size: calc(var(--_spinner-size) * 2);
+  }
+  .zc-spin--dots .zc-spin__part {
+    inline-size: calc(var(--_spinner-size) / 2.6);
+    block-size: calc(var(--_spinner-size) / 2.6);
+    border-radius: var(--radius-full);
+    background: currentColor;
+    animation: zc-spin-bob var(--duration-spin) var(--ease-standard) infinite;
+    animation-delay: calc(var(--_spinner-i) * var(--duration-spin) / 6);
+  }
+  @keyframes zc-spin-bob {
+    0%,
+    70%,
+    100% {
+      scale: 0.6;
+      opacity: var(--_spinner-dim);
+    }
+    35% {
+      scale: 1;
+      opacity: 1;
+    }
+  }
+}

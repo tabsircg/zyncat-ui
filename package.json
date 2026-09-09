@@ -308,6 +308,11 @@
       "types": "./dist/types/components/composites/theme-switcher/ThemeGrid.d.ts",
       "import": "./dist/theme-grid.js"
     },
+    "./spinner": {
+      "source": "./src/components/primitives/spinner/Spinner.tsx",
+      "types": "./dist/types/components/primitives/spinner/Spinner.d.ts",
+      "import": "./dist/spinner.js"
+    },
     "./styles.css": "./src/styles.css",
     "./tailwind.css": "./tailwind.css",
     "./next": {

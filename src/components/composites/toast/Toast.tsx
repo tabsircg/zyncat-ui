@@ -31,6 +31,7 @@ import { Icon, type IconName } from '../../internal/icon/Icon';
 import { cx } from '../../internal/utils/cx';
 import { tokenPx } from '../../internal/utils/token-px';
 import { Button } from '../../primitives/button/Button';
+import { Spinner } from '../../primitives/spinner/Spinner';
 import { DEFAULT_TOASTER_CONFIG, UIToast, type ToasterConfig, type ToastRecord, type ToastTone } from './toast-store';
 
 const SM = UIMotion;
@@ -187,7 +188,7 @@ function ToastBody({ t }: { t: ToastRecord }) {
           {t.tone !== 'default' && (
             <Motion as="span" className="zc-toast__icon-glyph" animate={GLYPH_POP} deps={[t.tone]}>
               {t.tone === 'loading' ? (
-                <span className="zc-toast__spinner" aria-hidden="true"></span>
+                <Spinner label={null} className="zc-toast__spinner" />
               ) : (
                 <Icon name={TONE_ICON[t.tone] || 'info'} weight="fill" />
               )}

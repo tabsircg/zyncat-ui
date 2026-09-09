@@ -212,20 +212,8 @@
   }
 
   .zc-toast__spinner {
-    display: block;
-    box-sizing: border-box;
-    width: var(--icon-sm);
-    height: var(--icon-sm);
-    border-radius: var(--radius-full);
-    border: var(--border-emphasis) solid currentColor;
-    border-right-color: transparent;
+    font-size: var(--icon-sm);
     color: var(--text-muted);
-    animation: toast-spin var(--duration-spin) linear infinite;
-  }
-  @keyframes toast-spin {
-    to {
-      transform: rotate(1turn);
-    }
   }
 
   .zc-toast__custom {

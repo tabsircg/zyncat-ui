@@ -34,6 +34,7 @@
       "@zyncat/ui/otp-field": ["../../src/components/primitives/input/OtpField.tsx"],
       "@zyncat/ui/text-field": ["../../src/components/primitives/input/TextField.tsx"],
       "@zyncat/ui/radio-group": ["../../src/components/primitives/radio-group/RadioGroup.tsx"],
+      "@zyncat/ui/spinner": ["../../src/components/primitives/spinner/Spinner.tsx"],
       "@zyncat/ui/tag": ["../../src/components/primitives/tag/Tag.tsx"],
       "@zyncat/ui/toggle-tag": ["../../src/components/primitives/tag/ToggleTag.tsx"],
       "@zyncat/ui/textarea": ["../../src/components/primitives/textarea/Textarea.tsx"],
