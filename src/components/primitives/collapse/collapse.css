@@ -35,8 +35,7 @@
   .zc-collapse[data-open='false'] {
     visibility: hidden;
   }
-  /* No visibility: visible here - open flips it the same frame, and inheriting it keeps a Collapse
-   nested under a closed ancestor hidden. */
+  /* No visibility: visible here - inheriting it would reveal a Collapse nested under a closed one. */
   .zc-collapse[data-open='true'] {
     grid-template-rows: 1fr;
     transition:
@@ -53,7 +52,6 @@
     grid-template-columns: 1fr;
   }
 
-  /* min-size:0 is what lets the grid track collapse to 0. */
   .zc-collapse__inner {
     overflow-x: visible;
     overflow-y: clip;

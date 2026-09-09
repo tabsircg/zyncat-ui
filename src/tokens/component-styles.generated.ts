@@ -9,17 +9,17 @@ import type { CSSProperties } from 'react';
  * Generated from the token and component CSS by `scripts/gen-theme.mjs` - `pnpm sync` rebuilds it.
  */
 export interface ConfettiStyle extends CSSProperties {
-  /** `--confetti-paper-1` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.53 0.2 288)`. */
+  /** `--confetti-paper-1` - The five papers a burst draws from. Default: `oklch(0.53 0.2 288)`. */
   '--confetti-paper-1'?: string | number;
-  /** `--confetti-paper-2` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `var(--accent)`. */
+  /** `--confetti-paper-2` - The five papers a burst draws from. Default: `var(--accent)`. */
   '--confetti-paper-2'?: string | number;
-  /** `--confetti-paper-3` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.78 0.115 62)`. */
+  /** `--confetti-paper-3` - The five papers a burst draws from. Default: `oklch(0.78 0.115 62)`. */
   '--confetti-paper-3'?: string | number;
-  /** `--confetti-paper-4` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.67 0.18 12)`. */
+  /** `--confetti-paper-4` - The five papers a burst draws from. Default: `oklch(0.67 0.18 12)`. */
   '--confetti-paper-4'?: string | number;
-  /** `--confetti-paper-5` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `var(--text-strong)`. */
+  /** `--confetti-paper-5` - The five papers a burst draws from. Default: `var(--text-strong)`. */
   '--confetti-paper-5'?: string | number;
-  /** `--confetti-weights` - How often each paper appears - five weights, in slot order. Default: `1 1 1 1 0.45`. */
+  /** `--confetti-weights` - How often each paper appears, in slot order. Default: `1 1 1 1 0.45`. */
   '--confetti-weights'?: string | number;
   /** `--confetti-ink` - What the reverse side of a piece darkens toward. Default: `var(--text-strong)`. */
   '--confetti-ink'?: string | number;
@@ -35,35 +35,35 @@ export interface ConfettiStyle extends CSSProperties {
 
 /** Inline styles for FlowField, including its `--flow-field-*` knobs. */
 export interface FlowFieldStyle extends CSSProperties {
-  /** `--flow-field-ink` - The particle colour at rest - the ramp's cold end. Default: `var(--text-subtle)`. */
+  /** `--flow-field-ink` - The particle colour at rest. Default: `var(--text-subtle)`. */
   '--flow-field-ink'?: string | number;
-  /** `--flow-field-accent` - The particle colour at full speed - the ramp's hot end. Default: `var(--accent)`. */
+  /** `--flow-field-accent` - The particle colour at full speed. Default: `var(--accent)`. */
   '--flow-field-accent'?: string | number;
   /** `--flow-field-min-height` - The field's minimum height before content sizes it. Default: `var(--space-10)`. */
   '--flow-field-min-height'?: string | number;
-  /** `--flow-field-ramp-0` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `var(--flow-field-ink)`. */
+  /** `--flow-field-ramp-0` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `var(--flow-field-ink)`. */
   '--flow-field-ramp-0'?: string | number;
-  /** `--flow-field-ramp-1` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-1` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink))`. */
   '--flow-field-ramp-1'?: string | number;
-  /** `--flow-field-ramp-2` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-2` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink))`. */
   '--flow-field-ramp-2'?: string | number;
-  /** `--flow-field-ramp-3` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 27%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-3` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 27%, var(--flow-field-ink))`. */
   '--flow-field-ramp-3'?: string | number;
-  /** `--flow-field-ramp-4` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 36%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-4` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 36%, var(--flow-field-ink))`. */
   '--flow-field-ramp-4'?: string | number;
-  /** `--flow-field-ramp-5` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 45%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-5` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 45%, var(--flow-field-ink))`. */
   '--flow-field-ramp-5'?: string | number;
-  /** `--flow-field-ramp-6` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 55%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-6` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 55%, var(--flow-field-ink))`. */
   '--flow-field-ramp-6'?: string | number;
-  /** `--flow-field-ramp-7` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 64%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-7` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 64%, var(--flow-field-ink))`. */
   '--flow-field-ramp-7'?: string | number;
-  /** `--flow-field-ramp-8` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 73%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-8` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 73%, var(--flow-field-ink))`. */
   '--flow-field-ramp-8'?: string | number;
-  /** `--flow-field-ramp-9` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 82%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-9` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 82%, var(--flow-field-ink))`. */
   '--flow-field-ramp-9'?: string | number;
-  /** `--flow-field-ramp-10` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 91%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-10` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 91%, var(--flow-field-ink))`. */
   '--flow-field-ramp-10'?: string | number;
-  /** `--flow-field-ramp-11` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `var(--flow-field-accent)`. */
+  /** `--flow-field-ramp-11` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `var(--flow-field-accent)`. */
   '--flow-field-ramp-11'?: string | number;
 }
 
@@ -91,7 +91,7 @@ export interface MorphingTextStyle extends CSSProperties {
   '--morphing-text-leading'?: string | number;
   /** `--morphing-text-tracking` - Letter spacing. Default: `var(--tracking-display)`. */
   '--morphing-text-tracking'?: string | number;
-  /** `--morphing-text-smear` - How much letters blur on the way between words; 0 cuts clean. Default: `1`. */
+  /** `--morphing-text-smear` - How much letters blur between words, 0 cutting clean. Default: `1`. */
   '--morphing-text-smear'?: string | number;
   /** `--morphing-text-rule-ink` - The rule at rest. Default: `var(--text-strong)`. */
   '--morphing-text-rule-ink'?: string | number;
@@ -121,7 +121,7 @@ export interface OdometerStyle extends CSSProperties {
 
 /** Inline styles for ThemeTransition, including its `--theme-transition-*` knobs. */
 export interface ThemeTransitionStyle extends CSSProperties {
-  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-infinity)`. */
+  /** `--theme-transition-layer` - The z-index the arriving page paints at, above every panel it covers. Default: `var(--layer-infinity)`. */
   '--theme-transition-layer'?: string | number;
 }
 
@@ -167,7 +167,7 @@ export interface WeightFieldStyle extends CSSProperties {
   '--weight-field-peak-weight'?: string | number;
   /** `--weight-field-hover-padding` - How much a unit widens under the pointer. Default: `calc(1em / 12)`. */
   '--weight-field-hover-padding'?: string | number;
-  /** `--weight-field-stroke` - The text stroke every unit carries; the peak letter doubles it. Default: `calc(1em * 125 / 6000)`. */
+  /** `--weight-field-stroke` - The text stroke every unit carries, doubled on the peak letter. Default: `calc(1em * 125 / 6000)`. */
   '--weight-field-stroke'?: string | number;
   /** `--weight-field-duration` - How long a unit takes to settle at a new weight. Default: `400ms`. */
   '--weight-field-duration'?: string | number;
@@ -177,13 +177,13 @@ export interface WeightFieldStyle extends CSSProperties {
 
 /** Inline styles for SupportRail, including its `--support-rail-*` knobs. */
 export interface SupportRailStyle extends CSSProperties {
-  /** `--support-rail-width` - Panel width; the rail never exceeds its container. Default: `318px`. */
+  /** `--support-rail-width` - Panel width, capped by the container. Default: `318px`. */
   '--support-rail-width'?: string | number;
-  /** `--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-3)`. */
+  /** `--support-rail-row-pad-block` - Row padding on the block axis. Default: `var(--space-3)`. */
   '--support-rail-row-pad-block'?: string | number;
-  /** `--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`. */
+  /** `--support-rail-row-pad-inline` - Row padding on the inline axis. Default: `var(--space-4)`. */
   '--support-rail-row-pad-inline'?: string | number;
-  /** `--support-rail-surface` - The one surface: the tab, and the panel it morphs into. Default: `var(--bg-subtle)`. */
+  /** `--support-rail-surface` - The tab, and the panel it morphs into. Default: `var(--bg-subtle)`. */
   '--support-rail-surface'?: string | number;
   /** `--support-rail-surface-raised` - The tab while hovered. Default: `var(--bg-surface)`. */
   '--support-rail-surface-raised'?: string | number;

@@ -154,7 +154,7 @@ export function ZyncatTheme({
   return (
     <>
       {css && <style data-zyncat-theme="">{css}</style>}
-      {config && <script dangerouslySetInnerHTML={{ __html: `(${bootTheme})(${config})` }} />}
+      {config && <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: `(${bootTheme})(${config})` }} />}
       <ThemeSync css={css} config={config} transition={transition} />
     </>
   );

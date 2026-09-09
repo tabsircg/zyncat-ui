@@ -6,9 +6,9 @@
     --duration-base: 200ms; /* standard element transitions - fades, toggles, badge morphs */
     --duration-slow: 300ms; /* layout-scale movement - Collapse, panel resizes, reordering */
     --duration-slower: 450ms; /* large-surface movement - dialog, sheet, page-scale reveals */
-    --duration-slowest: 900ms; /* hero-scale movement - card expansion, container transforms; the scale's ceiling */
-    --duration-spin: 600ms; /* continuous loaders only; deliberately outside the UI-transition scale */
-    --duration-pulse: 1600ms; /* ambient live/processing breathing; not collapsed under reduced motion */
+    --duration-slowest: 900ms; /* hero-scale movement - card expansion, container transforms */
+    --duration-spin: 600ms; /* continuous loaders only, outside the UI-transition scale */
+    --duration-pulse: 1600ms; /* ambient breathing, not collapsed under reduced motion */
 
     --ease-standard: cubic-bezier(0.2, 0, 0, 1);
     --ease-entrance: cubic-bezier(0.25, 1, 0.4, 1);
@@ -21,12 +21,11 @@
       1
     ); /* fast out, soft landing - a persistent element moving to a new target, never enter/exit */
 
-    --distance-sm: 0.5rem; /* 8px - settling into place; the surface is already where it belongs */
+    --distance-sm: 0.5rem; /* 8px - settling into place */
     --distance-md: 1rem; /* 16px - arriving from an adjacent position - page turns, tab panels, paged ranges */
     --distance-lg: 1.5rem; /* 24px - arriving from outside the surface - a toast joining its stack */
 
-    /* Rest scale - picked by surface size: the same ratio reads as more movement the wider the
-     surface, so a dialog takes a smaller one than a tag to land at the same perceived distance. */
+    /* Rest scale - the same ratio reads as more movement the wider the surface. */
     --scale-panel: 0.98; /* full-width surfaces - dialog, modal, sheet */
     --scale-floating: 0.96; /* floating surfaces - popover, tooltip, menu, toast, alert */
     --scale-chip: 0.9; /* small inline elements - tag, badge, count */

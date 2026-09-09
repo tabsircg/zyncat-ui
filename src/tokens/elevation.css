@@ -1,32 +1,26 @@
-/* Elevation - shadows, top-light highlights, rings and border widths, on every theme root.
-   Three strengths scale the lighting per polarity: every shadow, white highlight and cast-light
-   alpha is a multiple of --shadow-strength, --sheen-strength or --glow-strength. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root {
-    /* Border widths - weight comes from the colour, not the thickness. */
     --border-hairline: 1px;
     --border-emphasis: 1.5px;
 
-    /* How far every focus ring reaches past the border box - the exact room a clipping
-     ancestor reserves so a ring is never cut. */
+    /* How far every focus ring reaches past the border box. */
     --ring-width: 3px;
 
-    --layer-overlay: 1000; /* a band - each overlay adds its stack depth, so a later one paints above an earlier one */
+    --layer-overlay: 1000; /* a band - each overlay adds its stack depth on top */
     --layer-toast: 1050;
     --layer-tooltip: 1100;
-    --layer-infinity: 2147483647; /* the top of the stack - the theme reveal and the devtools panel, nothing paints above */
+    --layer-infinity: 2147483647;
   }
 
   :root,
   [data-polarity='light'] {
-    /* Multiplies every shadow alpha - 1 on the white canvas; black on dark needs 3-4x to read. */
+    /* Multiplies every shadow alpha - 3-4x on dark. */
     --shadow-strength: 1;
-    /* Multiplies every white top-light highlight - 1 on the white canvas, a fifth on dark. */
+    /* Multiplies every white top-light highlight. */
     --sheen-strength: 1;
-    /* Multiplies the light a lifted hue fill casts around it - off on the white canvas, on in dark. */
+    /* Multiplies the light a lifted hue fill casts around it - off on the white canvas. */
     --glow-strength: 0;
   }
 
@@ -40,8 +34,6 @@
     --shadow-md:
       0 2px 4px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength))),
       0 6px 12px rgb(var(--shadow-rgb) / calc(0.07 * var(--shadow-strength)));
-    /* The floating steps are three layers: a tight contact shadow, a mid layer for form, a wide
-     ambient one. Without the contact layer the panel reads soft and unanchored. */
     --shadow-lg:
       0 1px 2px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))),
       0 4px 8px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength))),
@@ -51,34 +43,28 @@
       0 8px 16px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))),
       0 24px 48px rgb(var(--shadow-rgb) / calc(0.14 * var(--shadow-strength)));
 
-    /* Focus & selection ring hues - each tracks its role; danger rings on its fill tone, the
-     lighter face the destructive button rests on. */
+    /* Danger rings on its fill tone, the lighter face the destructive button rests on. */
     --ring-color-accent: color-mix(in oklab, var(--accent) 32%, transparent);
     --ring-color-danger: oklch(from var(--danger) 0.602 0.196 h / 0.3);
     --ring-color-warning: color-mix(in oklab, var(--warning) 30%, transparent);
     --ring-color-success: color-mix(in oklab, var(--success) 30%, transparent);
 
-    /* The rings themselves - outline values, so a ring never shares box-shadow with elevation and a
-     clipping ancestor can reserve exactly --ring-gutter. Outlines follow border-radius everywhere
-     this library supports. --ring-rest is the resting ring a control fades in from; --ring-inset
-     is the offset that turns a ring inward, for a control flush with a clipping edge; --ring-gutter
-     is the room a container that clips holds open so a child's outward ring survives, and the one
-     value to zero when rings turn inward. */
+    /* Outlines, not box-shadow, so a ring never collides with elevation and still follows border-radius. */
     --ring-rest: var(--ring-width) solid transparent;
     --ring-inset: calc(var(--ring-width) * -1);
+    /* The room a clipping container holds open for a child's ring. */
     --ring-gutter: var(--ring-width);
     --ring-accent: var(--ring-width) solid var(--ring-color-accent);
     --ring-danger: var(--ring-width) solid var(--ring-color-danger);
     --ring-warning: var(--ring-width) solid var(--ring-color-warning);
     --ring-success: var(--ring-width) solid var(--ring-color-success);
 
-    /* Cast light - the hover of the primary and destructive buttons; each tracks its ring's hue. */
     --glow-accent: 0 4px 16px oklch(from var(--accent) l c h / calc(0.4 * var(--glow-strength)));
     --glow-danger: 0 4px 16px oklch(from var(--danger) 0.602 0.196 h / calc(0.4 * var(--glow-strength)));
   }
 
-  /* Forced colours repaint every outline-color, transparent included, so the resting ring would
-   sit on every control as a permanent border. It costs the fade-in, not the ring. */
+  /* Forced colours repaint every outline-color, transparent included - the resting ring would sit
+   on every control as a permanent border. */
   @media (forced-colors: active) {
     :root,
     [data-theme],

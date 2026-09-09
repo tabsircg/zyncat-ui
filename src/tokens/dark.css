@@ -1,8 +1,3 @@
-/* The dark polarity - `data-polarity="dark"` on <html> or any subtree root, `data-polarity="light"`
-   for a light island inside it. Polarity is its own attribute so a palette on `data-theme` picks up
-   either side. Every value here is a polarity with a light twin, and gen-theme holds the two sides
-   together. Surfaces step lighter as they rise; ink steps down from near-white. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
@@ -10,11 +5,11 @@
     color-scheme: dark;
 
     --bg-app: oklch(from var(--neutral) 0.165 0.006 h);
-    --bg-surface: oklch(from var(--neutral) 0.195 0.007 h);
-    --bg-surface-raised: oklch(from var(--neutral) 0.24 0.008 h);
-    --bg-subtle: oklch(from var(--neutral) 0.222 0.007 h);
-    --bg-muted: oklch(from var(--neutral) 0.255 0.008 h);
-    --bg-inset: oklch(from var(--neutral) 0.13 0.006 h);
+    --bg-surface: oklch(from var(--neutral) 0.165 0.006 h);
+    --bg-surface-raised: oklch(from var(--neutral) 0.195 0.007 h);
+    --bg-subtle: oklch(from var(--neutral) 0.154 0.006 h);
+    --bg-muted: oklch(from var(--neutral) 0.14 0.007 h);
+    --bg-inset: oklch(from var(--neutral) 0.124 0.007 h);
     --bg-overlay: oklch(from var(--neutral) 0.06 0.004 h / 0.64);
 
     --text-strong: oklch(from var(--neutral) 0.975 0.003 h);
@@ -34,8 +29,7 @@
     --sheen-strength: 0.2;
     --glow-strength: 1;
 
-    /* The fills drop a step, since a light face reads as a light source on dark, and the lift they
-     rise to stays put. The steps the light side pins near white re-derive from their decision. */
+    /* A light face reads as a light source on dark, so the fills drop a step while the lift stays put. */
     --accent-fill: oklch(from var(--accent) calc(l - 0.06) calc(c - 0.01) h);
     --accent-subtle: oklch(from var(--accent) 0.27 0.045 h);
     --accent-border: oklch(from var(--accent) 0.45 0.09 h);

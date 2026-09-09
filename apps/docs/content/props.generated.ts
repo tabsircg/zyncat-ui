@@ -2529,7 +2529,7 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
           name: '--weight-field-stroke',
           type: 'string | number',
           description:
-            '`--weight-field-stroke` - The text stroke every unit carries; the peak letter doubles it. Default: `calc(1em * 125 / 6000)`.',
+            '`--weight-field-stroke` - The text stroke every unit carries, doubled on the peak letter. Default: `calc(1em * 125 / 6000)`.',
         },
         {
           name: '--weight-field-duration',
@@ -2576,8 +2576,7 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: '--morphing-text-smear',
           type: 'string | number',
-          description:
-            '`--morphing-text-smear` - How much letters blur on the way between words; 0 cuts clean. Default: `1`.',
+          description: '`--morphing-text-smear` - How much letters blur between words, 0 cutting clean. Default: `1`.',
         },
         {
           name: '--morphing-text-rule-ink',
@@ -2609,14 +2608,12 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: '--flow-field-ink',
           type: 'string | number',
-          description:
-            "`--flow-field-ink` - The particle colour at rest - the ramp's cold end. Default: `var(--text-subtle)`.",
+          description: '`--flow-field-ink` - The particle colour at rest. Default: `var(--text-subtle)`.',
         },
         {
           name: '--flow-field-accent',
           type: 'string | number',
-          description:
-            "`--flow-field-accent` - The particle colour at full speed - the ramp's hot end. Default: `var(--accent)`.",
+          description: '`--flow-field-accent` - The particle colour at full speed. Default: `var(--accent)`.',
         },
         {
           name: '--flow-field-min-height',
@@ -2628,73 +2625,73 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
           name: '--flow-field-ramp-0',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-0` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `var(--flow-field-ink)`.',
+            '`--flow-field-ramp-0` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `var(--flow-field-ink)`.',
         },
         {
           name: '--flow-field-ramp-1',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-1` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-1` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-2',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-2` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-2` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-3',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-3` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 27%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-3` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 27%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-4',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-4` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 36%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-4` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 36%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-5',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-5` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 45%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-5` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 45%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-6',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-6` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 55%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-6` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 55%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-7',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-7` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 64%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-7` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 64%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-8',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-8` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 73%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-8` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 73%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-9',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-9` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 82%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-9` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 82%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-10',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-10` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 91%, var(--flow-field-ink))`.',
+            '`--flow-field-ramp-10` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 91%, var(--flow-field-ink))`.',
         },
         {
           name: '--flow-field-ramp-11',
           type: 'string | number',
           description:
-            '`--flow-field-ramp-11` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `var(--flow-field-accent)`.',
+            '`--flow-field-ramp-11` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `var(--flow-field-accent)`.',
         },
       ],
     },
@@ -2744,38 +2741,32 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: '--confetti-paper-1',
           type: 'string | number',
-          description:
-            '`--confetti-paper-1` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.53 0.2 288)`.',
+          description: '`--confetti-paper-1` - The five papers a burst draws from. Default: `oklch(0.53 0.2 288)`.',
         },
         {
           name: '--confetti-paper-2',
           type: 'string | number',
-          description:
-            '`--confetti-paper-2` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `var(--accent)`.',
+          description: '`--confetti-paper-2` - The five papers a burst draws from. Default: `var(--accent)`.',
         },
         {
           name: '--confetti-paper-3',
           type: 'string | number',
-          description:
-            '`--confetti-paper-3` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.78 0.115 62)`.',
+          description: '`--confetti-paper-3` - The five papers a burst draws from. Default: `oklch(0.78 0.115 62)`.',
         },
         {
           name: '--confetti-paper-4',
           type: 'string | number',
-          description:
-            '`--confetti-paper-4` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.67 0.18 12)`.',
+          description: '`--confetti-paper-4` - The five papers a burst draws from. Default: `oklch(0.67 0.18 12)`.',
         },
         {
           name: '--confetti-paper-5',
           type: 'string | number',
-          description:
-            '`--confetti-paper-5` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `var(--text-strong)`.',
+          description: '`--confetti-paper-5` - The five papers a burst draws from. Default: `var(--text-strong)`.',
         },
         {
           name: '--confetti-weights',
           type: 'string | number',
-          description:
-            '`--confetti-weights` - How often each paper appears - five weights, in slot order. Default: `1 1 1 1 0.45`.',
+          description: '`--confetti-weights` - How often each paper appears, in slot order. Default: `1 1 1 1 0.45`.',
         },
         {
           name: '--confetti-ink',
@@ -2851,25 +2842,22 @@ export const GENERATED_TYPES: Record<string, NestedType[]> = {
         {
           name: '--support-rail-width',
           type: 'string | number',
-          description: '`--support-rail-width` - Panel width; the rail never exceeds its container. Default: `318px`.',
+          description: '`--support-rail-width` - Panel width, capped by the container. Default: `318px`.',
         },
         {
           name: '--support-rail-row-pad-block',
           type: 'string | number',
-          description:
-            '`--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-3)`.',
+          description: '`--support-rail-row-pad-block` - Row padding on the block axis. Default: `var(--space-3)`.',
         },
         {
           name: '--support-rail-row-pad-inline',
           type: 'string | number',
-          description:
-            '`--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`.',
+          description: '`--support-rail-row-pad-inline` - Row padding on the inline axis. Default: `var(--space-4)`.',
         },
         {
           name: '--support-rail-surface',
           type: 'string | number',
-          description:
-            '`--support-rail-surface` - The one surface: the tab, and the panel it morphs into. Default: `var(--bg-subtle)`.',
+          description: '`--support-rail-surface` - The tab, and the panel it morphs into. Default: `var(--bg-subtle)`.',
         },
         {
           name: '--support-rail-surface-raised',

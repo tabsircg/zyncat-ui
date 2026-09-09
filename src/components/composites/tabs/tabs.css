@@ -4,7 +4,6 @@
   .zc-tabs {
     /* 2px, not --border-emphasis: 1.5px renders as sub-pixel fuzz on 1x screens. */
     --tabs-ink-h: 2px;
-    /* The pill variant's segment radius. The track rounds one pad wider, staying concentric. */
     --tabs-pill-radius: var(--radius-md);
     position: relative;
   }

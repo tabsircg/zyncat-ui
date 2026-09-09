@@ -10,17 +10,17 @@
  */
 /** Surfaces - the canvas, cards, fills and the overlay scrim. */
 export interface ColorBgTokens {
-  /** `--bg-app` - The canvas is the top of the ramp and cards and panels share it, separated by hairlines and shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. All three take --neutral's hue, so warming the neutral warms page and control alike - repoint one of them only to change which rung a role sits on, never to change its temperature. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
+  /** `--bg-app` - Canvas, cards and panels share the top of the ramp, separated by hairlines rather than tint. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   app?: string | number;
-  /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.195 0.007 h)`. */
+  /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   surface?: string | number;
-  /** `--bg-surface-raised`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.24 0.008 h)`. */
+  /** `--bg-surface-raised`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.195 0.007 h)`. */
   surfaceRaised?: string | number;
-  /** `--bg-subtle`. Default: `var(--gray-50)`. Dark: `oklch(from var(--neutral) 0.222 0.007 h)`. */
+  /** `--bg-subtle`. Default: `var(--gray-50)`. Dark: `oklch(from var(--neutral) 0.154 0.006 h)`. */
   subtle?: string | number;
-  /** `--bg-muted`. Default: `var(--gray-100)`. Dark: `oklch(from var(--neutral) 0.255 0.008 h)`. */
+  /** `--bg-muted`. Default: `var(--gray-100)`. Dark: `oklch(from var(--neutral) 0.14 0.007 h)`. */
   muted?: string | number;
-  /** `--bg-inset`. Default: `var(--gray-150)`. Dark: `oklch(from var(--neutral) 0.13 0.006 h)`. */
+  /** `--bg-inset`. Default: `var(--gray-150)`. Dark: `oklch(from var(--neutral) 0.124 0.007 h)`. */
   inset?: string | number;
   /** `--bg-overlay`. Default: `color-mix(in oklab, var(--gray-900) 44%, transparent)`. Dark: `oklch(from var(--neutral) 0.06 0.004 h / 0.64)`. */
   overlay?: string | number;
@@ -28,7 +28,7 @@ export interface ColorBgTokens {
 
 /** Ink, from strong to disabled, and the faces on a fill. */
 export interface ColorTextTokens {
-  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity, since the fills stay mid-lightness on dark. Default: `var(--gray-0)`. */
+  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity. Default: `var(--gray-0)`. */
   onAccent?: string | number;
   /** `--text-strong`. Default: `var(--gray-950)`. Dark: `oklch(from var(--neutral) 0.975 0.003 h)`. */
   strong?: string | number;
@@ -60,7 +60,7 @@ export interface ColorBorderTokens {
 export interface ColorTokens {
   /** `--accent` - The brand hue - hover, active, lift, subtle, border, wash, the focus ring and info follow. Default: `oklch(0.63 0.118 198)`. */
   accent?: string | number;
-  /** `--neutral` - The gray ramp's hue - the accent by default, so chrome shares its temperature. A fixed colour cuts the grays loose. Read on :root only: a themed subtree inherits the ramp. Default: `var(--accent)`. */
+  /** `--neutral` - The gray ramp's hue - the accent by default, so chrome shares its temperature. Default: `var(--accent)`. */
   neutral?: string | number;
   /** `--success` - Positive status - its subtle, text and wash follow. Default: `oklch(0.548 0.122 152)`. */
   success?: string | number;
@@ -92,7 +92,7 @@ export interface TypeTokens {
 
 /** Roundness. */
 export interface ShapeTokens {
-  /** `--radius` - Roundness - every --radius-<step> is a fixed ratio of it; 0 squares every corner. Default: `0.5rem`. */
+  /** `--radius` - Roundness - every --radius-<step> is a fixed ratio of it, 0 squaring every corner. Default: `0.5rem`. */
   radius?: string | number;
 }
 
@@ -106,11 +106,11 @@ export interface MotionDurationTokens {
   slow?: string | number;
   /** `--duration-slower` - large-surface movement - dialog, sheet, page-scale reveals. Default: `450ms`. Collapses to `1ms` under reduced motion. */
   slower?: string | number;
-  /** `--duration-slowest` - hero-scale movement - card expansion, container transforms; the scale's ceiling. Default: `900ms`. Collapses to `1ms` under reduced motion. */
+  /** `--duration-slowest` - hero-scale movement - card expansion, container transforms. Default: `900ms`. Collapses to `1ms` under reduced motion. */
   slowest?: string | number;
-  /** `--duration-spin` - continuous loaders only; deliberately outside the UI-transition scale. Default: `600ms`. Collapses to `1200ms` under reduced motion. */
+  /** `--duration-spin` - continuous loaders only, outside the UI-transition scale. Default: `600ms`. Collapses to `1200ms` under reduced motion. */
   spin?: string | number;
-  /** `--duration-pulse` - ambient live/processing breathing; not collapsed under reduced motion. Default: `1600ms`. */
+  /** `--duration-pulse` - ambient breathing, not collapsed under reduced motion. Default: `1600ms`. */
   pulse?: string | number;
 }
 
@@ -130,7 +130,7 @@ export interface MotionEaseTokens {
 
 /** How far a surface travels on the way in or out. */
 export interface MotionDistanceTokens {
-  /** `--distance-sm` - 8px - settling into place; the surface is already where it belongs. Default: `0.5rem`. */
+  /** `--distance-sm` - 8px - settling into place. Default: `0.5rem`. */
   sm?: string | number;
   /** `--distance-md` - 16px - arriving from an adjacent position - page turns, tab panels, paged ranges. Default: `1rem`. */
   md?: string | number;
@@ -160,25 +160,25 @@ export interface MotionTokens {
   scale?: MotionScaleTokens;
 }
 
-/** `--confetti-paper-1` to `--confetti-paper-5` - The five papers a burst draws from; a slot set to a role follows the theme. */
+/** `--confetti-paper-1` to `--confetti-paper-5` - The five papers a burst draws from. */
 export interface ConfettiPaperTokens {
-  /** `--confetti-paper-1` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.53 0.2 288)`. */
+  /** `--confetti-paper-1` - The five papers a burst draws from. Default: `oklch(0.53 0.2 288)`. */
   1?: string | number;
-  /** `--confetti-paper-2` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `var(--accent)`. */
+  /** `--confetti-paper-2` - The five papers a burst draws from. Default: `var(--accent)`. */
   2?: string | number;
-  /** `--confetti-paper-3` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.78 0.115 62)`. */
+  /** `--confetti-paper-3` - The five papers a burst draws from. Default: `oklch(0.78 0.115 62)`. */
   3?: string | number;
-  /** `--confetti-paper-4` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `oklch(0.67 0.18 12)`. */
+  /** `--confetti-paper-4` - The five papers a burst draws from. Default: `oklch(0.67 0.18 12)`. */
   4?: string | number;
-  /** `--confetti-paper-5` - The five papers a burst draws from; a slot set to a role follows the theme. Default: `var(--text-strong)`. */
+  /** `--confetti-paper-5` - The five papers a burst draws from. Default: `var(--text-strong)`. */
   5?: string | number;
 }
 
 /** The scoped properties Confetti publishes as its theming contract. */
 export interface ConfettiTokens {
-  /** `--confetti-paper-1` to `--confetti-paper-5` - The five papers a burst draws from; a slot set to a role follows the theme. */
+  /** `--confetti-paper-1` to `--confetti-paper-5` - The five papers a burst draws from. */
   paper?: ConfettiPaperTokens;
-  /** `--confetti-weights` - How often each paper appears - five weights, in slot order. Default: `1 1 1 1 0.45`. */
+  /** `--confetti-weights` - How often each paper appears, in slot order. Default: `1 1 1 1 0.45`. */
   weights?: string | number;
   /** `--confetti-ink` - What the reverse side of a piece darkens toward. Default: `var(--text-strong)`. */
   ink?: string | number;
@@ -192,43 +192,43 @@ export interface ConfettiTokens {
   layer?: string | number;
 }
 
-/** `--flow-field-ramp-0` to `--flow-field-ramp-11` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. */
+/** `--flow-field-ramp-0` to `--flow-field-ramp-11` - The twelve stops from ink to accent, set together for a ramp of your own. */
 export interface FlowFieldRampTokens {
-  /** `--flow-field-ramp-0` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `var(--flow-field-ink)`. */
+  /** `--flow-field-ramp-0` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `var(--flow-field-ink)`. */
   0?: string | number;
-  /** `--flow-field-ramp-1` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-1` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink))`. */
   1?: string | number;
-  /** `--flow-field-ramp-2` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-2` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink))`. */
   2?: string | number;
-  /** `--flow-field-ramp-3` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 27%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-3` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 27%, var(--flow-field-ink))`. */
   3?: string | number;
-  /** `--flow-field-ramp-4` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 36%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-4` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 36%, var(--flow-field-ink))`. */
   4?: string | number;
-  /** `--flow-field-ramp-5` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 45%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-5` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 45%, var(--flow-field-ink))`. */
   5?: string | number;
-  /** `--flow-field-ramp-6` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 55%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-6` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 55%, var(--flow-field-ink))`. */
   6?: string | number;
-  /** `--flow-field-ramp-7` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 64%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-7` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 64%, var(--flow-field-ink))`. */
   7?: string | number;
-  /** `--flow-field-ramp-8` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 73%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-8` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 73%, var(--flow-field-ink))`. */
   8?: string | number;
-  /** `--flow-field-ramp-9` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 82%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-9` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 82%, var(--flow-field-ink))`. */
   9?: string | number;
-  /** `--flow-field-ramp-10` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 91%, var(--flow-field-ink))`. */
+  /** `--flow-field-ramp-10` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `color-mix(in oklab, var(--flow-field-accent) 91%, var(--flow-field-ink))`. */
   10?: string | number;
-  /** `--flow-field-ramp-11` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. Default: `var(--flow-field-accent)`. */
+  /** `--flow-field-ramp-11` - The twelve stops from ink to accent, set together for a ramp of your own. Default: `var(--flow-field-accent)`. */
   11?: string | number;
 }
 
 /** The scoped properties FlowField publishes as its theming contract. */
 export interface FlowFieldTokens {
-  /** `--flow-field-ink` - The particle colour at rest - the ramp's cold end. Default: `var(--text-subtle)`. */
+  /** `--flow-field-ink` - The particle colour at rest. Default: `var(--text-subtle)`. */
   ink?: string | number;
-  /** `--flow-field-accent` - The particle colour at full speed - the ramp's hot end. Default: `var(--accent)`. */
+  /** `--flow-field-accent` - The particle colour at full speed. Default: `var(--accent)`. */
   accent?: string | number;
   /** `--flow-field-min-height` - The field's minimum height before content sizes it. Default: `var(--space-10)`. */
   minHeight?: string | number;
-  /** `--flow-field-ramp-0` to `--flow-field-ramp-11` - The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. */
+  /** `--flow-field-ramp-0` to `--flow-field-ramp-11` - The twelve stops from ink to accent, set together for a ramp of your own. */
   ramp?: FlowFieldRampTokens;
 }
 
@@ -274,7 +274,7 @@ export interface MorphingTextTokens {
   leading?: string | number;
   /** `--morphing-text-tracking` - Letter spacing. Default: `var(--tracking-display)`. */
   tracking?: string | number;
-  /** `--morphing-text-smear` - How much letters blur on the way between words; 0 cuts clean. Default: `1`. */
+  /** `--morphing-text-smear` - How much letters blur between words, 0 cutting clean. Default: `1`. */
   smear?: string | number;
   /** The `--morphing-text-rule-*` knobs. */
   rule?: MorphingTextRuleTokens;
@@ -298,7 +298,7 @@ export interface OdometerTokens {
 
 /** The scoped properties ThemeTransition publishes as its theming contract. */
 export interface ThemeTransitionTokens {
-  /** `--theme-transition-layer` - The z-index the arriving page paints at; it has to clear every panel it covers. Default: `var(--layer-infinity)`. */
+  /** `--theme-transition-layer` - The z-index the arriving page paints at, above every panel it covers. Default: `var(--layer-infinity)`. */
   layer?: string | number;
 }
 
@@ -350,7 +350,7 @@ export interface WeightFieldTokens {
   peakWeight?: string | number;
   /** `--weight-field-hover-padding` - How much a unit widens under the pointer. Default: `calc(1em / 12)`. */
   hoverPadding?: string | number;
-  /** `--weight-field-stroke` - The text stroke every unit carries; the peak letter doubles it. Default: `calc(1em * 125 / 6000)`. */
+  /** `--weight-field-stroke` - The text stroke every unit carries, doubled on the peak letter. Default: `calc(1em * 125 / 6000)`. */
   stroke?: string | number;
   /** `--weight-field-duration` - How long a unit takes to settle at a new weight. Default: `400ms`. */
   duration?: string | number;
@@ -360,19 +360,19 @@ export interface WeightFieldTokens {
 
 /** The `--support-rail-row-*` knobs. */
 export interface SupportRailRowTokens {
-  /** `--support-rail-row-pad-block` - Row padding on the block axis - the density knob. Default: `var(--space-3)`. */
+  /** `--support-rail-row-pad-block` - Row padding on the block axis. Default: `var(--space-3)`. */
   padBlock?: string | number;
-  /** `--support-rail-row-pad-inline` - Row padding on the inline axis - the density knob. Default: `var(--space-4)`. */
+  /** `--support-rail-row-pad-inline` - Row padding on the inline axis. Default: `var(--space-4)`. */
   padInline?: string | number;
 }
 
 /** The scoped properties SupportRail publishes as its theming contract. */
 export interface SupportRailTokens {
-  /** `--support-rail-width` - Panel width; the rail never exceeds its container. Default: `318px`. */
+  /** `--support-rail-width` - Panel width, capped by the container. Default: `318px`. */
   width?: string | number;
   /** The `--support-rail-row-*` knobs. */
   row?: SupportRailRowTokens;
-  /** `--support-rail-surface` - The one surface: the tab, and the panel it morphs into. Default: `var(--bg-subtle)`. */
+  /** `--support-rail-surface` - The tab, and the panel it morphs into. Default: `var(--bg-subtle)`. */
   surface?: string | number;
   /** `--support-rail-surface-raised` - The tab while hovered. Default: `var(--bg-surface)`. */
   surfaceRaised?: string | number;
@@ -419,15 +419,15 @@ export interface TokenProperties {
   '--warning'?: string | number;
   /** `--danger` - Destructive actions and errors - the danger button ladder, ring, subtle, text and wash follow. Default: `oklch(0.545 0.196 27)`. */
   '--danger'?: string | number;
-  /** `--neutral` - The gray ramp's hue - the accent by default, so chrome shares its temperature. A fixed colour cuts the grays loose. Read on :root only: a themed subtree inherits the ramp. Default: `var(--accent)`. */
+  /** `--neutral` - The gray ramp's hue - the accent by default, so chrome shares its temperature. Default: `var(--accent)`. */
   '--neutral'?: string | number;
-  /** `--radius` - Roundness - every --radius-<step> is a fixed ratio of it; 0 squares every corner. Default: `0.5rem`. */
+  /** `--radius` - Roundness - every --radius-<step> is a fixed ratio of it, 0 squaring every corner. Default: `0.5rem`. */
   '--radius'?: string | number;
   /** `--font-body` - The body face - every --type-* bundle follows. Default: `'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif`. */
   '--font-body'?: string | number;
   /** `--font-code` - The code face - --type-code follows. Default: `'Geist Mono', ui-monospace, 'SF Mono', 'Menlo', monospace`. */
   '--font-code'?: string | number;
-  /** `--gray-0` - The top of the ramp, not pure white: it carries --neutral like every rung below it, so a project that warms the neutral warms the canvas and the controls together. Every theme root derives its own rungs, so a subtree that repoints --neutral re-tints them. Chroma stops at 0.002 because a warm hue leaves sRGB above that at this lightness. Default: `oklch(from var(--neutral) 0.995 0.002 h)`. Re-derived on every theme root. */
+  /** `--gray-0` - The top of the ramp, not pure white: it carries --neutral like every rung below it. Default: `oklch(from var(--neutral) 0.995 0.002 h)`. Re-derived on every theme root. */
   '--gray-0'?: string | number;
   /** `--gray-50`. Default: `oklch(from var(--neutral) 0.984 0.003 h)`. Re-derived on every theme root. */
   '--gray-50'?: string | number;
@@ -453,7 +453,7 @@ export interface TokenProperties {
   '--gray-900'?: string | number;
   /** `--gray-950`. Default: `oklch(from var(--neutral) 0.165 0.007 h)`. Re-derived on every theme root. */
   '--gray-950'?: string | number;
-  /** `--shadow-rgb` - Cool near-black shadow ink on the white canvas; the dark theme casts pure black. Default: `15 22 25`. Dark: `0 0 0`. */
+  /** `--shadow-rgb` - Cool near-black on the white canvas. Default: `15 22 25`. Dark: `0 0 0`. */
   '--shadow-rgb'?: string | number;
   /** `--weight-regular`. Default: `400`. */
   '--weight-regular'?: string | number;
@@ -507,7 +507,7 @@ export interface TokenProperties {
   '--tracking-tight'?: string | number;
   /** `--tracking-display`. Default: `-0.021em`. */
   '--tracking-display'?: string | number;
-  /** `--type-display-lg` - Role bundles - size, leading, weight and tracking pre-composed; reach for these first. Default: `var(--weight-semibold) var(--size-display-lg)/var(--leading-display-lg) var(--font-body)`. Re-derived on every theme root. */
+  /** `--type-display-lg` - Size, leading, weight and tracking pre-composed - reach for these first. Default: `var(--weight-semibold) var(--size-display-lg)/var(--leading-display-lg) var(--font-body)`. Re-derived on every theme root. */
   '--type-display-lg'?: string | number;
   /** `--type-display`. Default: `var(--weight-semibold) var(--size-display)/var(--leading-display) var(--font-body)`. Re-derived on every theme root. */
   '--type-display'?: string | number;
@@ -581,25 +581,25 @@ export interface TokenProperties {
   '--radius-xl'?: string | number;
   /** `--radius-2xl`. Default: `calc(var(--radius) * 2)`. Re-derived on every theme root. */
   '--radius-2xl'?: string | number;
-  /** `--border-hairline` - Border widths - weight comes from the colour, not the thickness. Default: `1px`. */
+  /** `--border-hairline`. Default: `1px`. */
   '--border-hairline'?: string | number;
   /** `--border-emphasis`. Default: `1.5px`. */
   '--border-emphasis'?: string | number;
-  /** `--ring-width` - How far every focus ring reaches past the border box - the exact room a clipping ancestor reserves so a ring is never cut. Default: `3px`. */
+  /** `--ring-width` - How far every focus ring reaches past the border box. Default: `3px`. */
   '--ring-width'?: string | number;
-  /** `--layer-overlay` - a band - each overlay adds its stack depth, so a later one paints above an earlier one. Default: `1000`. */
+  /** `--layer-overlay` - a band - each overlay adds its stack depth on top. Default: `1000`. */
   '--layer-overlay'?: string | number;
   /** `--layer-toast`. Default: `1050`. */
   '--layer-toast'?: string | number;
   /** `--layer-tooltip`. Default: `1100`. */
   '--layer-tooltip'?: string | number;
-  /** `--layer-infinity` - the top of the stack - the theme reveal and the devtools panel, nothing paints above. Default: `2147483647`. */
+  /** `--layer-infinity`. Default: `2147483647`. */
   '--layer-infinity'?: string | number;
-  /** `--shadow-strength` - Multiplies every shadow alpha - 1 on the white canvas; black on dark needs 3-4x to read. Default: `1`. Dark: `3.5`. */
+  /** `--shadow-strength` - Multiplies every shadow alpha - 3-4x on dark. Default: `1`. Dark: `3.5`. */
   '--shadow-strength'?: string | number;
-  /** `--sheen-strength` - Multiplies every white top-light highlight - 1 on the white canvas, a fifth on dark. Default: `1`. Dark: `0.2`. */
+  /** `--sheen-strength` - Multiplies every white top-light highlight. Default: `1`. Dark: `0.2`. */
   '--sheen-strength'?: string | number;
-  /** `--glow-strength` - Multiplies the light a lifted hue fill casts around it - off on the white canvas, on in dark. Default: `0`. Dark: `1`. */
+  /** `--glow-strength` - Multiplies the light a lifted hue fill casts around it - off on the white canvas. Default: `0`. Dark: `1`. */
   '--glow-strength'?: string | number;
   /** `--shadow-xs`. Default: `0 1px 1px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--shadow-xs'?: string | number;
@@ -607,11 +607,11 @@ export interface TokenProperties {
   '--shadow-sm'?: string | number;
   /** `--shadow-md`. Default: `0 2px 4px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength))), 0 6px 12px rgb(var(--shadow-rgb) / calc(0.07 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--shadow-md'?: string | number;
-  /** `--shadow-lg` - The floating steps are three layers: a tight contact shadow, a mid layer for form, a wide ambient one. Without the contact layer the panel reads soft and unanchored. Default: `0 1px 2px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 4px 8px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength))), 0 12px 28px rgb(var(--shadow-rgb) / calc(0.1 * var(--shadow-strength)))`. Re-derived on every theme root. */
+  /** `--shadow-lg`. Default: `0 1px 2px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 4px 8px rgb(var(--shadow-rgb) / calc(0.04 * var(--shadow-strength))), 0 12px 28px rgb(var(--shadow-rgb) / calc(0.1 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--shadow-lg'?: string | number;
   /** `--shadow-xl`. Default: `0 1px 2px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 8px 16px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 24px 48px rgb(var(--shadow-rgb) / calc(0.14 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--shadow-xl'?: string | number;
-  /** `--ring-color-accent` - Focus & selection ring hues - each tracks its role; danger rings on its fill tone, the lighter face the destructive button rests on. Default: `color-mix(in oklab, var(--accent) 32%, transparent)`. Re-derived on every theme root. */
+  /** `--ring-color-accent` - Danger rings on its fill tone, the lighter face the destructive button rests on. Default: `color-mix(in oklab, var(--accent) 32%, transparent)`. Re-derived on every theme root. */
   '--ring-color-accent'?: string | number;
   /** `--ring-color-danger`. Default: `oklch(from var(--danger) 0.602 0.196 h / 0.3)`. Re-derived on every theme root. */
   '--ring-color-danger'?: string | number;
@@ -619,11 +619,11 @@ export interface TokenProperties {
   '--ring-color-warning'?: string | number;
   /** `--ring-color-success`. Default: `color-mix(in oklab, var(--success) 30%, transparent)`. Re-derived on every theme root. */
   '--ring-color-success'?: string | number;
-  /** `--ring-rest` - The rings themselves - outline values, so a ring never shares box-shadow with elevation and a clipping ancestor can reserve exactly --ring-gutter. Outlines follow border-radius everywhere this library supports. --ring-rest is the resting ring a control fades in from; --ring-inset is the offset that turns a ring inward, for a control flush with a clipping edge; --ring-gutter is the room a container that clips holds open so a child's outward ring survives, and the one value to zero when rings turn inward. Default: `var(--ring-width) solid transparent`. Re-derived on every theme root. */
+  /** `--ring-rest` - Outlines, not box-shadow, so a ring never collides with elevation and still follows border-radius. Default: `var(--ring-width) solid transparent`. Re-derived on every theme root. */
   '--ring-rest'?: string | number;
   /** `--ring-inset`. Default: `calc(var(--ring-width) * -1)`. Re-derived on every theme root. */
   '--ring-inset'?: string | number;
-  /** `--ring-gutter`. Default: `var(--ring-width)`. Re-derived on every theme root. */
+  /** `--ring-gutter` - The room a clipping container holds open for a child's ring. Default: `var(--ring-width)`. Re-derived on every theme root. */
   '--ring-gutter'?: string | number;
   /** `--ring-accent`. Default: `var(--ring-width) solid var(--ring-color-accent)`. Re-derived on every theme root. */
   '--ring-accent'?: string | number;
@@ -633,7 +633,7 @@ export interface TokenProperties {
   '--ring-warning'?: string | number;
   /** `--ring-success`. Default: `var(--ring-width) solid var(--ring-color-success)`. Re-derived on every theme root. */
   '--ring-success'?: string | number;
-  /** `--glow-accent` - Cast light - the hover of the primary and destructive buttons; each tracks its ring's hue. Default: `0 4px 16px oklch(from var(--accent) l c h / calc(0.4 * var(--glow-strength)))`. Re-derived on every theme root. */
+  /** `--glow-accent`. Default: `0 4px 16px oklch(from var(--accent) l c h / calc(0.4 * var(--glow-strength)))`. Re-derived on every theme root. */
   '--glow-accent'?: string | number;
   /** `--glow-danger`. Default: `0 4px 16px oklch(from var(--danger) 0.602 0.196 h / calc(0.4 * var(--glow-strength)))`. Re-derived on every theme root. */
   '--glow-danger'?: string | number;
@@ -645,11 +645,11 @@ export interface TokenProperties {
   '--duration-slow'?: string | number;
   /** `--duration-slower` - large-surface movement - dialog, sheet, page-scale reveals. Default: `450ms`. Collapses to `1ms` under reduced motion. */
   '--duration-slower'?: string | number;
-  /** `--duration-slowest` - hero-scale movement - card expansion, container transforms; the scale's ceiling. Default: `900ms`. Collapses to `1ms` under reduced motion. */
+  /** `--duration-slowest` - hero-scale movement - card expansion, container transforms. Default: `900ms`. Collapses to `1ms` under reduced motion. */
   '--duration-slowest'?: string | number;
-  /** `--duration-spin` - continuous loaders only; deliberately outside the UI-transition scale. Default: `600ms`. Collapses to `1200ms` under reduced motion. */
+  /** `--duration-spin` - continuous loaders only, outside the UI-transition scale. Default: `600ms`. Collapses to `1200ms` under reduced motion. */
   '--duration-spin'?: string | number;
-  /** `--duration-pulse` - ambient live/processing breathing; not collapsed under reduced motion. Default: `1600ms`. */
+  /** `--duration-pulse` - ambient breathing, not collapsed under reduced motion. Default: `1600ms`. */
   '--duration-pulse'?: string | number;
   /** `--ease-standard`. Default: `cubic-bezier(0.2, 0, 0, 1)`. */
   '--ease-standard'?: string | number;
@@ -661,7 +661,7 @@ export interface TokenProperties {
   '--ease-spring'?: string | number;
   /** `--ease-glide` - fast out, soft landing - a persistent element moving to a new target, never enter/exit. Default: `cubic-bezier( 0.32, 0.55, 0, 1 )`. */
   '--ease-glide'?: string | number;
-  /** `--distance-sm` - 8px - settling into place; the surface is already where it belongs. Default: `0.5rem`. */
+  /** `--distance-sm` - 8px - settling into place. Default: `0.5rem`. */
   '--distance-sm'?: string | number;
   /** `--distance-md` - 16px - arriving from an adjacent position - page turns, tab panels, paged ranges. Default: `1rem`. */
   '--distance-md'?: string | number;
@@ -697,19 +697,19 @@ export interface TokenProperties {
   '--glass-shadow'?: string | number;
   /** `--glass-shadow-hover`. Default: `0 2px 4px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 8px 18px rgb(var(--shadow-rgb) / calc(0.1 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--glass-shadow-hover'?: string | number;
-  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity, since the fills stay mid-lightness on dark. Default: `var(--gray-0)`. */
+  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity. Default: `var(--gray-0)`. */
   '--text-on-accent'?: string | number;
-  /** `--bg-app` - The canvas is the top of the ramp and cards and panels share it, separated by hairlines and shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp stop apart. All three take --neutral's hue, so warming the neutral warms page and control alike - repoint one of them only to change which rung a role sits on, never to change its temperature. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
+  /** `--bg-app` - Canvas, cards and panels share the top of the ramp, separated by hairlines rather than tint. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   '--bg-app'?: string | number;
-  /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.195 0.007 h)`. */
+  /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   '--bg-surface'?: string | number;
-  /** `--bg-surface-raised`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.24 0.008 h)`. */
+  /** `--bg-surface-raised`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.195 0.007 h)`. */
   '--bg-surface-raised'?: string | number;
-  /** `--bg-subtle`. Default: `var(--gray-50)`. Dark: `oklch(from var(--neutral) 0.222 0.007 h)`. */
+  /** `--bg-subtle`. Default: `var(--gray-50)`. Dark: `oklch(from var(--neutral) 0.154 0.006 h)`. */
   '--bg-subtle'?: string | number;
-  /** `--bg-muted`. Default: `var(--gray-100)`. Dark: `oklch(from var(--neutral) 0.255 0.008 h)`. */
+  /** `--bg-muted`. Default: `var(--gray-100)`. Dark: `oklch(from var(--neutral) 0.14 0.007 h)`. */
   '--bg-muted'?: string | number;
-  /** `--bg-inset`. Default: `var(--gray-150)`. Dark: `oklch(from var(--neutral) 0.13 0.006 h)`. */
+  /** `--bg-inset`. Default: `var(--gray-150)`. Dark: `oklch(from var(--neutral) 0.124 0.007 h)`. */
   '--bg-inset'?: string | number;
   /** `--bg-overlay`. Default: `color-mix(in oklab, var(--gray-900) 44%, transparent)`. Dark: `oklch(from var(--neutral) 0.06 0.004 h / 0.64)`. */
   '--bg-overlay'?: string | number;
@@ -733,7 +733,7 @@ export interface TokenProperties {
   '--border-default'?: string | number;
   /** `--border-strong`. Default: `var(--gray-300)`. Dark: `oklch(from var(--neutral) 0.4 0.011 h)`. */
   '--border-strong'?: string | number;
-  /** `--accent-fill` - Accent family. Fill is the resting face of a filled control, a step down on dark where it reads as a light source; hover, active and lift step lightness from the accent, the tints take only its hue. Default: `var(--accent)`. Dark: `oklch(from var(--accent) calc(l - 0.06) calc(c - 0.01) h)`. Re-derived on every theme root. */
+  /** `--accent-fill` - The resting face of a filled control. Default: `var(--accent)`. Dark: `oklch(from var(--accent) calc(l - 0.06) calc(c - 0.01) h)`. Re-derived on every theme root. */
   '--accent-fill'?: string | number;
   /** `--accent-lift`. Default: `oklch(from var(--accent) calc(l + 0.075) calc(c - 0.006) h)`. Re-derived on every theme root. */
   '--accent-lift'?: string | number;
@@ -751,11 +751,11 @@ export interface TokenProperties {
   '--accent-wash'?: string | number;
   /** `--text-accent`. Default: `var(--accent-active)`. Dark: `oklch(from var(--accent) calc(l + 0.14) calc(c - 0.012) h)`. Re-derived on every theme root. */
   '--text-accent'?: string | number;
-  /** `--neutral-wash` - Hover and press fills are translucent washes of the ink, never opaque near-whites: an opaque patch vanishes on a tinted surface, and a dark theme's light ink washes light by itself. Default: `color-mix(in oklab, var(--text-secondary) 6%, transparent)`. Re-derived on every theme root. */
+  /** `--neutral-wash` - Translucent washes of the ink, never opaque near-whites. Default: `color-mix(in oklab, var(--text-secondary) 6%, transparent)`. Re-derived on every theme root. */
   '--neutral-wash'?: string | number;
   /** `--neutral-wash-press`. Default: `color-mix(in oklab, var(--text-secondary) 10%, transparent)`. Re-derived on every theme root. */
   '--neutral-wash-press'?: string | number;
-  /** `--info` - Info reads as the accent's own hue one step down; repoint --info to give it a hue of its own. Default: `var(--accent-hover)`. Re-derived on every theme root. */
+  /** `--info` - The accent's hue one step down - repoint it for a hue of its own. Default: `var(--accent-hover)`. Re-derived on every theme root. */
   '--info'?: string | number;
   /** `--info-subtle`. Default: `oklch(from var(--info) 0.972 0.02 h)`. Dark: `oklch(from var(--info) 0.265 0.045 h)`. Re-derived on every theme root. */
   '--info-subtle'?: string | number;
@@ -775,7 +775,7 @@ export interface TokenProperties {
   '--warning-text'?: string | number;
   /** `--warning-wash`. Default: `oklch(from var(--warning) 0.76 0.14 h / 0.12)`. Dark: `oklch(from var(--warning) 0.76 0.14 h / 0.18)`. Re-derived on every theme root. */
   '--warning-wash'?: string | number;
-  /** `--danger-lift` - Danger carries the destructive button's ladder too: fill is the resting face, one step lighter than the --danger ink so white text sits on it; lift is the hover face above that. Default: `oklch(from var(--danger) 0.64 0.2 h)`. Re-derived on every theme root. */
+  /** `--danger-lift` - The destructive button's hover face, above --danger-fill. Default: `oklch(from var(--danger) 0.64 0.2 h)`. Re-derived on every theme root. */
   '--danger-lift'?: string | number;
   /** `--danger-fill`. Default: `oklch(from var(--danger) 0.602 0.196 h)`. Dark: `oklch(from var(--danger) 0.555 0.185 h)`. Re-derived on every theme root. */
   '--danger-fill'?: string | number;
@@ -789,7 +789,7 @@ export interface TokenProperties {
   '--danger-disabled'?: string | number;
   /** `--danger-wash`. Default: `oklch(from var(--danger) 0.602 0.196 h / 0.1)`. Dark: `oklch(from var(--danger) 0.602 0.196 h / 0.16)`. Re-derived on every theme root. */
   '--danger-wash'?: string | number;
-  /** `--glass-tint-neutral` - Per-tone glass tints - alpha kept low so the frost reads through. Default: `color-mix(in oklab, var(--text-muted) 13%, transparent)`. Re-derived on every theme root. */
+  /** `--glass-tint-neutral`. Default: `color-mix(in oklab, var(--text-muted) 13%, transparent)`. Re-derived on every theme root. */
   '--glass-tint-neutral'?: string | number;
   /** `--glass-tint-info`. Default: `color-mix(in oklab, var(--info) 17%, transparent)`. Re-derived on every theme root. */
   '--glass-tint-info'?: string | number;

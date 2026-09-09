@@ -50,7 +50,9 @@ export function bootTheme(config: ThemeBootConfig, stored?: unknown): Omit<Theme
   if (stored === undefined) {
     try {
       stored = JSON.parse(localStorage.getItem(config.key) || 'null');
-    } catch {}
+      /* Named binding, not `catch {}`: the client target downlevels an omitted binding and the server
+       target does not, so String(bootTheme) differs and the inline script mismatches on hydration. */
+    } catch (error) {}
   }
   const saved = (stored || {}) as { theme?: unknown; polarity?: unknown };
   if (typeof saved.theme === 'string' && themes.includes(saved.theme)) theme = saved.theme;

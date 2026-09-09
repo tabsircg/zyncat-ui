@@ -1,27 +1,36 @@
-/* The reset is the first layer in the order, so every rule here is the weakest thing in the
-   cascade: a component rule, a rule of yours, and Tailwind's preflight all win over it. That is
-   what makes it safe to ship - it only reaches an element nobody else has an opinion about.
-   It stays this short on purpose. Anything that moves type or spacing is the consumer's call. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.reset {
+  /* Not the default: iOS Safari inflates text in landscape without it. */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   *,
   *::before,
   *::after {
     box-sizing: border-box;
   }
 
-  /* The base layer paints body in the app surface; the UA's 8px margin would frame it in canvas. */
   body {
     margin: 0;
   }
 
-  /* Browsers give form controls a system font instead of inheriting one. */
+  /* The font shorthand resets every font longhand, the two settings ones included, and Safari
+   withholds letter-spacing from controls; each is restated so the control keeps inheriting. */
   button,
   input,
+  optgroup,
   select,
   textarea {
     font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+  }
+
+  /* Firefox's UA sheet dims placeholders to 0.54. */
+  ::placeholder {
+    opacity: 1;
   }
 }

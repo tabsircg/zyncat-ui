@@ -2,14 +2,14 @@
 
 @layer zyncat.components {
   .zc-flow-field {
-    /* The particle colour at rest - the ramp's cold end. */
+    /* The particle colour at rest. */
     --flow-field-ink: var(--text-subtle);
-    /* The particle colour at full speed - the ramp's hot end. */
+    /* The particle colour at full speed. */
     --flow-field-accent: var(--accent);
     /* The field's minimum height before content sizes it. */
     --flow-field-min-height: var(--space-10);
 
-    /* The twelve stops from ink to accent, sampled at the next measure; set all twelve for a ramp of your own. */
+    /* The twelve stops from ink to accent, set together for a ramp of your own. */
     --flow-field-ramp-0: var(--flow-field-ink);
     --flow-field-ramp-1: color-mix(in oklab, var(--flow-field-accent) 9%, var(--flow-field-ink));
     --flow-field-ramp-2: color-mix(in oklab, var(--flow-field-accent) 18%, var(--flow-field-ink));

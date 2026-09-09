@@ -343,7 +343,7 @@
     border-left: var(--border-hairline) solid var(--border-subtle);
   }
 
-  /* The slide is a CSS keyframe rather than Motion: the layoutId caps FLIP inside this grid on the same remount
+  /* A CSS keyframe rather than Motion: the layoutId caps FLIP inside this grid on the same remount
    and cannot share it with a Motion slide. */
   @media (prefers-reduced-motion: no-preference) {
     .zc-drp .zc-dtp__days[data-enter='1'] {
@@ -399,8 +399,7 @@
     z-index: 0;
     background: var(--accent-subtle);
   }
-  /* Overshoots the gap by 1px so neighbouring bands overlap instead of leaving a subpixel seam; the fill is
-   opaque so the overlap does not darken. */
+  /* Overshoots the gap by 1px so neighbouring bands overlap instead of leaving a subpixel seam. */
   .zc-drp__band--extL {
     left: calc(-1 * var(--space-1) - 1px);
   }
@@ -549,8 +548,8 @@
     cursor: not-allowed;
   }
 
-  /* The box is a div in .zc-fld__input chrome, so the input focus rules never reach it; these restate them, scoped
-   under .zc-tfd to outrank .zc-fld__input. */
+  /* The box is a div in .zc-fld__input chrome, so the input focus rules never reach it; these
+   restate them, scoped under .zc-tfd to outrank .zc-fld__input. */
   .zc-tfd__box {
     display: inline-flex;
     align-items: center;

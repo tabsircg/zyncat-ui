@@ -8,7 +8,7 @@
     "src/components/dev/motion-devtools.css": 1,
     "src/components/primitives/avatar/avatar.css": 1,
     "src/components/primitives/button/button.css": 1,
-    "src/components/primitives/collapse/collapse.css": 3,
+    "src/components/primitives/collapse/collapse.css": 2,
     "src/components/primitives/input/input.css": 1,
     "src/components/primitives/radio-group/radio-group.css": 2,
     "src/components/primitives/tag/tag.css": 1,

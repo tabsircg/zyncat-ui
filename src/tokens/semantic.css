@@ -1,13 +1,8 @@
-/* Semantic layer - the intent-named roles components consume.
-   Neutral roles are a polarity: light values on `:root, [data-polarity='light']`, dark ones in dark.css.
-   Derived roles sit on every theme root, so a subtree that repoints a decision re-derives them. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root {
-    /* The ink on a hue fill - the ramp's lightest rung in either polarity, since the fills stay
-     mid-lightness on dark. */
+    /* The ink on a hue fill - the ramp's lightest rung in either polarity. */
     --text-on-accent: var(--gray-0);
   }
 
@@ -15,10 +10,7 @@
   [data-polarity='light'] {
     color-scheme: light;
 
-    /* The canvas is the top of the ramp and cards and panels share it, separated by hairlines and
-     shadow the way print separates with rules rather than tint; subtle < muted < inset step one ramp
-     stop apart. All three take --neutral's hue, so warming the neutral warms page and control alike -
-     repoint one of them only to change which rung a role sits on, never to change its temperature. */
+    /* Canvas, cards and panels share the top of the ramp, separated by hairlines rather than tint. */
     --bg-app: var(--gray-0);
     --bg-surface: var(--gray-0);
     --bg-surface-raised: var(--gray-0);
@@ -44,8 +36,7 @@
   :root,
   [data-theme],
   [data-polarity] {
-    /* Accent family. Fill is the resting face of a filled control, a step down on dark where it reads
-     as a light source; hover, active and lift step lightness from the accent, the tints take only its hue. */
+    /* The resting face of a filled control. */
     --accent-fill: var(--accent);
     --accent-lift: oklch(from var(--accent) calc(l + 0.075) calc(c - 0.006) h);
     --accent-hover: oklch(from var(--accent) calc(l - 0.07) calc(c - 0.004) h);
@@ -56,12 +47,11 @@
     --accent-wash: oklch(from var(--accent) l c h / 0.08);
     --text-accent: var(--accent-active);
 
-    /* Hover and press fills are translucent washes of the ink, never opaque near-whites: an opaque
-     patch vanishes on a tinted surface, and a dark theme's light ink washes light by itself. */
+    /* Translucent washes of the ink, never opaque near-whites. */
     --neutral-wash: color-mix(in oklab, var(--text-secondary) 6%, transparent);
     --neutral-wash-press: color-mix(in oklab, var(--text-secondary) 10%, transparent);
 
-    /* Info reads as the accent's own hue one step down; repoint --info to give it a hue of its own. */
+    /* The accent's hue one step down - repoint it for a hue of its own. */
     --info: var(--accent-hover);
     --info-subtle: oklch(from var(--info) 0.972 0.02 h);
     --info-text: oklch(from var(--info) calc(l - 0.082) calc(c - 0.014) h);
@@ -75,8 +65,7 @@
     --warning-text: oklch(from var(--warning) calc(l - 0.14) calc(c - 0.024) h);
     --warning-wash: oklch(from var(--warning) 0.76 0.14 h / 0.12);
 
-    /* Danger carries the destructive button's ladder too: fill is the resting face, one step
-     lighter than the --danger ink so white text sits on it; lift is the hover face above that. */
+    /* The destructive button's hover face, above --danger-fill. */
     --danger-lift: oklch(from var(--danger) 0.64 0.2 h);
     --danger-fill: oklch(from var(--danger) 0.602 0.196 h);
     --danger-active: oklch(from var(--danger) calc(l - 0.067) calc(c - 0.024) h);
@@ -85,7 +74,6 @@
     --danger-disabled: oklch(from var(--danger) 0.8 0.09 h);
     --danger-wash: oklch(from var(--danger) 0.602 0.196 h / 0.1);
 
-    /* Per-tone glass tints - alpha kept low so the frost reads through. */
     --glass-tint-neutral: color-mix(in oklab, var(--text-muted) 13%, transparent);
     --glass-tint-info: color-mix(in oklab, var(--info) 17%, transparent);
     --glass-tint-success: color-mix(in oklab, var(--success) 17%, transparent);

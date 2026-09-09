@@ -1,17 +1,10 @@
-/* The neutral ramp and the shadow ink. The ramp is --neutral's hue at whisper chroma, peaking at
-   the mid steps, so chrome, fills and text share the accent's temperature, and lightness is the
-   contrast spine. The ramp is a material: the dark theme derives its roles from --neutral. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
   :root,
   [data-theme],
   [data-polarity] {
-    /* The top of the ramp, not pure white: it carries --neutral like every rung below it, so a
-       project that warms the neutral warms the canvas and the controls together. Every theme root
-       derives its own rungs, so a subtree that repoints --neutral re-tints them. Chroma stops at
-       0.002 because a warm hue leaves sRGB above that at this lightness. */
+    /* The top of the ramp, not pure white: it carries --neutral like every rung below it. */
     --gray-0: oklch(from var(--neutral) 0.995 0.002 h);
     --gray-50: oklch(from var(--neutral) 0.984 0.003 h);
     --gray-100: oklch(from var(--neutral) 0.97 0.004 h);
@@ -29,7 +22,7 @@
 
   :root,
   [data-polarity='light'] {
-    /* Cool near-black shadow ink on the white canvas; the dark theme casts pure black. */
+    /* Cool near-black on the white canvas. */
     --shadow-rgb: 15 22 25;
   }
 }

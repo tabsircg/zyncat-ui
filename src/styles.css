@@ -1,7 +1,5 @@
 /* Zyncat UI global layer - import ONCE at your app root: import '@zyncat/ui/styles.css'.
-   The reset, fonts, tokens, the dark theme, the page defaults and the shared glass utility, in the
-   `zyncat` layers so an unlayered rule of yours wins. Component CSS ships per component.
-   Order matters, and the reset layer is first so everything else outranks it. */
+   The reset layer is first, so everything else outranks it. Component CSS ships per component. */
 
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 

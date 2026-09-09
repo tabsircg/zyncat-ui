@@ -12,7 +12,7 @@
     --morphing-text-leading: 1.2;
     /* Letter spacing. */
     --morphing-text-tracking: var(--tracking-display);
-    /* How much letters blur on the way between words; 0 cuts clean. */
+    /* How much letters blur between words, 0 cutting clean. */
     --morphing-text-smear: 1;
     /* The rule at rest. */
     --morphing-text-rule-ink: var(--text-strong);

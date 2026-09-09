@@ -1,9 +1,3 @@
-/* The base layer paints the page - app surface, body ink, body type, the selection - so
-   `data-theme` and `data-polarity` on <html> turn the whole page, not only the components. Its own
-   cascade layer, after the components, so a consumer's unlayered body rule still wins; antialiasing
-   keeps light ink from bloating. The selection reads --accent, so a retheme moves it with
-   everything else. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.base {

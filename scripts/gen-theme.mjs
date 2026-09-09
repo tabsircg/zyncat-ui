@@ -105,7 +105,6 @@ const blockKind = (selector) => {
   return selector.includes('[data-theme]') ? 'themed' : 'root';
 };
 
-/* A token is declared by an unconditional :root block; a @media block only overrides one. */
 const mediaSpans = (css) =>
   [...css.matchAll(/@media[^{]*\{/g)]
     .map((match) => [match.index, matchBraces(css, css.indexOf('{', match.index))])
@@ -748,19 +747,12 @@ const bridgeCount = bridgeSections.reduce((total, lines) => total + lines.length
 
 const tailwindLines = [
   '/* @zyncat/ui/tailwind.css - the token vocabulary as Tailwind v4 utilities, with IntelliSense.',
-  '   Import it on the first line of the stylesheet Tailwind compiles, above `@import "tailwindcss"`,',
-  '   and keep `@zyncat/ui/styles.css` on its JS import at the app root.',
+  '   Import it on the first line of the stylesheet Tailwind compiles, above `@import "tailwindcss"`:',
+  '   the first layer statement fixes the order, and `@zyncat/ui/styles.css` still loads at the app root.',
   '',
-  '   Every entry is `inline reference`. `inline` makes the utility read the zyncat token itself,',
-  '   so a themed subtree re-derives it; `reference` keeps Tailwind from writing the entry',
-  '   onto `:root`, where the names Tailwind also ships - `--radius-*`, `--shadow-*`,',
-  '   `--tracking-*` - would overwrite the token the components read, and where the entries',
-  '   that carry the same name on both sides would be a cycle.',
-  '',
-  '   The layer statement pins the Tailwind layers around the zyncat ones - utilities above',
-  '   component rules, the base layer above preflight, the zyncat reset below it so preflight',
-  '   wins - and holds only while this file precedes the Tailwind import, because the first',
-  '   statement fixes the order.',
+  '   `inline` makes each utility read the zyncat token itself, so a themed subtree re-derives it;',
+  '   `reference` keeps Tailwind off `:root`, where the names it also ships - `--radius-*`,',
+  '   `--shadow-*`, `--tracking-*` - would overwrite the token the components read.',
   '',
   '   Generated from the token CSS by `scripts/gen-theme.mjs` - `pnpm sync` rebuilds it. */',
   '',

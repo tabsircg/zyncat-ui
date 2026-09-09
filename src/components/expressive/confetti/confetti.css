@@ -2,13 +2,13 @@
 
 @layer zyncat.components {
   .zc-confetti {
-    /* The five papers a burst draws from; a slot set to a role follows the theme. */
+    /* The five papers a burst draws from. */
     --confetti-paper-1: oklch(0.53 0.2 288);
     --confetti-paper-2: var(--accent);
     --confetti-paper-3: oklch(0.78 0.115 62);
     --confetti-paper-4: oklch(0.67 0.18 12);
     --confetti-paper-5: var(--text-strong);
-    /* How often each paper appears - five weights, in slot order. */
+    /* How often each paper appears, in slot order. */
     --confetti-weights: 1 1 1 1 0.45;
 
     /* What the reverse side of a piece darkens toward. */

@@ -38,7 +38,7 @@
   :root,
   [data-theme],
   [data-polarity] {
-    /* Role bundles - size, leading, weight and tracking pre-composed; reach for these first. */
+    /* Size, leading, weight and tracking pre-composed - reach for these first. */
     --type-display-lg: var(--weight-semibold) var(--size-display-lg)/var(--leading-display-lg) var(--font-body);
     --type-display: var(--weight-semibold) var(--size-display)/var(--leading-display) var(--font-body);
     --type-title-lg: var(--weight-semibold) var(--size-title-lg)/var(--leading-title-lg) var(--font-body);

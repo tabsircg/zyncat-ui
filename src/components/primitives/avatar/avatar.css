@@ -8,7 +8,8 @@
     --avatar-edge: oklch(1 0 0 / calc(0.5 * var(--sheen-strength)));
     --avatar-shade: oklch(0.225 0.012 264 / 0.05);
     --avatar-sheen: oklch(1 0 0 / calc(0.35 * var(--sheen-strength)));
-    /* The identity palette is the component's own, so it flips with the color-scheme the polarity blocks set instead of living in dark.css. */
+    /* The identity palette is the component's own, so it flips with the color-scheme the polarity
+     blocks set instead of living in dark.css. */
     --avatar-1-bg: light-dark(oklch(0.945 0.04 250), oklch(0.31 0.055 250));
     --avatar-1-fg: light-dark(oklch(0.45 0.08 250), oklch(0.87 0.07 250));
     --avatar-2-bg: light-dark(oklch(0.945 0.04 292), oklch(0.31 0.055 292));

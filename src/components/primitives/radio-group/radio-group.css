@@ -1,8 +1,8 @@
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.components {
-  /* Bespoke px: the dot sizes sit off the token ramp on purpose. The authored value is the ring
-   gap; the marker falls out of it, so the two never leave an odd remainder to halve. */
+  /* Bespoke px: the authored value is the ring gap and the marker falls out of it, so the two
+   never leave an odd remainder to halve. */
   .zc-rg {
     --radio-group-dot: 18px;
     --radio-group-dot-gap: 4px;

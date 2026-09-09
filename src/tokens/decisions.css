@@ -1,7 +1,3 @@
-/* The decisions - the values the rest of the vocabulary derives from. zyncat-ui init copies the
-   block below, comments included, into the project as zyncat.theme.css. The block also answers to
-   `data-theme="default"`, so a subtree naming the default palette inside another one resets to it. */
-
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
@@ -15,10 +11,9 @@
     --warning: oklch(0.7 0.142 75);
     /* Destructive actions and errors - the danger button ladder, ring, subtle, text and wash follow. */
     --danger: oklch(0.545 0.196 27);
-    /* The gray ramp's hue - the accent by default, so chrome shares its temperature. A fixed colour
-       cuts the grays loose. Read on :root only: a themed subtree inherits the ramp. */
+    /* The gray ramp's hue - the accent by default, so chrome shares its temperature. */
     --neutral: var(--accent);
-    /* Roundness - every --radius-<step> is a fixed ratio of it; 0 squares every corner. */
+    /* Roundness - every --radius-<step> is a fixed ratio of it, 0 squaring every corner. */
     --radius: 0.5rem;
     /* The body face - every --type-* bundle follows. */
     --font-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;

@@ -2,7 +2,7 @@
 
 @layer zyncat.components {
   .zc-theme-transition {
-    /* The z-index the arriving page paints at; it has to clear every panel it covers. */
+    /* The z-index the arriving page paints at, above every panel it covers. */
     --theme-transition-layer: var(--layer-infinity);
 
     position: fixed;

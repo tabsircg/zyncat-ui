@@ -24,7 +24,7 @@
     --weight-field-peak-weight: 900;
     /* How much a unit widens under the pointer. */
     --weight-field-hover-padding: calc(1em / 12);
-    /* The text stroke every unit carries; the peak letter doubles it. */
+    /* The text stroke every unit carries, doubled on the peak letter. */
     --weight-field-stroke: calc(1em * 125 / 6000);
     --_weight-field-stroke-peak: calc(var(--weight-field-stroke) * 2);
     /* How long a unit takes to settle at a new weight. */

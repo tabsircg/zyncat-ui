@@ -2,18 +2,18 @@
 
 @layer zyncat.components {
   .zc-support-rail {
-    /* Panel width; the rail never exceeds its container. */
+    /* Panel width, capped by the container. */
     --support-rail-width: 318px;
     --_support-rail-tab-width: 40px;
     --_support-rail-tab-height: 48px;
 
-    /* Row padding on the block axis - the density knob. */
+    /* Row padding on the block axis. */
     --support-rail-row-pad-block: var(--space-3);
-    /* Row padding on the inline axis - the density knob. */
+    /* Row padding on the inline axis. */
     --support-rail-row-pad-inline: var(--space-4);
     --_support-rail-row-nudge: 5px;
 
-    /* The one surface: the tab, and the panel it morphs into. */
+    /* The tab, and the panel it morphs into. */
     --support-rail-surface: var(--bg-subtle);
     /* The tab while hovered. */
     --support-rail-surface-raised: var(--bg-surface);
