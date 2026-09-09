@@ -11,6 +11,7 @@ import { Icon } from '../../internal/icon/Icon';
 import { activationProps, type ActivateOn } from '../../internal/utils/activation';
 import { Button } from '../../primitives/button/Button';
 import { add, col, DOW, grid, MONTHS, pad, parse, today, toKey, tzLabel, within } from './date-utils';
+import { MonthJump } from './month-jump';
 import { useDayFocus } from './use-day-focus';
 
 const CAP_FLIP = { timing: UIMotion.t.settle };
@@ -153,10 +154,19 @@ export function DrpPanel({
   }
 
   const prevViewIdxRef = useRef(viewIdx);
-  const navDir = prevViewIdxRef.current === viewIdx ? 0 : viewIdx > prevViewIdxRef.current ? 1 : -1;
+  const jumpedRef = useRef(false);
+  const navDir =
+    prevViewIdxRef.current === viewIdx || jumpedRef.current ? 0 : viewIdx > prevViewIdxRef.current ? 1 : -1;
   useEffect(() => {
     prevViewIdxRef.current = viewIdx;
+    jumpedRef.current = false;
   }, [viewIdx]);
+
+  function jumpToMonth(y: number, m: number, offset: number) {
+    jumpedRef.current = true;
+    const base = new Date(y, m - offset, 1);
+    setView({ y: base.getFullYear(), m: base.getMonth() });
+  }
 
   function moveFocus(deltaDays: number, deltaMonths = 0) {
     const d = parse(focusKey);
@@ -276,7 +286,7 @@ export function DrpPanel({
     const nextStart = toKey(new Date(y, m + 1, 1));
     return (
       <div className="zc-dtp__cal" key={offset}>
-        <div className={'zc-drp__mhead' + (withNext && !withPrev ? ' zc-drp__mhead--right' : '')}>
+        <div className="zc-drp__mhead">
           {withPrev ? (
             <button
               type="button"
@@ -288,9 +298,14 @@ export function DrpPanel({
               <Icon name="caret-left" size="sm" />
             </button>
           ) : null}
-          <span className="zc-dtp__month">
-            {MONTHS[m]} <span className="zc-dtp__year">{y}</span>
-          </span>
+          <MonthJump
+            y={y}
+            m={m}
+            min={min}
+            max={max}
+            activateOn={activateOn}
+            onPick={(py, pm) => jumpToMonth(py, pm, offset)}
+          />
           {withNext ? (
             <button
               type="button"

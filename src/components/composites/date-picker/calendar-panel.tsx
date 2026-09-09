@@ -14,6 +14,7 @@ import { activationProps, type ActivateOn } from '../../internal/utils/activatio
 import { cx } from '../../internal/utils/cx';
 import { Button } from '../../primitives/button/Button';
 import { col, DOW, grid, MONTHS, parse, today, toKey, tzLabel, within } from './date-utils';
+import { MonthJump } from './month-jump';
 import { useDayFocus } from './use-day-focus';
 
 const PILL_FLIP = { timing: UIMotion.t.settle };
@@ -56,6 +57,11 @@ export function DtpPanel({ val, commit, min, max, timezone, label, close, slot, 
   function goToMonth(y: number, m: number) {
     setView((v) => (v.y === y && v.m === m ? v : { y: y, m: m }));
   }
+  const jumpedRef = useRef(false);
+  function jumpToMonth(y: number, m: number) {
+    jumpedRef.current = true;
+    goToMonth(y, m);
+  }
   function nav(dir: number) {
     const d = new Date(view.y, view.m + dir, 1);
     goToMonth(d.getFullYear(), d.getMonth());
@@ -75,7 +81,9 @@ export function DtpPanel({ val, commit, min, max, timezone, label, close, slot, 
     const prev = prevViewRef.current;
     prevViewRef.current = viewIdx;
     const el = daysRef.current;
-    if (prev == null || prev === viewIdx || !el) return;
+    const jumped = jumpedRef.current;
+    jumpedRef.current = false;
+    if (prev == null || prev === viewIdx || !el || jumped) return;
     const dir = viewIdx > prev ? 1 : -1;
     animate(el, slideIn(dir * UIMotion.dist.md, UIMotion.t.enter));
   }, [viewIdx]);
@@ -129,9 +137,7 @@ export function DtpPanel({ val, commit, min, max, timezone, label, close, slot, 
     <div className="zc-dtp" role="dialog" aria-label={label || 'Pick a date'}>
       <div className="zc-dtp__cal">
         <div className="zc-dtp__head">
-          <span className="zc-dtp__month" aria-live="polite">
-            {MONTHS[view.m]} <span className="zc-dtp__year">{view.y}</span>
-          </span>
+          <MonthJump y={view.y} m={view.m} min={min} max={max} activateOn={activateOn} onPick={jumpToMonth} />
           <div className="zc-dtp__navs">
             <button
               type="button"
