@@ -6,7 +6,11 @@ import { ZyncatTheme, type ThemeTransitionOptions } from '@zyncat/ui/theme';
 
 import { DOCS_THEMES } from '@/lib/themes';
 
-export const DEFAULT_TRANSITION: ThemeTransitionOptions = { effect: 'paint', speed: 1, intensity: 1 };
+export const DEFAULT_TRANSITION: ThemeTransitionOptions = {
+  effect: 'tide',
+  speed: process.env.NODE_ENV === 'development' ? 5 : 1,
+  intensity: 2.5,
+};
 
 let transition = DEFAULT_TRANSITION;
 const listeners = new Set<() => void>();

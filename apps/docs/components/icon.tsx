@@ -1,5 +1,3 @@
-// The docs app's own icon source - the library ships no icon set and takes icons as nodes.
-// Import exactly the glyphs the demos use; `name` is typed to this registry.
 import {
   ArrowCounterClockwise,
   ArrowLeft,

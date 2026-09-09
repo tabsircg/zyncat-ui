@@ -9,7 +9,7 @@ import { TabPanel, Tabs } from '@zyncat/ui/tabs';
 import { toast } from '@zyncat/ui/toast-store';
 import { Tooltip } from '@zyncat/ui/tooltip';
 
-import { DOCS, GROUPS, NEW_SLUGS, type Doc } from '../content/registry';
+import { DOCS, NEW_SLUGS, type Doc } from '../content/registry';
 import type { PageSeo } from '../content/seo/types';
 import { Faq } from './Faq';
 import { Icon } from './icon';
@@ -23,9 +23,6 @@ export function PageView({ doc, seo }: { doc: Doc; seo?: PageSeo }) {
   const [heroTab, setHeroTab] = useState('preview');
   const [heroDir, setHeroDir] = useState<1 | -1 | 0>(0);
   const [heroKey, setHeroKey] = useState(0);
-
-  const group = GROUPS.find((g) => g.docs.some((d) => d.slug === slug));
-  const groupTitle = group?.title ?? 'Components';
 
   const currentIndex = DOCS.findIndex((d) => d.slug === slug);
   const prevDoc = currentIndex > 0 ? DOCS[currentIndex - 1] : null;
@@ -50,11 +47,6 @@ export function PageView({ doc, seo }: { doc: Doc; seo?: PageSeo }) {
   return (
     <div className="doc-layout" key={slug}>
       <article className="page">
-        <div className="eyebrow">
-          <span className="eyebrow__left">{groupTitle}</span>
-          <span className="eyebrow__meta">{doc.Content ? 'Zyncat UI — Rev 0.11' : `@zyncat/ui/${slug}`}</span>
-        </div>
-
         <header className="page__head">
           <div className="page__title-row">
             <h1 className="page__title">{headline ?? label}</h1>

@@ -78,8 +78,6 @@ export function DocsShell({ children }: { children: ReactNode }) {
             </Link>
           </div>
 
-          <span className="navbar__motto">A catalogue of working parts — rev 0.11</span>
-
           <div className="navbar__right">
             <nav className="navbar__nav" aria-label="Site">
               <Link
