@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Badge, type BadgeProps, type BadgeTone } from '@zyncat/ui/badge';
 import { Button, type ButtonProps } from '@zyncat/ui/button';
 import { Collapse, type CollapseProps } from '@zyncat/ui/collapse';
 import { CountBadge } from '@zyncat/ui/count-badge';
+import { Spinner, type SpinnerProps } from '@zyncat/ui/spinner';
 import { StatusBadge, type PostStatus } from '@zyncat/ui/status-badge';
 
 import { Icon, type IconProps } from '../icon';
@@ -18,8 +19,11 @@ type IconWeight = NonNullable<IconProps['weight']>;
 type CollapseAxis = NonNullable<CollapseProps['axis']>;
 type BadgeVariant = NonNullable<BadgeProps['variant']>;
 type BadgeSize = NonNullable<BadgeProps['size']>;
+type SpinnerVariant = NonNullable<SpinnerProps['variant']>;
+type SpinnerSize = NonNullable<SpinnerProps['size']>;
+type SpinnerThickness = NonNullable<SpinnerProps['thickness']>;
 
-const BUTTON_VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger', 'link', 'unstyled'];
+const BUTTON_VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger', 'link'];
 const BUTTON_SIZES: readonly ButtonSize[] = ['sm', 'md', 'lg', 'icon'];
 const ICON_SIZES: readonly IconSize[] = ['sm', 'md', 'lg'];
 const ICON_WEIGHTS: readonly IconWeight[] = ['thin', 'light', 'regular', 'bold', 'fill', 'duotone'];
@@ -27,19 +31,34 @@ const BADGE_TONES: readonly BadgeTone[] = ['neutral', 'info', 'success', 'warnin
 const BADGE_VARIANTS: readonly BadgeVariant[] = ['glass', 'outline'];
 const BADGE_SIZES: readonly BadgeSize[] = ['sm', 'md'];
 
+const SPINNER_VARIANTS: readonly SpinnerVariant[] = ['arc', 'dots', 'pulse'];
+const SPINNER_SIZES: readonly SpinnerSize[] = ['inherit', 'sm', 'md', 'lg'];
+const SPINNER_THICKNESS: readonly SpinnerThickness[] = ['thin', 'regular', 'bold'];
+
+const DEMO_REQUEST_MS = 2000;
+
 export function ButtonPlayground() {
   const [variant, setVariant] = useState<ButtonVariant>('primary');
   const [size, setSize] = useState<ButtonSize>('md');
+  const [scheduling, setScheduling] = useState(false);
+  const requestRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => () => clearTimeout(requestRef.current), []);
+
+  const schedule = () => {
+    setScheduling(true);
+    requestRef.current = setTimeout(() => setScheduling(false), DEMO_REQUEST_MS);
+  };
 
   const code =
     size === 'icon'
-      ? `<Button variant="${variant}" size="icon" aria-label="Schedule post">\n  <span className="zc-btn__icon">\n    <PlusIcon />\n  </span>\n</Button>`
-      : `<Button variant="${variant}" size="${size}">Schedule post</Button>`;
+      ? `<Button variant="${variant}" size="icon" loading={scheduling} onClick={schedule} aria-label="Schedule post">\n  <span className="zc-btn__icon">\n    <PlusIcon />\n  </span>\n</Button>`
+      : `<Button variant="${variant}" size="${size}" loading={scheduling} onClick={schedule}>\n  Schedule post\n</Button>`;
 
   return (
     <Playground
       code={code}
-      note="unstyled emits base chrome only - sizing, focus ring, layout - so a local className can re-skin it."
+      note="Press it to watch the loading state - it holds for two seconds, then returns. The label stays mounted but invisible, so the button never changes width."
       rail={
         <>
           <KnobSegment label="variant" value={variant} onChange={setVariant} options={BUTTON_VARIANTS} />
@@ -47,7 +66,13 @@ export function ButtonPlayground() {
         </>
       }
     >
-      <Button variant={variant} size={size} aria-label={size === 'icon' ? 'Schedule post' : undefined}>
+      <Button
+        variant={variant}
+        size={size}
+        loading={scheduling}
+        onClick={schedule}
+        aria-label={size === 'icon' ? 'Schedule post' : undefined}
+      >
         {size === 'icon' ? (
           <span className="zc-btn__icon">
             <Icon name="plus" size="sm" />
@@ -212,6 +237,36 @@ export function CountBadgePlayground() {
         <Button size="sm" variant="secondary" onClick={() => setCount((c) => c + 1)}>
           +1 Count
         </Button>
+      </div>
+    </Playground>
+  );
+}
+
+export function SpinnerPlayground() {
+  const [variant, setVariant] = useState<SpinnerVariant>('arc');
+  const [size, setSize] = useState<SpinnerSize>('lg');
+  const [thickness, setThickness] = useState<SpinnerThickness>('regular');
+
+  const code = `<Spinner variant="${variant}" size="${size}" thickness="${thickness}" />`;
+
+  return (
+    <Playground
+      code={code}
+      note="size inherit draws at 1em, so it matches whatever text it sits beside; the named sizes are type tokens. thickness scales with the diameter."
+      rail={
+        <>
+          <KnobSegment label="variant" value={variant} onChange={setVariant} options={SPINNER_VARIANTS} />
+          <KnobSegment label="size" value={size} onChange={setSize} options={SPINNER_SIZES} />
+          <KnobSegment label="thickness" value={thickness} onChange={setThickness} options={SPINNER_THICKNESS} />
+        </>
+      }
+    >
+      <div style={{ display: 'flex', gap: '28px', alignItems: 'center', color: 'var(--text-accent)' }}>
+        <Spinner variant={variant} size={size} thickness={thickness} />
+        <span style={{ display: 'inline-flex', gap: '8px', alignItems: 'center', color: 'var(--text-secondary)' }}>
+          <Spinner variant={variant} thickness={thickness} label={null} />
+          Inherits the line it sits on
+        </span>
       </div>
     </Playground>
   );

@@ -15,13 +15,7 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
       description:
         'Standard <button> attributes (onClick, name, form, aria-*, data-*, ...) forwarded verbatim. Bare `<button>` attributes also pass through directly; `htmlProps` wins on conflict.',
     },
-    {
-      name: 'variant',
-      type: "'primary' | 'secondary' | 'ghost' | 'danger' | 'link' | 'unstyled'",
-      default: "'primary'",
-      description:
-        "Visual weight / intent. `unstyled` emits base chrome only (sizing, focus ring, layout) with no skin - for local re-skins via `className`, e.g. Alert's tone action.",
-    },
+    { name: 'variant', type: 'ButtonVariant', default: "'primary'", description: 'Visual weight / intent.' },
     {
       name: 'ref',
       type: 'Ref<HTMLButtonElement>',
@@ -29,7 +23,7 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     },
     {
       name: 'size',
-      type: "'sm' | 'md' | 'lg' | 'icon'",
+      type: 'ButtonSize',
       default: "'md'",
       description: 'Control height. sm 28px - md 32px (default) - lg 37px.',
     },
@@ -43,14 +37,44 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     {
       name: 'loading',
       type: 'boolean',
-      description: 'Loading - swaps content for a spinner and makes the button inert.',
+      description:
+        'Loading - swaps the label for a spinner and makes the button inert. The label stays mounted but invisible, so the button holds its width.',
     },
     { name: 'fullWidth', type: 'boolean', description: 'Stretch to fill the container width.' },
     { name: 'className', type: 'string', description: 'Extra class(es) merged onto the button.' },
     { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the button.' },
     { name: 'children', type: 'ReactNode', description: 'Button label.' },
-    { name: 'onClick', type: 'React.MouseEventHandler<HTMLButtonElement>', description: 'Click handler' },
-    { name: 'onPointerDown', type: 'React.PointerEventHandler<HTMLButtonElement>', description: 'Pointer handler' },
+  ],
+  spinner: [
+    {
+      name: 'size',
+      type: 'SpinnerSize',
+      default: "'inherit'",
+      description:
+        "Diameter. `inherit` tracks the parent's font size at 1em, so a spinner beside a label always matches it; for any other size set `style={{ fontSize }}`.",
+    },
+    {
+      name: 'thickness',
+      type: 'SpinnerThickness',
+      default: "'regular'",
+      description: 'Stroke weight, scaled to the diameter so it holds up at every size.',
+    },
+    { name: 'variant', type: 'SpinnerVariant', default: "'arc'", description: 'Which loader to draw.' },
+    {
+      name: 'label',
+      type: 'string | null',
+      default: "'Loading'",
+      description:
+        'What assistive tech announces. Pass `null` when something nearby already announces the wait - a button\'s `aria-busy`, an enclosing `role="status"` - and the spinner turns decorative rather than announcing it twice.',
+    },
+    {
+      name: 'delay',
+      type: 'boolean',
+      default: 'false',
+      description: 'Hold invisible for a beat before fading in, so work that finishes quickly never flashes a spinner.',
+    },
+    { name: 'className', type: 'string', description: 'Extra class(es) merged onto the root.' },
+    { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the root.' },
   ],
   collapse: [
     {
@@ -132,6 +156,7 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     },
     { name: 'className', type: 'string', description: 'Extra class(es) merged onto the chip.' },
     { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the chip.' },
+    { name: 'icon', type: 'ReactNode', description: 'Optional leading <Icon> (overrides dot if both set).' },
     {
       name: 'htmlProps',
       type: 'Omit<HTMLAttributes<HTMLSpanElement>, keyof BadgeOwnProps> & DataAttributes',
@@ -140,7 +165,6 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     { name: 'dot', type: 'boolean', description: 'Leading status dot.' },
     { name: 'live', type: 'boolean', description: 'Dot pulses (implies dot) - for in-progress status.' },
     { name: 'pill', type: 'boolean', description: 'Fully-rounded shape.' },
-    { name: 'icon', type: 'ReactNode', description: 'Optional leading <Icon> (overrides dot if both set).' },
   ],
   'count-badge': [
     {
@@ -159,6 +183,7 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     },
     { name: 'className', type: 'string', description: 'Extra class(es) merged onto the chip.' },
     { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the chip.' },
+    { name: 'icon', type: 'ReactNode', description: 'Optional leading <Icon> (overrides dot if both set).' },
     { name: 'tone', type: 'BadgeTone', default: "'neutral'", description: 'Status hue.' },
     {
       name: 'htmlProps',
@@ -168,7 +193,6 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
     { name: 'dot', type: 'boolean', description: 'Leading status dot.' },
     { name: 'live', type: 'boolean', description: 'Dot pulses (implies dot) - for in-progress status.' },
     { name: 'pill', type: 'boolean', description: 'Fully-rounded shape.' },
-    { name: 'icon', type: 'ReactNode', description: 'Optional leading <Icon> (overrides dot if both set).' },
   ],
   odometer: [
     {

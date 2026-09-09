@@ -1,25 +1,26 @@
-'use client';
-
-import './button.css';
-
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode, Ref } from 'react';
 
 import type { DataAttributes } from '../../../dom-props';
 import { cx } from '../../internal/utils/cx';
+import { Spinner } from '../spinner/Spinner';
+import { buttonClass, type ButtonSize, type ButtonVariant } from './button-style';
+
+export { buttonClass } from './button-style';
+export type { ButtonSize, ButtonStyleProps, ButtonVariant } from './button-style';
 
 interface ButtonOwnProps {
-  /** Visual weight / intent. `unstyled` emits base chrome only (sizing, focus ring,
-   *  layout) with no skin - for local re-skins via `className`, e.g. Alert's tone action. @default 'primary' */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'link' | 'unstyled';
+  /** Visual weight / intent. @default 'primary' */
+  variant?: ButtonVariant;
   /** Forwarded to the underlying <button> (React 19 ref-as-prop). */
   ref?: Ref<HTMLButtonElement>;
   /** Control height. sm 28px - md 32px (default) - lg 37px. @default 'md' */
-  size?: 'sm' | 'md' | 'lg' | 'icon';
+  size?: ButtonSize;
   /** `submit` / `reset` / `button`. @default 'button' */
   type?: 'button' | 'submit' | 'reset';
   /** Disable the control (also implied by `loading`). */
   disabled?: boolean;
-  /** Loading - swaps content for a spinner and makes the button inert. */
+  /** Loading - swaps the label for a spinner and makes the button inert. The label stays
+   *  mounted but invisible, so the button holds its width. */
   loading?: boolean;
   /** Stretch to fill the container width. */
   fullWidth?: boolean;
@@ -29,10 +30,6 @@ interface ButtonOwnProps {
   style?: CSSProperties;
   /** Button label. */
   children?: ReactNode;
-  /** Click handler */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** Pointer handler */
-  onPointerDown?: React.PointerEventHandler<HTMLButtonElement>;
 }
 
 type ButtonRestProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps> & DataAttributes;
@@ -53,20 +50,11 @@ export function Button({
   className = '',
   style,
   children,
-  onClick,
   ref,
-  onPointerDown,
   htmlProps,
   ...rest
 }: ButtonProps) {
-  const cls = cx(
-    'zc-btn',
-    variant !== 'unstyled' && `zc-btn--${variant}`,
-    size !== 'md' && `zc-btn--${size}`,
-    fullWidth && 'zc-btn--block',
-    loading && 'zc-is-loading',
-    className,
-  );
+  const cls = cx(buttonClass({ variant, size, fullWidth, className }), loading && 'zc-is-loading');
 
   return (
     <button
@@ -76,13 +64,11 @@ export function Button({
       style={style}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      onClick={onClick}
-      onPointerDown={onPointerDown}
       {...rest}
       {...htmlProps}
     >
       <span className="zc-btn__label">{children}</span>
-      {loading ? <span className="zc-btn__spinner" aria-hidden="true" /> : null}
+      {loading ? <Spinner label={null} className="zc-btn__spinner" /> : null}
     </button>
   );
 }

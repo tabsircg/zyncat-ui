@@ -18,7 +18,7 @@ const seo: PageSeo = {
   faq: [
     {
       q: 'What variants does the Button component support?',
-      a: "Six: primary, secondary, ghost, danger, link and unstyled. unstyled emits only sizing, focus ring and layout with no skin, meant for local re-skins via className - Alert's own action button is built this way.",
+      a: "Five: primary, secondary, ghost, danger and link. For chrome without a skin, call buttonClass() with no variant - it returns sizing, focus ring and layout only, which is how Alert's own action button is built.",
     },
     {
       q: 'How do I show a loading state on a button?',

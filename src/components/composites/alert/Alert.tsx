@@ -15,7 +15,7 @@ import { useControllable } from '../../internal/hooks/use-controllable';
 import { Icon, type IconName } from '../../internal/icon/Icon';
 import { IconSlot } from '../../internal/icon/IconSlot';
 import { cx } from '../../internal/utils/cx';
-import { Button } from '../../primitives/button/Button';
+import { buttonClass } from '../../primitives/button/button-style';
 
 export type AlertTone = 'info' | 'success' | 'warning' | 'danger';
 
@@ -125,9 +125,13 @@ export function Alert({
               {children != null && <p className="zc-alert__desc">{children}</p>}
             </div>
             {action && (
-              <Button variant="unstyled" size="sm" className="zc-alert__action" onClick={action.onClick}>
+              <button
+                type="button"
+                className={buttonClass({ size: 'sm', className: 'zc-alert__action' })}
+                onClick={action.onClick}
+              >
                 {action.label}
-              </Button>
+              </button>
             )}
             {dismissible && (
               <button type="button" className="zc-alert__close" aria-label="Dismiss" onClick={dismiss}>

@@ -28,6 +28,7 @@ import { useOutsidePress, useOverlayEntry } from '../../internal/overlay/layer';
 import type { SupportAction } from '../../internal/support/types';
 import { cx } from '../../internal/utils/cx';
 import { Button } from '../../primitives/button/Button';
+import { buttonClass } from '../../primitives/button/button-style';
 
 export type { SupportAction };
 
@@ -293,10 +294,10 @@ export function SupportRail({
       {...htmlProps}
     >
       <div ref={shellRef as RefObject<HTMLDivElement>} className="zc-support-rail__shell">
-        <Button
-          variant="unstyled"
+        <button
+          type="button"
           ref={tabRef}
-          className="zc-support-rail__tab"
+          className={buttonClass({ className: 'zc-support-rail__tab' })}
           aria-expanded={open}
           aria-haspopup="dialog"
           aria-controls={open ? panelId : undefined}
@@ -304,7 +305,7 @@ export function SupportRail({
           onClick={() => toggle(true)}
         >
           {trigger ?? <Icon name="chat" />}
-        </Button>
+        </button>
 
         <Presence>
           {open && (

@@ -126,6 +126,13 @@ export const GROUPS: DocGroup[] = [
         heroCode: `import { Button } from '@zyncat/ui/button';\n\n<Button variant="primary" onClick={schedulePost}>Schedule post</Button>`,
       },
       {
+        slug: 'spinner',
+        label: 'Spinner',
+        blurb: 'Indeterminate loader in three looks; sizes itself off the text it sits beside.',
+        Playground: P.SpinnerPlayground,
+        heroCode: `import { Spinner } from '@zyncat/ui/spinner';\n\n<Spinner variant="dots" size="lg" />`,
+      },
+      {
         slug: 'icon',
         label: 'Icon',
         blurb: 'Any Phosphor glyph by name or semantic alias; fill marks active.',
