@@ -7,7 +7,7 @@
     --duration-slow: 300ms; /* layout-scale movement - Collapse, panel resizes, reordering */
     --duration-slower: 450ms; /* large-surface movement - dialog, sheet, page-scale reveals */
     --duration-slowest: 900ms; /* hero-scale movement - card expansion, container transforms */
-    --duration-spin: 600ms; /* continuous loaders only, outside the UI-transition scale */
+    --duration-spin: 1000ms; /* continuous loaders only, outside the UI-transition scale */
     --duration-pulse: 1600ms; /* ambient breathing, not collapsed under reduced motion */
 
     --ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -51,7 +51,7 @@
       --duration-slow: 1ms;
       --duration-slower: 1ms;
       --duration-slowest: 1ms;
-      --duration-spin: 1200ms; /* slow the loader, never freeze it (1ms = blur) */
+      --duration-spin: 2000ms; /* slow the loader, never freeze it (1ms = blur) */
     }
   }
 }

@@ -108,7 +108,7 @@ export interface MotionDurationTokens {
   slower?: string | number;
   /** `--duration-slowest` - hero-scale movement - card expansion, container transforms. Default: `900ms`. Collapses to `1ms` under reduced motion. */
   slowest?: string | number;
-  /** `--duration-spin` - continuous loaders only, outside the UI-transition scale. Default: `600ms`. Collapses to `1200ms` under reduced motion. */
+  /** `--duration-spin` - continuous loaders only, outside the UI-transition scale. Default: `1000ms`. Collapses to `2000ms` under reduced motion. */
   spin?: string | number;
   /** `--duration-pulse` - ambient breathing, not collapsed under reduced motion. Default: `1600ms`. */
   pulse?: string | number;
@@ -647,7 +647,7 @@ export interface TokenProperties {
   '--duration-slower'?: string | number;
   /** `--duration-slowest` - hero-scale movement - card expansion, container transforms. Default: `900ms`. Collapses to `1ms` under reduced motion. */
   '--duration-slowest'?: string | number;
-  /** `--duration-spin` - continuous loaders only, outside the UI-transition scale. Default: `600ms`. Collapses to `1200ms` under reduced motion. */
+  /** `--duration-spin` - continuous loaders only, outside the UI-transition scale. Default: `1000ms`. Collapses to `2000ms` under reduced motion. */
   '--duration-spin'?: string | number;
   /** `--duration-pulse` - ambient breathing, not collapsed under reduced motion. Default: `1600ms`. */
   '--duration-pulse'?: string | number;
@@ -857,7 +857,7 @@ export const reducedMotionTokens: Readonly<Record<string, string>> = {
   '--duration-slow': '1ms',
   '--duration-slower': '1ms',
   '--duration-slowest': '1ms',
-  '--duration-spin': '1200ms',
+  '--duration-spin': '2000ms',
 };
 
 declare module 'react' {

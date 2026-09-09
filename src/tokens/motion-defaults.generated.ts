@@ -5,7 +5,7 @@
  * Generated from the token and component CSS by `scripts/gen-theme.mjs` - `pnpm sync` rebuilds it.
  */
 export const motionDefaults = {
-  duration: { fast: 140, base: 200, slow: 300, slower: 450, slowest: 900, spin: 600, pulse: 1600 } satisfies Record<
+  duration: { fast: 140, base: 200, slow: 300, slower: 450, slowest: 900, spin: 1000, pulse: 1600 } satisfies Record<
     string,
     number
   >,
