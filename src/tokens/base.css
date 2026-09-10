@@ -12,4 +12,18 @@
   ::selection {
     background-color: color-mix(in oklab, var(--accent) 30%, transparent);
   }
+
+  /* Chrome paints an autofilled control from an internal rule that no selector outranks, so the
+     field arrives yellow with near-black ink and ignores the polarity. The paint is reached
+     through a transition, which author CSS does control: deferring it past any session leaves
+     the control's own surface showing, and the ink is set through -webkit-text-fill-color
+     because the forced colour is applied at paint time rather than as a beatable declaration. */
+  :-webkit-autofill,
+  :-webkit-autofill:hover,
+  :-webkit-autofill:focus,
+  :-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-strong);
+    caret-color: var(--text-strong);
+    transition: background-color 0s 8000000s;
+  }
 }
