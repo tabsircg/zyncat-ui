@@ -1,6 +1,6 @@
 # @zyncat/ui component index
 
-Generated from @zyncat/ui v0.16.0 by `pnpm sync skill` - do not edit by hand.
+Generated from @zyncat/ui v0.17.0 by `pnpm sync skill` - do not edit by hand.
 If node_modules/@zyncat/ui/package.json shows a DIFFERENT version, this index is stale:
 trust the get_component MCP tool and re-run `npx zyncat-ui init` to refresh the skill.
 
