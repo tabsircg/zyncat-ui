@@ -1,6 +1,9 @@
+'use client';
+
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode, Ref } from 'react';
 
 import type { DataAttributes } from '../../../dom-props';
+import { usePressFeedback } from '../../internal/hooks/use-press-feedback';
 import { cx } from '../../internal/utils/cx';
 import { Spinner } from '../spinner/Spinner';
 import { buttonClass, type ButtonSize, type ButtonVariant } from './button-style';
@@ -34,6 +37,13 @@ interface ButtonOwnProps {
 
 type ButtonRestProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps> & DataAttributes;
 
+const chain =
+  <E,>(theirs: ((event: E) => void) | undefined, mine: (event: E) => void) =>
+  (event: E) => {
+    mine(event);
+    theirs?.(event);
+  };
+
 export interface ButtonProps extends ButtonOwnProps, ButtonRestProps {
   /** Standard <button> attributes (onClick, name, form, aria-*, data-*, ...) forwarded verbatim.
    *  Bare `<button>` attributes also pass through directly; `htmlProps` wins on conflict. */
@@ -54,7 +64,10 @@ export function Button({
   htmlProps,
   ...rest
 }: ButtonProps) {
+  const inert = disabled || loading;
+  const press = usePressFeedback(inert);
   const cls = cx(buttonClass({ variant, size, fullWidth, className }), loading && 'zc-is-loading');
+  const merged = { ...rest, ...htmlProps };
 
   return (
     <button
@@ -62,10 +75,12 @@ export function Button({
       ref={ref}
       className={cls}
       style={style}
-      disabled={disabled || loading}
+      disabled={inert}
       aria-busy={loading || undefined}
-      {...rest}
-      {...htmlProps}
+      {...merged}
+      data-pressed={press.pressed ? 'true' : undefined}
+      onPointerDown={chain(merged.onPointerDown, press.onPointerDown)}
+      onPointerLeave={chain(merged.onPointerLeave, press.onPointerLeave)}
     >
       <span className="zc-btn__label">{children}</span>
       {loading ? <Spinner label={null} className="zc-btn__spinner" /> : null}
