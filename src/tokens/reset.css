@@ -4,6 +4,7 @@
   /* Not the default: iOS Safari inflates text in landscape without it. */
   html {
     -webkit-text-size-adjust: 100%;
+    tab-size: 4;
   }
 
   *,
@@ -16,6 +17,118 @@
     margin: 0;
   }
 
+  /* The UA sizes and weights headings itself. A type role applied to one then fights a value it
+     never set, so the scale comes from --type-* and a bare heading inherits. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  blockquote,
+  dd,
+  dl,
+  figure,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  p,
+  pre {
+    margin: 0;
+  }
+
+  menu,
+  ol,
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* inherit, not none: the UA underline stays off by default, and a block that wants its links
+     underlined sets it once on the container instead of on every anchor. */
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  b,
+  strong {
+    font-weight: bolder;
+  }
+
+  /* The UA drops monospace a size to compensate for its x-height; --font-code already carries a
+     face chosen against the body face, so the step down is a second correction. */
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-code);
+    font-size: 1em;
+  }
+
+  small {
+    font-size: 80%;
+  }
+
+  /* Both stretch the line box in the UA sheet, so a paragraph containing one grows taller. */
+  sub,
+  sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  /* Replaced elements are inline, so each sits on the text baseline and leaves a descender gap
+     under it that reads as an unexplained few pixels of padding. */
+  audio,
+  canvas,
+  embed,
+  iframe,
+  img,
+  object,
+  svg,
+  video {
+    display: block;
+    vertical-align: middle;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-indent: 0;
+  }
+
+  hr {
+    height: 0;
+    border: 0;
+    border-top: 1px solid;
+    color: inherit;
+  }
+
   /* The font shorthand resets every font longhand, the two settings ones included, and Safari
    withholds letter-spacing from controls; each is restated so the control keeps inheriting. */
   button,
@@ -23,14 +136,69 @@
   optgroup,
   select,
   textarea {
+    margin: 0;
+    border: 0;
+    background-color: transparent;
+    color: inherit;
     font: inherit;
     font-feature-settings: inherit;
     font-variation-settings: inherit;
     letter-spacing: inherit;
   }
 
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
+    -webkit-appearance: button;
+    appearance: button;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  :disabled {
+    cursor: default;
+  }
+
+  /* Horizontal drag reflows the page around the field; only the vertical axis is safe. */
+  textarea {
+    resize: vertical;
+  }
+
   /* Firefox's UA sheet dims placeholders to 0.54. */
   ::placeholder {
     opacity: 1;
+  }
+
+  /* Safari draws a magnifier and a clear button inside every search field. */
+  ::-webkit-search-decoration,
+  ::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  /* Chrome's number spinners are fixed-height and unstyleable; NumberField draws its own. */
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    height: auto;
+  }
+
+  /* Safari refuses to size the file button and forces the system font on it. */
+  ::-webkit-file-upload-button {
+    -webkit-appearance: button;
+    font: inherit;
+  }
+
+  /* Firefox drops its ring the moment any rule sets outline, so the keyboard ring is restored
+     here and each component's :focus-visible rule replaces it. */
+  :-moz-focusring {
+    outline: auto;
+  }
+
+  summary {
+    display: list-item;
+  }
+
+  progress {
+    vertical-align: baseline;
   }
 }
