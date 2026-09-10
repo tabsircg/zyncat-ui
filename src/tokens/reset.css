@@ -1,9 +1,10 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.reset {
-  /* Not the default: iOS Safari inflates text in landscape without it. */
+  /* iOS Safari inflates text in landscape without this. */
   html {
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     tab-size: 4;
   }
 
@@ -17,8 +18,6 @@
     margin: 0;
   }
 
-  /* The UA sizes and weights headings itself. A type role applied to one then fights a value it
-     never set, so the scale comes from --type-* and a bare heading inherits. */
   h1,
   h2,
   h3,
@@ -45,6 +44,7 @@
     margin: 0;
   }
 
+  /* Safari drops list semantics from VoiceOver; docs must require role=list. */
   menu,
   ol,
   ul {
@@ -53,25 +53,16 @@
     list-style: none;
   }
 
-  /* inherit, not none: the UA underline stays off by default, and a block that wants its links
-     underlined sets it once on the container instead of on every anchor. */
   a {
     color: inherit;
     text-decoration: inherit;
   }
 
-  b,
-  strong {
-    font-weight: bolder;
-  }
-
-  /* The UA drops monospace a size to compensate for its x-height; --font-code already carries a
-     face chosen against the body face, so the step down is a second correction. */
+  /* The UA runs monospace off a separate 13px default; 1em undoes it. */
   code,
   kbd,
   pre,
   samp {
-    font-family: var(--font-code);
     font-size: 1em;
   }
 
@@ -79,7 +70,7 @@
     font-size: 80%;
   }
 
-  /* Both stretch the line box in the UA sheet, so a paragraph containing one grows taller. */
+  /* Both stretch the line box in the UA sheet. */
   sub,
   sup {
     position: relative;
@@ -96,8 +87,7 @@
     top: -0.5em;
   }
 
-  /* Replaced elements are inline, so each sits on the text baseline and leaves a descender gap
-     under it that reads as an unexplained few pixels of padding. */
+  /* Inline replaced elements leave a descender gap under the baseline. */
   audio,
   canvas,
   embed,
@@ -107,7 +97,11 @@
   svg,
   video {
     display: block;
-    vertical-align: middle;
+  }
+
+  /* Author display beats the UA hidden; important so nothing un-hides it. */
+  [hidden]:not([hidden='until-found']) {
+    display: none !important;
   }
 
   img,
@@ -129,8 +123,7 @@
     color: inherit;
   }
 
-  /* The font shorthand resets every font longhand, the two settings ones included, and Safari
-   withholds letter-spacing from controls; each is restated so the control keeps inheriting. */
+  /* The font shorthand resets every longhand; Safari withholds letter-spacing here. */
   button,
   input,
   optgroup,
@@ -153,52 +146,31 @@
     -webkit-appearance: button;
     appearance: button;
     padding: 0;
-    cursor: pointer;
   }
 
-  :disabled {
-    cursor: default;
-  }
-
-  /* Horizontal drag reflows the page around the field; only the vertical axis is safe. */
-  textarea {
-    resize: vertical;
-  }
-
-  /* Firefox's UA sheet dims placeholders to 0.54. */
+  /* Firefox dims placeholders to 0.54; base names the replacement color. */
   ::placeholder {
     opacity: 1;
   }
 
-  /* Safari draws a magnifier and a clear button inside every search field. */
   ::-webkit-search-decoration,
   ::-webkit-search-cancel-button {
     -webkit-appearance: none;
   }
 
-  /* Chrome's number spinners are fixed-height and unstyleable; NumberField draws its own. */
+  /* Chrome's spinners are fixed-height and unstyleable. */
   ::-webkit-inner-spin-button,
   ::-webkit-outer-spin-button {
     height: auto;
   }
 
-  /* Safari refuses to size the file button and forces the system font on it. */
-  ::-webkit-file-upload-button {
+  ::file-selector-button {
     -webkit-appearance: button;
+    appearance: button;
     font: inherit;
-  }
-
-  /* Firefox drops its ring the moment any rule sets outline, so the keyboard ring is restored
-     here and each component's :focus-visible rule replaces it. */
-  :-moz-focusring {
-    outline: auto;
   }
 
   summary {
     display: list-item;
-  }
-
-  progress {
-    vertical-align: baseline;
   }
 }

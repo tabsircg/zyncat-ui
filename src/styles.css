@@ -1,7 +1,7 @@
 /* Zyncat UI global layer - import ONCE at your app root: import '@zyncat/ui/styles.css'.
    The reset layer is first, so everything else outranks it. Component CSS ships per component. */
 
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @import './tokens/reset.css';
 @import './tokens/decisions.css';

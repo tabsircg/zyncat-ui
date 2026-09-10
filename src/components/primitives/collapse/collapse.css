@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 /* Registered non-inheriting so a Collapse's inline timing never leaks into a Collapse nested
    inside it; unset, they resolve invalid and the var() fallbacks supply the defaults. */

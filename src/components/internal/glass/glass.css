@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-glass {

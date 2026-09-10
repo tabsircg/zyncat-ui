@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-fld {
@@ -40,7 +40,6 @@
     transition: var(--transition-control);
     appearance: none;
     -webkit-appearance: none;
-    outline: var(--ring-rest);
   }
   .zc-fld__input::placeholder {
     color: var(--text-disabled);
@@ -126,7 +125,6 @@
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: var(--transition-control);
-    outline: var(--ring-rest);
   }
   .zc-fld__action:hover {
     color: var(--text-strong);
@@ -264,7 +262,6 @@
     transition: var(--transition-control);
     caret-color: var(--accent);
     appearance: none;
-    outline: var(--ring-rest);
   }
   .zc-otp__slot:hover:not(:disabled):not(:focus) {
     border-color: var(--border-strong);

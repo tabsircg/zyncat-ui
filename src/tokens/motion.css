@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.tokens {
   :root {
@@ -35,9 +35,9 @@
   [data-theme],
   [data-polarity] {
     --transition-control:
-      color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard),
-      border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard),
-      outline-color var(--duration-fast) var(--ease-standard);
+      color var(--duration-base) var(--ease-standard), background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) var(--ease-standard),
+      outline-color var(--duration-base) var(--ease-standard);
     --transition-colors:
       color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard),
       border-color var(--duration-fast) var(--ease-standard);

@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-tabs {
@@ -60,7 +60,6 @@
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     border-radius: var(--radius-md);
-    outline: var(--ring-rest);
     transition: var(--transition-control);
   }
   .zc-tab:focus-visible {

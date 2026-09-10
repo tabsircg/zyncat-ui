@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   /* Bespoke px: the authored value is the ring gap and the marker falls out of it, so the two
@@ -128,6 +128,7 @@
     transition:
       var(--transition-control),
       transform var(--duration-fast) var(--ease-standard);
+    outline: var(--ring-rest);
   }
   .zc-rg__marker {
     position: absolute;
@@ -208,6 +209,7 @@
     transition:
       var(--transition-control),
       transform var(--duration-fast) var(--ease-standard);
+    outline: var(--ring-rest);
   }
   .zc-rg--cards .zc-rg-opt:active:not(.zc-is-disabled) {
     transform: translateY(var(--space-px));

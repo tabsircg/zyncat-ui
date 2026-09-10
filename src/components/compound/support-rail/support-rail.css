@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-support-rail {
@@ -60,6 +60,8 @@
     box-shadow: var(--shadow-md);
     pointer-events: auto;
     translate: 0 -50%;
+    outline: var(--ring-rest);
+    transition: outline-color var(--duration-fast) var(--ease-standard);
   }
 
   .zc-support-rail[data-side='right'] .zc-support-rail__shell {
@@ -167,6 +169,8 @@
     margin-inline: calc(var(--ring-gutter) * -1);
     padding: var(--ring-gutter);
     scroll-padding: var(--ring-gutter);
+    outline: var(--ring-rest);
+    transition: outline-color var(--duration-fast) var(--ease-standard);
   }
   .zc-support-rail__scroll:focus-visible {
     outline: var(--focus-ring);
@@ -196,7 +200,8 @@
     cursor: pointer;
     transition:
       background-color var(--duration-base) var(--ease-standard),
-      padding var(--duration-slow) var(--ease-standard);
+      padding var(--duration-slow) var(--ease-standard),
+      outline-color var(--duration-fast) var(--ease-standard);
   }
   .zc-support-rail__row:hover {
     background: var(--neutral-wash);

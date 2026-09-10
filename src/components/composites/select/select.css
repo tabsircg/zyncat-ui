@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-select {
@@ -33,7 +33,6 @@
       border-color var(--duration-base) var(--ease-standard),
       box-shadow var(--duration-base) var(--ease-standard),
       outline-color var(--duration-base) var(--ease-standard);
-    outline: var(--ring-rest);
   }
   .zc-select__trigger:hover {
     border-color: var(--border-strong);

@@ -638,7 +638,7 @@ const STRENGTH_SUFFIX = '-strength';
 const TYPE_BUNDLE_RE =
   /^var\((--weight-[\w-]+)\) var\((--size-[\w-]+)\)\/var\((--leading-[\w-]+)\) var\((--font-[\w-]+)\)$/;
 const TAILWIND_LAYER_ORDER =
-  '@layer theme, zyncat.reset, base, zyncat.tokens, zyncat.components, zyncat.base, components, utilities;';
+  '@layer theme, zyncat.reset, base, zyncat.tokens, zyncat.base, zyncat.components, components, utilities;';
 const DARK_VARIANT = "@custom-variant dark (&:where([data-polarity='dark'], [data-polarity='dark'] *));";
 
 const inFile = (file, prefix) => tokens.filter((token) => token.file === file && token.cssName.startsWith(prefix));

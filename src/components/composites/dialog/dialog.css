@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-overlay-layer--dialog {
@@ -107,7 +107,6 @@
     cursor: pointer;
     font-size: var(--icon-sm);
     transition: var(--transition-control);
-    outline: var(--ring-rest);
   }
   .zc-dialog__close:hover {
     background: var(--neutral-wash);

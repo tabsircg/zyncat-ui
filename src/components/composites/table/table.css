@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-tbl,
@@ -150,7 +150,7 @@
     font-weight: inherit;
     color: inherit;
     white-space: nowrap;
-    transition: var(--transition-colors);
+    transition: var(--transition-control);
   }
   .zc-tbl__table th.zc-tbl__cell--sortable:first-child .zc-tbl__sort {
     padding-inline-start: var(--space-3);

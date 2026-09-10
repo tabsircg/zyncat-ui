@@ -1,29 +1,71 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.base {
+  /* Drives native scrollbars, caret, select popups, and autofill background. */
+  :root {
+    color-scheme: light dark;
+  }
+
+  /* Only reaches these four; scoped so it stops inheriting everywhere. */
+  :where(input[type='checkbox'], input[type='radio'], input[type='range'], progress) {
+    accent-color: var(--accent);
+  }
+
   body {
     background: var(--bg-app);
     color: var(--text-body);
     font: var(--type-body);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  }
+
+  b,
+  strong {
+    font-weight: var(--weight-semibold);
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-code);
+  }
+
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
+    cursor: pointer;
+  }
+
+  :where(button, [type='button'], [type='reset'], [type='submit']):disabled {
+    cursor: not-allowed;
+  }
+
+  /* Horizontal drag reflows the page around the field; only the vertical axis is safe. */
+  textarea {
+    resize: vertical;
+  }
+
+  ::placeholder {
+    color: var(--text-subtle);
   }
 
   ::selection {
     background-color: color-mix(in oklab, var(--accent) 30%, transparent);
   }
 
-  /* Chrome paints an autofilled control from an internal rule that no selector outranks, so the
-     field arrives yellow with near-black ink and ignores the polarity. The paint is reached
-     through a transition, which author CSS does control: deferring it past any session leaves
-     the control's own surface showing, and the ink is set through -webkit-text-fill-color
-     because the forced colour is applied at paint time rather than as a beatable declaration. */
-  :-webkit-autofill,
-  :-webkit-autofill:hover,
-  :-webkit-autofill:focus,
-  :-webkit-autofill:active {
+  /* outline-style is discrete, so only outline-color can animate from here. */
+  :where(a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])) {
+    outline: var(--ring-rest);
+  }
+
+  /* Without this, unskinned focusables lose the ring the rule above displaced. */
+  :where(a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])):focus-visible {
+    outline-color: var(--ring-color-accent);
+  }
+
+  /* Chrome forces both at paint time, so neither color nor background-color reaches them. */
+  :is(:autofill, :-webkit-autofill) {
     -webkit-text-fill-color: var(--text-strong);
     caret-color: var(--text-strong);
-    transition: background-color 0s 8000000s;
   }
 }

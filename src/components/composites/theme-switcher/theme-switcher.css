@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @layer zyncat.components {
   .zc-theme-switcher.zc-btn {
@@ -86,7 +86,6 @@
     color: var(--text-muted);
     cursor: pointer;
     transition: var(--transition-colors);
-    outline: var(--ring-rest);
   }
   .zc-theme-switcher__card:hover,
   .zc-theme-switcher__card.zc-is-selected {

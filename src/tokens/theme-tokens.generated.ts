@@ -671,7 +671,7 @@ export interface TokenProperties {
   '--scale-floating'?: string | number;
   /** `--scale-chip` - small inline elements - tag, badge, count. Default: `0.9`. */
   '--scale-chip'?: string | number;
-  /** `--transition-control`. Default: `color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), outline-color var(--duration-fast) var(--ease-standard)`. Re-derived on every theme root. */
+  /** `--transition-control`. Default: `color var(--duration-base) var(--ease-standard), background-color var(--duration-base) var(--ease-standard), border-color var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) var(--ease-standard), outline-color var(--duration-base) var(--ease-standard)`. Re-derived on every theme root. */
   '--transition-control'?: string | number;
   /** `--transition-colors`. Default: `color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard)`. Re-derived on every theme root. */
   '--transition-colors'?: string | number;

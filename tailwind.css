@@ -8,7 +8,7 @@
 
    Generated from the token CSS by `scripts/gen-theme.mjs` - `pnpm sync` rebuilds it. */
 
-@layer theme, zyncat.reset, base, zyncat.tokens, zyncat.components, zyncat.base, components, utilities;
+@layer theme, zyncat.reset, base, zyncat.tokens, zyncat.base, zyncat.components, components, utilities;
 
 @custom-variant dark (&:where([data-polarity='dark'], [data-polarity='dark'] *));
 

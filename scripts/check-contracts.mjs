@@ -152,7 +152,7 @@ registeredPrefixes.add('avatar').add('collapse');
 const hasRegisteredPrefix = (name) =>
   [...registeredPrefixes].some((prefix) => name.startsWith(`--${prefix}-`) || name.startsWith(`--_${prefix}-`));
 
-const ORDER_STATEMENT = '@layer zyncat.reset, zyncat.tokens, zyncat.components;';
+const ORDER_STATEMENT = '@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;';
 
 const KNOB_DOC_ABOVE = /^[ \t]*\n[ \t]*--[a-z][\w-]*\s*:/;
 const KNOB_DOC_TRAILING = /--[a-z][\w-]*\s*:[^;]*;[ \t]*$/;

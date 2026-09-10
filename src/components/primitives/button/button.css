@@ -1,4 +1,4 @@
-@layer zyncat.reset, zyncat.tokens, zyncat.components;
+@layer zyncat.reset, zyncat.tokens, zyncat.base, zyncat.components;
 
 @property --btn-grad-a {
   syntax: '<color>';
@@ -56,7 +56,6 @@
       box-shadow var(--duration-fast) var(--ease-standard),
       outline-color var(--duration-fast) var(--ease-standard),
       transform var(--btn-press-timing);
-    outline: var(--ring-rest);
   }
 
   .zc-btn:focus-visible {
