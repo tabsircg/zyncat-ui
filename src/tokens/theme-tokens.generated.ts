@@ -28,8 +28,6 @@ export interface ColorBgTokens {
 
 /** Ink, from strong to disabled, and the faces on a fill. */
 export interface ColorTextTokens {
-  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity. Default: `var(--gray-0)`. */
-  onAccent?: string | number;
   /** `--text-strong`. Default: `var(--gray-950)`. Dark: `oklch(from var(--neutral) 0.975 0.003 h)`. */
   strong?: string | number;
   /** `--text-body`. Default: `var(--gray-800)`. Dark: `oklch(from var(--neutral) 0.91 0.005 h)`. */
@@ -697,8 +695,6 @@ export interface TokenProperties {
   '--glass-shadow'?: string | number;
   /** `--glass-shadow-hover`. Default: `0 2px 4px rgb(var(--shadow-rgb) / calc(0.06 * var(--shadow-strength))), 0 8px 18px rgb(var(--shadow-rgb) / calc(0.1 * var(--shadow-strength)))`. Re-derived on every theme root. */
   '--glass-shadow-hover'?: string | number;
-  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity. Default: `var(--gray-0)`. */
-  '--text-on-accent'?: string | number;
   /** `--bg-app` - Canvas, cards and panels share the top of the ramp, separated by hairlines rather than tint. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
   '--bg-app'?: string | number;
   /** `--bg-surface`. Default: `var(--gray-0)`. Dark: `oklch(from var(--neutral) 0.165 0.006 h)`. */
@@ -751,6 +747,8 @@ export interface TokenProperties {
   '--accent-wash'?: string | number;
   /** `--text-accent`. Default: `var(--accent-active)`. Dark: `oklch(from var(--accent) calc(l + 0.14) calc(c - 0.012) h)`. Re-derived on every theme root. */
   '--text-accent'?: string | number;
+  /** `--text-on-accent` - The ink on a hue fill - the ramp's lightest rung in either polarity. Default: `var(--gray-0)`. Re-derived on every theme root. */
+  '--text-on-accent'?: string | number;
   /** `--neutral-wash` - Translucent washes of the ink, never opaque near-whites. Default: `color-mix(in oklab, var(--text-secondary) 6%, transparent)`. Re-derived on every theme root. */
   '--neutral-wash'?: string | number;
   /** `--neutral-wash-press`. Default: `color-mix(in oklab, var(--text-secondary) 10%, transparent)`. Re-derived on every theme root. */

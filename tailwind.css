@@ -23,7 +23,6 @@
   --background-color-overlay: var(--bg-overlay);
 
   /* Ink - text-<role>; the body ink is text-default because text-body is the type role */
-  --text-color-on-accent: var(--text-on-accent);
   --text-color-strong: var(--text-strong);
   --text-color-default: var(--text-body);
   --text-color-secondary: var(--text-secondary);
@@ -32,6 +31,7 @@
   --text-color-disabled: var(--text-disabled);
   --text-color-inverse: var(--text-inverse);
   --text-color-accent: var(--text-accent);
+  --text-color-on-accent: var(--text-on-accent);
   --text-color-success: var(--success-text);
   --text-color-warning: var(--warning-text);
   --text-color-danger: var(--danger-text);

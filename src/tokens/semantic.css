@@ -1,11 +1,6 @@
 @layer zyncat.reset, zyncat.tokens, zyncat.components;
 
 @layer zyncat.tokens {
-  :root {
-    /* The ink on a hue fill - the ramp's lightest rung in either polarity. */
-    --text-on-accent: var(--gray-0);
-  }
-
   :root,
   [data-polarity='light'] {
     color-scheme: light;
@@ -46,6 +41,9 @@
     --accent-disabled: oklch(from var(--accent) 0.795 0.092 h);
     --accent-wash: oklch(from var(--accent) l c h / 0.08);
     --text-accent: var(--accent-active);
+
+    /* The ink on a hue fill - the ramp's lightest rung in either polarity. */
+    --text-on-accent: var(--gray-0);
 
     /* Translucent washes of the ink, never opaque near-whites. */
     --neutral-wash: color-mix(in oklab, var(--text-secondary) 6%, transparent);

@@ -177,6 +177,10 @@ for (const file of files) {
         fail(
           `${cssName} in ${file} sits on the theme-root block with a literal value - a literal there resets the consumer's :root decision inside every themed subtree. Only tokens that derive from another token belong on ":root, [data-theme], [data-polarity]".`,
         );
+      if (block.kind === 'root' && file !== DECISIONS_FILE && value.includes('var('))
+        fail(
+          `${cssName} in ${file} derives from another token on a ":root"-only block - a custom property resolves where it is declared, so a themed subtree that repoints its source re-derives the source and leaves this one on the page's value. Derived tokens belong on ":root, [data-theme], [data-polarity]".`,
+        );
       if (file === DECISIONS_FILE && block.kind !== 'root')
         fail(
           `${cssName} is a decision and sits on the ${block.kind} block - decisions are set, never derived, and are polarity-free, so they live on ":root, [data-theme='default']" alone.`,
