@@ -34,7 +34,7 @@ init over hand-wiring it.
 - `import '@zyncat/ui/styles.css'` once at the root - fonts + tokens; each component lazy-loads its
   own CSS. `import './zyncat.theme.css'` right after it - the eight decisions init wrote beside the
   entry; a retheme is editing a value there.
-- Theming that is data: `defineTheme` + `<ZyncatTheme theme={{ base, dark }} />` from
+- Theming that is data: `defineTheme` + `<ZyncatTheme themes={{ default: { light, dark } }} />` from
   `@zyncat/ui/theme`, once at the root. Typed, server-rendered, no build config. See
   references/theming.md before writing one.
 - One subpath per component: `import { Button } from '@zyncat/ui/button'`. There is no barrel.

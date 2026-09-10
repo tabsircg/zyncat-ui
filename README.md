@@ -41,20 +41,20 @@ Eight decisions, everything else derives. `init` wrote them into `zyncat.theme.c
 }
 ```
 
-Dark ships. `data-theme="dark"` on `<html>` turns the page, on any element it turns that subtree, and `data-theme="light"` inside makes a light island. Extend it in a `[data-theme='dark']` block of the same file.
+Dark ships. Palette and polarity are two attributes: `data-theme='<name>'` picks the palette, `data-polarity='light|dark'` picks the side. `data-polarity="dark"` on `<html>` turns the page, on any element it turns that subtree, and `data-polarity="light"` inside makes a light island. Extend the dark side in a `[data-polarity='dark']` block of the same file.
 
 For a theme that is data - several named themes, computed values - the same level has a type:
 
 ```tsx
 import { defineTheme, ZyncatTheme } from '@zyncat/ui/theme';
 
-const base = defineTheme({ color: { accent: 'oklch(0.58 0.19 292)' }, shape: { radius: '0.75rem' } });
+const light = defineTheme({ color: { accent: 'oklch(0.58 0.19 292)' }, shape: { radius: '0.75rem' } });
 const dark = defineTheme({ color: { accent: 'oklch(0.72 0.14 292)' } });
 
-<ZyncatTheme theme={{ base, dark }} />; // once, at the app root
+<ZyncatTheme themes={{ default: { light, dark } }} />; // once, at the app root
 ```
 
-`ZyncatTheme` renders a `<style>` element: server-rendered, no provider, no build step, about a kilobyte. `base` lands on `:root` and every other key is a `[data-theme='<key>']` block, so switching is one attribute. The types are generated from the token CSS, so a typo is a compile error and an upgrade surfaces new tokens.
+`ZyncatTheme` renders a `<style>` element: server-rendered, no provider, no build step, about a kilobyte. Every key is a palette carrying a `light` and a `dark` side; `default` lands on `:root` and every other key becomes a `[data-theme='<key>']` block, so switching is one attribute. The types are generated from the token CSS, so a typo is a compile error and an upgrade surfaces new tokens.
 
 Four override levels, lowest first: **0** your own unlayered CSS beats every shipped rule, since all of it sits in `@layer zyncat.components`; **1** the tokens above; **2** an expressive component's `--<component>-*` properties; **3** `className` and `style` per instance, `htmlProps` for an overlay's panel. Replicas answer to none of them. Reduced motion is handled at the token layer, so repoint durations on `:root`, not a nested scope. The [theming docs](https://ui.zyncat.app/theming) walk through each level.
 
@@ -67,7 +67,7 @@ Four override levels, lowest first: **0** your own unlayered CSS beats every shi
 @import 'tailwindcss';
 ```
 
-Every role becomes a utility named after its token - `bg-surface`, `text-muted`, `border-subtle`, `text-caption`, `rounded-md`, `shadow-md`, `duration-fast` - reading the token itself, so themes and `dark:` (which follows `data-theme`) reach it. Spacing stays Tailwind's own scale.
+Every role becomes a utility named after its token - `bg-surface`, `text-muted`, `border-subtle`, `text-caption`, `rounded-md`, `shadow-md`, `duration-fast` - reading the token itself, so themes and `dark:` (which follows `data-polarity`) reach it. Spacing stays Tailwind's own scale.
 
 ## Components
 

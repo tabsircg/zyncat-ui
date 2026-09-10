@@ -27,25 +27,32 @@ own `-subtle`, `-text` and `-wash`; the `--radius-*` steps are fixed ratios of `
 `--radius: 0` squares every corner (`--radius-full` is a shape and stays put); the `--type-*` bundles
 follow the faces. Set a derived token only to break it away from its decision.
 
-Dark ships in the package. `data-theme="dark"` on `<html>` turns the page - the base layer paints
+Palette and polarity are two attributes. `data-theme='<name>'` picks the palette, `data-polarity='light|dark'`
+picks the side, and they are independent - a palette carries both sides.
+
+Dark ships in the package. `data-polarity="dark"` on `<html>` turns the page - the base layer paints
 `body` in `--bg-app`, `--text-body` and `--type-body`, so there is no wrapper to add - and on any
-element it turns that subtree, where `data-theme="light"` makes a light island. The dark theme sets
-the neutral roles (`--bg-*`, `--text-*`, `--border-*`), the shadow ink, `--shadow-strength` (how much
-shadow the surfaces cast), `--sheen-strength` (how bright the white top-light highlights render) and
-`--glow-strength` (how much light a hovered hue fill casts on the canvas around it), drops the filled
-faces (`--accent-fill`, `--danger-fill`) a step, and re-derives the hue steps whose light values pin a
-lightness near white; the decisions cascade in, so the accent a project sets is the dark theme's
-accent too. Extend it in the same block -
-`[data-theme='dark'] { --accent: oklch(0.72 0.14 292); --shadow-strength: 2.5; }` - and whatever is
+element it turns that subtree, where `data-polarity="light"` makes a light island. The dark polarity
+sets the neutral roles (`--bg-*`, `--text-*`, `--border-*`), the shadow ink, `--shadow-strength` (how
+much shadow the surfaces cast), `--sheen-strength` (how bright the white top-light highlights render)
+and `--glow-strength` (how much light a hovered hue fill casts on the canvas around it), drops the
+filled faces (`--accent-fill`, `--danger-fill`) a step, and re-derives the hue steps whose light
+values pin a lightness near white; the decisions cascade in, so the accent a project sets is the dark
+side's accent too. Extend it in the same block -
+`[data-polarity='dark'] { --accent: oklch(0.72 0.14 292); --shadow-strength: 2.5; }` - and whatever is
 left out keeps the shipped dark value. The derived tokens are declared on every theme root (`:root`
-and any element with `data-theme`), so a subtree theme that repoints `--accent` re-derives all of
-them; the neutral roles cascade like any property, so a theme of your own that sets `--bg-app` and
-`--text-body` keeps them without restating the rest.
-Components read the tokens live, and the WAAPI engine reads the same values at `<body>` - again
-whenever `data-theme` changes or `prefers-reduced-motion` flips - so motion retimes with the CSS.
-Reduced motion is handled here - every `--duration-*` collapses to 1ms under
-`prefers-reduced-motion`, so derive your own delays from a duration token, and repoint durations on
-`:root` rather than a nested scope or the collapse cannot reach them.
+and any element with `data-theme` or `data-polarity`), so a subtree that repoints `--accent`
+re-derives all of them; the neutral roles cascade like any property, so a theme of your own that sets
+`--bg-app` and `--text-body` keeps them without restating the rest. Overlays portal to `<body>` but
+carry their trigger's palette and polarity onto their own panel, so a Dropdown, Select, Popover,
+Tooltip, Dialog, Modal or Sheet opened from inside a themed island paints as the island does.
+Components read the tokens live, and the WAAPI engine reads them off the element it is animating -
+overlays off their trigger - so a subtree theme retimes motion as well as colour, and a page with no
+subtree theme reads `<body>` as before. The read refreshes whenever `data-theme` or `data-polarity`
+changes anywhere, `prefers-reduced-motion` flips or `ZyncatTheme` renders. Reduced motion is handled
+here - every `--duration-*` collapses to 1ms under `prefers-reduced-motion` - so derive your own
+delays from a duration token, and repoint durations on `:root` for the collapse to reach the whole
+page.
 
 `@zyncat/ui/theme` is the same level with a type on it, for a theme that is data - several named
 themes, or values computed at build time. `defineTheme` takes one object shaped like a theme: four
@@ -62,19 +69,20 @@ on `defineTheme` drops those lines from `zyncat.theme.css`.
 ```tsx
 import { defineTheme, ZyncatTheme } from '@zyncat/ui/theme';
 
-const base = defineTheme({
+const light = defineTheme({
   color: { accent: 'oklch(0.58 0.19 292)' },
   shape: { radius: '0.75rem' },
   components: { odometer: { accent: 'var(--warning)' } },
 });
 const dark = defineTheme({ color: { accent: 'oklch(0.72 0.14 292)' }, custom: { '--shadow-strength': 2.5 } });
 
-<ZyncatTheme theme={{ base, dark }} />;
+<ZyncatTheme themes={{ default: { light, dark } }} />;
 ```
 
-`base` lands on `:root`; every other key is a `[data-theme='<key>']` block, so `dark` and `light`
-extend the shipped polarities rather than starting them. Durations you repoint keep their
-reduced-motion collapse automatically.
+Every key is a palette carrying a `light` and a `dark` side, and `dark` is a delta - what `light`
+sets and `dark` leaves out carries over. `default` lands on `:root`; every other key becomes
+`[data-theme='<key>']`, so both extend the shipped polarities rather than starting them. Durations
+you repoint keep their reduced-motion collapse automatically.
 
 The vocabulary a page reads is the roles, never the plumbing:
 `--bg-app/-surface/-surface-raised/-subtle/-muted/-inset/-overlay`,
@@ -147,7 +155,7 @@ the face), with `font-body`, `leading-<role>`, `tracking-caps`, `tracking-displa
 colour utility on `ring-<hue>`);
 `duration-fast` … `duration-slowest`, `ease-standard`, `ease-entrance`, `ease-exit`, `ease-spring`,
 `ease-glide`; `max-w-prose`, `max-w-floating`. Each utility reads the token itself, so a themed
-subtree and the dark theme reach it, and `dark:` follows `data-theme` rather than the OS. The names
+subtree and the dark polarity reach it, and `dark:` follows `data-polarity` rather than the OS. The names
 Tailwind also ships - `rounded-md`, `shadow-md`, `tracking-tight` - read the zyncat token of the same
 name, so `--radius` in the theme file moves utilities and components together. Spacing stays
 Tailwind's own scale; both sit on the 4px grid. Reach for a role utility before an arbitrary value:
