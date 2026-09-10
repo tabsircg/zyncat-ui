@@ -17,6 +17,7 @@
 [data-theme],
 [data-polarity] {
   --font-body: var(--font-geist), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-code: var(--font-geist-mono), ui-monospace, 'SF Mono', 'Menlo', monospace;
   --docs-serif: var(--font-newsreader), Georgia, 'Times New Roman', serif;
   --docs-card-border: var(--border-hairline) solid var(--border-default);
 }

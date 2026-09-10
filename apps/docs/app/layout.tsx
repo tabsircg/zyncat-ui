@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Newsreader } from 'next/font/google';
+import { Geist, Geist_Mono, Newsreader } from 'next/font/google';
 
 import { DocsTheme } from '@/components/DocsTheme';
 import { SiteJsonLd } from '@/components/JsonLd';
@@ -16,6 +16,13 @@ const newsreader = Newsreader({
 });
 
 const geist = Geist({ subsets: ['latin'], weight: 'variable', variable: '--font-geist', display: 'swap' });
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  weight: 'variable',
+  variable: '--font-geist-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ui.zyncat.app'),
@@ -54,7 +61,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${newsreader.variable} ${geist.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${newsreader.variable} ${geist.variable} ${geistMono.variable}`}
+    >
       <body>
         <DocsTheme />
         <SiteJsonLd />

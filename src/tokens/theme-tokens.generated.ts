@@ -76,9 +76,9 @@ export interface ColorTokens {
 
 /** The body face and the code face - every type bundle follows. */
 export interface TypeFontTokens {
-  /** `--font-body` - The body face - every --type-* bundle follows. Default: `'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif`. */
+  /** `--font-body` - The body face - every --type-* bundle follows. The package loads no webfont; point this at yours. Default: `system-ui, -apple-system, 'Segoe UI', sans-serif`. */
   body?: string | number;
-  /** `--font-code` - The code face - --type-code follows. Default: `'Geist Mono', ui-monospace, 'SF Mono', 'Menlo', monospace`. */
+  /** `--font-code` - The code face - --type-code follows. The package loads no webfont; point this at yours. Default: `ui-monospace, 'SF Mono', 'Menlo', monospace`. */
   code?: string | number;
 }
 
@@ -421,9 +421,9 @@ export interface TokenProperties {
   '--neutral'?: string | number;
   /** `--radius` - Roundness - every --radius-<step> is a fixed ratio of it, 0 squaring every corner. Default: `0.5rem`. */
   '--radius'?: string | number;
-  /** `--font-body` - The body face - every --type-* bundle follows. Default: `'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif`. */
+  /** `--font-body` - The body face - every --type-* bundle follows. The package loads no webfont; point this at yours. Default: `system-ui, -apple-system, 'Segoe UI', sans-serif`. */
   '--font-body'?: string | number;
-  /** `--font-code` - The code face - --type-code follows. Default: `'Geist Mono', ui-monospace, 'SF Mono', 'Menlo', monospace`. */
+  /** `--font-code` - The code face - --type-code follows. The package loads no webfont; point this at yours. Default: `ui-monospace, 'SF Mono', 'Menlo', monospace`. */
   '--font-code'?: string | number;
   /** `--gray-0` - The top of the ramp, not pure white: it carries --neutral like every rung below it. Default: `oklch(from var(--neutral) 0.995 0.002 h)`. Re-derived on every theme root. */
   '--gray-0'?: string | number;

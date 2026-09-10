@@ -101,7 +101,7 @@ The tarball ships `src/`, so a component can be lifted from `node_modules/@zynca
 
 ## Notes
 
-- Fonts: `src/tokens/fonts.css` pulls Geist and Geist Mono from Google Fonts. Self-host them to drop the network hop.
+- Fonts: the package loads none. `--font-body` and `--font-code` default to the system stacks; point them at your own faces in `zyncat.theme.css`.
 - Layout: `src/` (tokens, engine, motion, components, mcp; shipped for reading), `skills/` the agent skill, `dist/` what you import.
 
 ## Develop

@@ -15,9 +15,9 @@
     --neutral: var(--accent);
     /* Roundness - every --radius-<step> is a fixed ratio of it, 0 squaring every corner. */
     --radius: 0.5rem;
-    /* The body face - every --type-* bundle follows. */
-    --font-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    /* The code face - --type-code follows. */
-    --font-code: 'Geist Mono', ui-monospace, 'SF Mono', 'Menlo', monospace;
+    /* The body face - every --type-* bundle follows. The package loads no webfont; point this at yours. */
+    --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    /* The code face - --type-code follows. The package loads no webfont; point this at yours. */
+    --font-code: ui-monospace, 'SF Mono', 'Menlo', monospace;
   }
 }
