@@ -297,10 +297,11 @@ function wireMcp(cwd: string): Wired {
     if (!parsed) bail(`.mcp.json exists but is not valid JSON - fix it, then re-run init.`);
     config = parsed as typeof config;
   }
-  const existed = JSON.stringify(config.mcpServers?.['zyncat-ui']) === JSON.stringify(MCP_SERVER_ENTRY);
+  if (JSON.stringify(config.mcpServers?.['zyncat-ui']) === JSON.stringify(MCP_SERVER_ENTRY))
+    return { line: row('MCP server', '.mcp.json · kept'), done: true };
   config.mcpServers = { ...config.mcpServers, 'zyncat-ui': MCP_SERVER_ENTRY };
   writeFileSync(path, `${JSON.stringify(config, null, 2)}\n`);
-  return { line: row('MCP server', existed ? '.mcp.json · kept' : `.mcp.json ${arrow} zyncat-ui`), done: true };
+  return { line: row('MCP server', `.mcp.json ${arrow} zyncat-ui`), done: true };
 }
 
 export function shippedDecisionsCss(packageRoot: string): string | null {
