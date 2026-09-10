@@ -1891,6 +1891,11 @@ export const GENERATED_PROPS: Record<string, PropRow[]> = {
       type: "'underline' | 'pill'",
       description: 'Skin: an underline that reaches across (default), or a segmented pill riding an inset track.',
     },
+    {
+      name: 'fill',
+      type: 'boolean',
+      description: 'Stretch the row to its container and split it evenly between the tabs.',
+    },
     { name: 'className', type: 'string', description: 'Extra class(es) merged onto the root.' },
     { name: 'style', type: 'CSSProperties', description: 'Inline styles merged onto the root.' },
   ],

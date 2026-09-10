@@ -55,6 +55,8 @@ interface TabsOwnProps {
   activateOn?: ActivateOn;
   /** Skin: an underline that reaches across (default), or a segmented pill riding an inset track. */
   variant?: 'underline' | 'pill';
+  /** Stretch the row to its container and split it evenly between the tabs. */
+  fill?: boolean;
   /** Extra class(es) merged onto the root. */
   className?: string;
   /** Inline styles merged onto the root. */
@@ -77,6 +79,7 @@ export function Tabs({
   ariaLabel,
   activateOn = 'pointerdown',
   variant = 'underline',
+  fill = false,
   className = '',
   style,
   htmlProps,
@@ -193,7 +196,11 @@ export function Tabs({
     : (items.find((i) => !i.disabled) || ({} as Partial<TabItem>)).value;
 
   return (
-    <div className={cx('zc-tabs', pill && 'zc-tabs--pill', className)} style={style} {...htmlProps}>
+    <div
+      className={cx('zc-tabs', pill && 'zc-tabs--pill', fill && 'zc-tabs--fill', className)}
+      style={style}
+      {...htmlProps}
+    >
       <div
         className="zc-tabs__list"
         role="tablist"

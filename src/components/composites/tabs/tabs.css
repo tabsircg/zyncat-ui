@@ -189,6 +189,18 @@
     box-shadow: var(--shadow-xs);
   }
 
+  .zc-tabs--fill,
+  .zc-tabs--fill .zc-tabs__list,
+  .zc-tabs--fill .zc-tab {
+    flex: 1;
+  }
+  .zc-tabs--fill {
+    width: 100%;
+  }
+  .zc-tabs--fill .zc-tab__pad {
+    justify-content: center;
+  }
+
   .zc-tab-panel {
     outline: none;
     overflow: hidden;
