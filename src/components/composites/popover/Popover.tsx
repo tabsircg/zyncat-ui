@@ -10,7 +10,7 @@ import { Presence } from '../../../motion/presence';
 import { popIn, popOut } from '../../../motion/presets';
 import type { DisableableAnimation } from '../../../motion/timing';
 import { useMotion, type MotionSpecs } from '../../../motion/use-motion';
-import { UIMotion } from '../../../tokens/motion-tokens';
+import { motionFor } from '../../../tokens/motion-tokens';
 import { useControllable } from '../../internal/hooks/use-controllable';
 import { useReturnFocus } from '../../internal/overlay/focus';
 import { ovCloneTrigger, OverlayPortal, useOutsidePress, useOverlayEntry } from '../../internal/overlay/layer';
@@ -126,7 +126,7 @@ export function Popover({
   const autoId = useId();
   const panelId = id || 'popover-' + autoId;
   const close = () => setOpen(false);
-  const timings = resolveMotionTiming(animation, POPOVER_TIMING);
+  const timings = resolveMotionTiming(animation, POPOVER_TIMING, triggerRef.current);
 
   return (
     <Fragment>
@@ -138,13 +138,13 @@ export function Popover({
         triggerRef,
         activateOn,
       })}
-      <OverlayPortal>
+      <OverlayPortal scope={triggerRef.current}>
         <Presence>
           {open && (
             <PopoverPanel
               key="panel"
-              animate={popIn(UIMotion.scale.floating, timings.open)}
-              exit={popOut(UIMotion.scale.floating, timings.close)}
+              animate={popIn(motionFor(triggerRef.current).scale.floating, timings.open)}
+              exit={popOut(motionFor(triggerRef.current).scale.floating, timings.close)}
               panelId={panelId}
               side={side}
               align={align}

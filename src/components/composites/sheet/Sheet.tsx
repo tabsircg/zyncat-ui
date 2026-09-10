@@ -116,7 +116,7 @@ export function Sheet({
   const autoId = useId();
   const panelId = id || 'sheet-' + autoId;
   const close = () => setOpen(false);
-  const timings = resolveMotionTiming(animation, SHEET_TIMING);
+  const timings = resolveMotionTiming(animation, SHEET_TIMING, container ?? triggerRef.current);
   const axis = side === 'bottom' ? 'y' : 'x';
 
   return (
@@ -129,7 +129,7 @@ export function Sheet({
         triggerRef,
         activateOn,
       })}
-      <OverlayPortal container={container}>
+      <OverlayPortal container={container} scope={triggerRef.current}>
         <Presence>
           {open && (
             <SheetShell

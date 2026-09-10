@@ -4,12 +4,15 @@ import { useId, useRef } from 'react';
 
 import { Motion } from '../../../../motion/element';
 import { GlidePill, useGlide, type GlideApi } from '../../../../motion/glide';
-import { UIMotion as SM } from '../../../../tokens/motion-tokens';
+import { motionFor } from '../../../../tokens/motion-tokens';
 import { activationProps, type ActivateOn } from '../../../internal/utils/activation';
 import { CATEGORY_ICON_ATTRS, CATEGORY_ICONS } from '../category-icons';
 import { useCategories, useIsActiveCategory, type EmojiPickerStore } from './useEmojiPicker';
 
-const railGlide = () => ({ timing: { duration: SM.dur.base, ease: SM.ease.standard } });
+const railGlide = (scope?: Element | null) => {
+  const motion = motionFor(scope);
+  return { timing: { duration: motion.dur.base, ease: motion.ease.standard } };
+};
 
 interface CategoryProps {
   store: EmojiPickerStore;
@@ -17,9 +20,10 @@ interface CategoryProps {
   railId: string;
   glide: GlideApi;
   activateOn?: ActivateOn;
+  scope: Element | null;
 }
 
-function Category({ store, categoryKey, railId, glide, activateOn }: CategoryProps) {
+function Category({ store, categoryKey, railId, glide, activateOn, scope }: CategoryProps) {
   const isActive = useIsActiveCategory(store, categoryKey);
 
   return (
@@ -42,7 +46,7 @@ function Category({ store, categoryKey, railId, glide, activateOn }: CategoryPro
         <Motion
           as="span"
           layoutId={railId}
-          layoutTransition={railGlide()}
+          layoutTransition={railGlide(scope)}
           className="zc-on-emoji-cat-rail"
           aria-hidden="true"
         />
@@ -70,7 +74,15 @@ export function CategoryBar({ store, activateOn }: { store: EmojiPickerStore; ac
     >
       <GlidePill className="zc-on-emoji-bar-marker" glide={glide} />
       {categories.map((key) => (
-        <Category key={key} store={store} categoryKey={key} railId={railId} glide={glide} activateOn={activateOn} />
+        <Category
+          key={key}
+          store={store}
+          categoryKey={key}
+          railId={railId}
+          glide={glide}
+          activateOn={activateOn}
+          scope={barRef.current}
+        />
       ))}
     </div>
   );

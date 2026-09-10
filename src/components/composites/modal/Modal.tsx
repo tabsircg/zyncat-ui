@@ -67,7 +67,7 @@ export function Modal({
   const autoId = useId();
   const panelId = id || 'modal-' + autoId;
   const close = () => setOpen(false);
-  const timings = resolveMotionTiming(animation, OV_TAKEOVER_TIMING);
+  const timings = resolveMotionTiming(animation, OV_TAKEOVER_TIMING, container ?? triggerRef.current);
 
   return (
     <Fragment>
@@ -79,7 +79,7 @@ export function Modal({
         triggerRef,
         activateOn,
       })}
-      <OverlayPortal container={container}>
+      <OverlayPortal container={container} scope={triggerRef.current}>
         <Presence>
           {open && (
             <ModalShell

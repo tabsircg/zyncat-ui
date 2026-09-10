@@ -7,7 +7,7 @@ import { resolveMotionTiming } from '../../../../motion/motion-timing';
 import { Presence } from '../../../../motion/presence';
 import type { DisableableAnimation } from '../../../../motion/timing';
 import { useMotion, type MotionSpecs } from '../../../../motion/use-motion';
-import { UIMotion, type MotionTransition } from '../../../../tokens/motion-tokens';
+import { motionFor, type MotionTransition } from '../../../../tokens/motion-tokens';
 import { menuHighlightAttrs, type MenuHighlightProps } from '../../../internal/menu/highlight';
 import { OverlayPortal, useOutsidePress, useOverlayEntry } from '../../../internal/overlay/layer';
 import { useAnchorPosition } from '../../../internal/overlay/position';
@@ -17,17 +17,22 @@ const SELECT_MENU_TIMING = {
   close: { duration: 'base', ease: 'exit' },
 } as const;
 
-function selectMenuLayers(animation: DisableableAnimation | undefined, dir: 'open' | 'close'): Layer[] {
-  const t = resolveMotionTiming(animation, SELECT_MENU_TIMING)[dir];
-  const fade = (d: MotionTransition) => ({ duration: d.duration === 0 ? 0 : UIMotion.dur.fast, ease: d.ease });
-  const drop = -UIMotion.dist.sm;
+function selectMenuLayers(
+  animation: DisableableAnimation | undefined,
+  dir: 'open' | 'close',
+  scope?: Element | null,
+): Layer[] {
+  const motion = motionFor(scope);
+  const t = resolveMotionTiming(animation, SELECT_MENU_TIMING, scope)[dir];
+  const fade = (d: MotionTransition) => ({ duration: d.duration === 0 ? 0 : motion.dur.fast, ease: d.ease });
+  const drop = -motion.dist.sm;
   return dir === 'open'
     ? [
-        { y: [drop, 0], scale: [UIMotion.scale.floating, 1], timing: t },
+        { y: [drop, 0], scale: [motion.scale.floating, 1], timing: t },
         { opacity: [0, 1], timing: fade(t) },
       ]
     : [
-        { y: [drop], scale: [UIMotion.scale.floating], timing: t },
+        { y: [drop], scale: [motion.scale.floating], timing: t },
         { opacity: [0], timing: fade(t) },
       ];
 }
@@ -94,13 +99,13 @@ export function SelectMenu({
   children,
 }: SelectMenuProps) {
   return (
-    <OverlayPortal>
+    <OverlayPortal scope={triggerRef.current}>
       <Presence>
         {open && (
           <MenuSurface
             key="menu"
-            animate={selectMenuLayers(animation, 'open')}
-            exit={selectMenuLayers(animation, 'close')}
+            animate={selectMenuLayers(animation, 'open', triggerRef.current)}
+            exit={selectMenuLayers(animation, 'close', triggerRef.current)}
             menuId={menuId}
             requestClose={requestClose}
             triggerRef={triggerRef}

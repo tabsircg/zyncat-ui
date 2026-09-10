@@ -6,12 +6,12 @@ import { createPortal } from 'react-dom';
 import { Motion } from '../../../motion/element';
 import { Presence } from '../../../motion/presence';
 import { popIn, popOut } from '../../../motion/presets';
-import { UIMotion } from '../../../tokens/motion-tokens';
+import { motionFor } from '../../../tokens/motion-tokens';
+import { inheritedThemeAttrs } from '../../internal/overlay/layer';
 import { tokenPx } from '../../internal/utils/token-px';
 import { store, TOOLTIP_DOM_ID, type ActivePayload, type Placement } from './tooltip-store';
 
-const SM = UIMotion;
-const TIP_LAYOUT = { size: 'morph' as const, timing: UIMotion.t.layout };
+const tipLayout = (scope?: Element | null) => ({ size: 'morph' as const, timing: motionFor(scope).t.layout });
 
 interface Size {
   w: number;
@@ -26,10 +26,10 @@ interface RenderedBox extends TargetBox {
   bodyW: number;
 }
 
-function targetBox(size: Size, t: DOMRect, want: Placement): TargetBox {
+function targetBox(size: Size, t: DOMRect, want: Placement, scope?: Element | null): TargetBox {
   const vw = window.innerWidth,
     vh = window.innerHeight,
-    TIP_GAP = tokenPx('--space-2', 8) || 8,
+    TIP_GAP = tokenPx('--space-2', 8, scope) || 8,
     M = TIP_GAP;
   let p = want;
   if (p === 'top' && t.top - size.h - TIP_GAP < M) p = 'bottom';
@@ -61,10 +61,10 @@ function targetBox(size: Size, t: DOMRect, want: Placement): TargetBox {
 
 const surface = () => document.getElementById(TOOLTIP_DOM_ID);
 
-const fromEdge = (p: Placement) => ({
-  x: p === 'left' ? SM.dist.sm : p === 'right' ? -SM.dist.sm : 0,
-  y: p === 'top' ? SM.dist.sm : p === 'bottom' ? -SM.dist.sm : 0,
-});
+const fromEdge = (p: Placement, scope?: Element | null) => {
+  const { sm } = motionFor(scope).dist;
+  return { x: p === 'left' ? sm : p === 'right' ? -sm : 0, y: p === 'top' ? sm : p === 'bottom' ? -sm : 0 };
+};
 
 function Body({ a, width }: { a: ActivePayload; width?: number }) {
   return (
@@ -82,26 +82,28 @@ function Body({ a, width }: { a: ActivePayload; width?: number }) {
 }
 
 function TipSurface({ a, box }: { a: ActivePayload; box: RenderedBox }) {
-  const edge = fromEdge(box.placement);
+  const motion = motionFor(a.anchor());
+  const edge = fromEdge(box.placement, a.anchor());
   return (
     <Motion
       layout
-      layoutTransition={TIP_LAYOUT}
+      layoutTransition={tipLayout(a.anchor())}
       className="zc-tooltip"
+      {...inheritedThemeAttrs(a.anchor())}
       id={TOOLTIP_DOM_ID}
       role="tooltip"
       data-placement={box.placement}
       style={{ translate: `${box.x}px ${box.y}px`, width: box.w, height: box.h }}
       animate={[
-        { x: [edge.x, 0], y: [edge.y, 0], timing: { ...SM.t.layout, fill: 'none' }, composite: 'add' },
-        popIn(SM.scale.floating, SM.t.enter),
+        { x: [edge.x, 0], y: [edge.y, 0], timing: { ...motion.t.layout, fill: 'none' }, composite: 'add' },
+        popIn(motion.scale.floating, motion.t.enter),
       ]}
       exit={[
-        { x: [0, edge.x], y: [0, edge.y], timing: SM.t.exit, composite: 'add' },
-        popOut(SM.scale.floating, SM.t.exit),
+        { x: [0, edge.x], y: [0, edge.y], timing: motion.t.exit, composite: 'add' },
+        popOut(motion.scale.floating, motion.t.exit),
       ]}
     >
-      <Motion as="span" key={a.id} animate={{ opacity: [0, 1], timing: SM.t.enter }}>
+      <Motion as="span" key={a.id} animate={{ opacity: [0, 1], timing: motion.t.enter }}>
         <Body a={a} width={box.bodyW} />
       </Motion>
     </Motion>
@@ -131,7 +133,7 @@ export function TooltipHost() {
       if (!from.width && !from.height) return;
       if (!surface()) drift.current = { x: 0, y: 0 };
       anchored.current = { x: from.left, y: from.top };
-      const to = targetBox({ w: Math.ceil(bubble.width), h: Math.ceil(bubble.height) }, from, active.placement);
+      const to = targetBox({ w: Math.ceil(bubble.width), h: Math.ceil(bubble.height) }, from, active.placement, anchor);
       setShown({
         a: active,
         box: { ...to, x: to.x - drift.current.x, y: to.y - drift.current.y, bodyW: Math.ceil(body.width) },

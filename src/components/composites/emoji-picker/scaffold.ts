@@ -1,5 +1,5 @@
 import { animate, flip, measure, set } from '../../../engine';
-import { UIMotion as SM } from '../../../tokens/motion-tokens';
+import { motionFor } from '../../../tokens/motion-tokens';
 import type { EmojiData } from './data';
 import { el } from './dom';
 import type { GetEmojiUrl } from './types';
@@ -50,18 +50,19 @@ export function createScaffold(root: HTMLElement, emojiData: EmojiData, getEmoji
 
   let hadFocus = false;
   const positionMarker = (btn: HTMLButtonElement | null) => {
+    const motion = motionFor(scroll);
     if (!btn?.offsetHeight) {
-      animate(marker, { opacity: [0], timing: SM.t.exit });
+      animate(marker, { opacity: [0], timing: motion.t.exit });
       hadFocus = false;
       return;
     }
     const from = hadFocus ? measure(marker) : null;
     const tile = offsetWithinScroll(btn);
     set(marker, { x: [tile.left], y: [tile.top], width: [btn.offsetWidth], height: [btn.offsetHeight] });
-    animate(marker, { opacity: [MARKER_OPACITY], timing: { duration: SM.dur.fast, ease: SM.ease.standard } });
+    animate(marker, { opacity: [MARKER_OPACITY], timing: { duration: motion.dur.fast, ease: motion.ease.standard } });
     hadFocus = true;
-    if (from && !SM.reduced)
-      flip(marker, from, { size: 'none', timing: { duration: SM.dur.base, ease: SM.ease.standard } });
+    if (from && !motion.reduced)
+      flip(marker, from, { size: 'none', timing: { duration: motion.dur.base, ease: motion.ease.standard } });
   };
 
   const mountMarker = () => {

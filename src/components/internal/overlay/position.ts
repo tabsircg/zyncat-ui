@@ -30,9 +30,9 @@ export function useAnchorPosition({ side, align, arrow, anchor, triggerRef, pane
       const pw = p.offsetWidth;
       const ph = p.offsetHeight;
 
-      const edge = tokenPx('--space-2');
+      const edge = tokenPx('--space-2', 0, p);
 
-      const gap = arrow ? tokenPx('--space-2') + 3 : 0;
+      const gap = arrow ? tokenPx('--space-2', 0, p) + 3 : 0;
 
       const vw = window.innerWidth;
       const vh = window.innerHeight;

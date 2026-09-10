@@ -18,7 +18,7 @@ import { resolveMotionTiming } from '../../../motion/motion-timing';
 import { Presence } from '../../../motion/presence';
 import { popIn, popOut } from '../../../motion/presets';
 import type { DisableableAnimation } from '../../../motion/timing';
-import { UIMotion } from '../../../tokens/motion-tokens';
+import { motionFor } from '../../../tokens/motion-tokens';
 import { useControllable } from '../../internal/hooks/use-controllable';
 import { ovCloneTrigger, OverlayPortal } from '../../internal/overlay/layer';
 import type { ActivateOn } from '../../internal/utils/activation';
@@ -107,7 +107,6 @@ export function Dropdown({
   const hoverDepth = useRef(-1);
   const autoId = useId();
   const menuId = id || 'dropdown-' + autoId;
-  const timings = resolveMotionTiming(animation, DROPDOWN_TIMING);
   const levels = useMemo(() => resolveLevels(items, path), [items, path]);
 
   const refFor = (key: string): RefObject<HTMLElement> => {
@@ -115,6 +114,7 @@ export function Dropdown({
     return refs.current.get(key)!;
   };
   const triggerRef = refFor('trigger');
+  const timings = resolveMotionTiming(animation, DROPDOWN_TIMING, triggerRef.current);
 
   const dismiss = (refocus: boolean) => {
     setPath([]);
@@ -178,7 +178,7 @@ export function Dropdown({
         triggerRef,
         activateOn,
       })}
-      <OverlayPortal>
+      <OverlayPortal scope={triggerRef.current}>
         <Presence>
           {open &&
             levels.map((level, depth) => (
@@ -186,8 +186,8 @@ export function Dropdown({
                 key={level.key}
                 chain={chain}
                 depth={depth}
-                animate={popIn(UIMotion.scale.floating, timings.open)}
-                exit={popOut(UIMotion.scale.floating, timings.close)}
+                animate={popIn(motionFor(triggerRef.current).scale.floating, timings.open)}
+                exit={popOut(motionFor(triggerRef.current).scale.floating, timings.close)}
               />
             ))}
         </Presence>

@@ -171,10 +171,43 @@ function useHydrated() {
   );
 }
 
-function OverlayPortal({ container, children }: { container?: HTMLElement | null; children: ReactNode }) {
+const ovNearestTheme = (el: Element | null | undefined, attr: string): string | null =>
+  el?.closest(`[${attr}]`)?.getAttribute(attr) ?? null;
+
+const ovThemeDifferingFromPage = (scope: Element | null | undefined, attr: string): string | undefined => {
+  const own = ovNearestTheme(scope, attr);
+  return own !== null && own !== ovNearestTheme(document.body, attr) ? own : undefined;
+};
+
+export interface InheritedThemeAttrs {
+  'data-theme'?: string;
+  'data-polarity'?: string;
+}
+
+export function inheritedThemeAttrs(scope: Element | null | undefined): InheritedThemeAttrs {
+  return {
+    'data-theme': ovThemeDifferingFromPage(scope, 'data-theme'),
+    'data-polarity': ovThemeDifferingFromPage(scope, 'data-polarity'),
+  };
+}
+
+function OverlayPortal({
+  container,
+  scope,
+  children,
+}: {
+  container?: HTMLElement | null;
+  scope?: Element | null;
+  children: ReactNode;
+}) {
   const hydrated = useHydrated();
   if (!hydrated) return null;
-  return createPortal(<div data-overlay-root="">{children}</div>, container ?? document.body);
+  return createPortal(
+    <div data-overlay-root="" {...inheritedThemeAttrs(scope)}>
+      {children}
+    </div>,
+    container ?? document.body,
+  );
 }
 
 export { ovIsTop, ovInOverlayAbove, useOverlayEntry, useOutsidePress, ovCloneTrigger, OverlayPortal };

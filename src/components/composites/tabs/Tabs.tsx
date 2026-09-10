@@ -18,13 +18,11 @@ import { Motion } from '../../../motion/element';
 import { GlidePill, useGlide } from '../../../motion/glide';
 import { resolveMotionTiming } from '../../../motion/motion-timing';
 import { type DisableableAnimation } from '../../../motion/timing';
-import { UIMotion } from '../../../tokens/motion-tokens';
+import { motionFor } from '../../../tokens/motion-tokens';
 import { useScrollEdges } from '../../internal/hooks/use-scroll-edges';
 import { IconSlot } from '../../internal/icon/IconSlot';
 import { activationProps, type ActivateOn } from '../../internal/utils/activation';
 import { cx } from '../../internal/utils/cx';
-
-const SM = UIMotion;
 
 /** One tab in the row. */
 export interface TabItem {
@@ -109,7 +107,9 @@ export function Tabs({
     const next = { x: el.offsetLeft, w: el.offsetWidth };
     ink.style.opacity = '1';
 
-    if (!animated || !placedRef.current || SM.reduced) {
+    const motion = motionFor(list);
+
+    if (!animated || !placedRef.current || motion.reduced) {
       set(ink, { x: [next.x], width: [next.w] });
     } else {
       const lr = list.getBoundingClientRect();
@@ -122,7 +122,11 @@ export function Tabs({
         animate(ink, {
           x: [cur.x, lead, next.x],
           width: [cur.w, span, next.w],
-          timing: { duration: SM.dur.slow, times: [0, 0.55, 1], ease: [SM.ease.standard, SM.ease.entrance] },
+          timing: {
+            duration: motion.dur.slow,
+            times: [0, 0.55, 1],
+            ease: [motion.ease.standard, motion.ease.entrance],
+          },
         });
       }
     }
@@ -138,7 +142,7 @@ export function Tabs({
     const l = listRef.current,
       el = value != null ? tabRefs.current[value] : null;
     if (l && el && l.scrollWidth > l.clientWidth) {
-      const behavior: ScrollBehavior = SM.reduced ? 'auto' : 'smooth';
+      const behavior: ScrollBehavior = motionFor(l).reduced ? 'auto' : 'smooth';
       if (el.offsetLeft < l.scrollLeft + TABS_EDGE_PAD) {
         l.scrollTo({ left: el.offsetLeft - TABS_EDGE_PAD, behavior });
       } else if (el.offsetLeft + el.offsetWidth > l.scrollLeft + l.clientWidth - TABS_EDGE_PAD) {
@@ -263,10 +267,12 @@ const TABPANEL_TIMING = {
 } as const;
 
 export function TabPanel({ tab, name, dir = 0, className = '', style, children, animation, htmlProps }: TabPanelProps) {
-  const enter = resolveMotionTiming(animation, TABPANEL_TIMING).open;
+  const panelRef = useRef<HTMLElement>(null);
+  const enter = resolveMotionTiming(animation, TABPANEL_TIMING, panelRef.current).open;
 
   return (
     <Motion
+      ref={panelRef}
       layout
       layoutTransition={{ size: 'morph', timing: enter }}
       role="tabpanel"

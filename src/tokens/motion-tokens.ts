@@ -76,8 +76,8 @@ function build(scales: MotionScales): MotionTokens {
   };
 }
 
-function readFromDom(): MotionTokens {
-  const cs = getComputedStyle(document.body ?? document.documentElement);
+function readFrom(scope: Element): MotionTokens {
+  const cs = getComputedStyle(scope);
   const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
   const seconds = (name: string, fallback: number): number => {
     const v = cs.getPropertyValue(name).trim();
@@ -120,16 +120,35 @@ function replaceInto(target: Record<string, unknown>, next: Record<string, unkno
 
 const hasDom = typeof document !== 'undefined';
 
-export const UIMotion: MotionTokens = hasDom ? readFromDom() : build(DEFAULTS);
+const pageScope = (): Element => document.body ?? document.documentElement;
+
+export const UIMotion: MotionTokens = hasDom ? readFrom(pageScope()) : build(DEFAULTS);
+
+let generation = 0;
+const scoped = new WeakMap<Element, { generation: number; tokens: MotionTokens }>();
+
+export function motionFor(scope?: Element | null): MotionTokens {
+  if (!hasDom || !scope) return UIMotion;
+  const hit = scoped.get(scope);
+  if (hit && hit.generation === generation) return hit.tokens;
+  const tokens = readFrom(scope);
+  scoped.set(scope, { generation, tokens });
+  return tokens;
+}
 
 /**
- * Re-reads the motion tokens into `UIMotion` in place, so every held reference sees the new values. Runs on
- * a `data-theme` or `data-polarity` change, a `prefers-reduced-motion` flip and after `ZyncatTheme`
- * renders; call it yourself after injecting a stylesheet that retimes the `--duration-*` tokens.
+ * Re-reads the motion tokens into `UIMotion` in place and drops every scoped read, so every held
+ * reference sees the new values. Runs on a `data-theme` or `data-polarity` change, a
+ * `prefers-reduced-motion` flip and after `ZyncatTheme` renders; call it yourself after injecting a
+ * stylesheet that retimes the `--duration-*` tokens.
  */
 export function refreshMotionTokens(): MotionTokens {
+  generation++;
   if (hasDom)
-    replaceInto(UIMotion as unknown as Record<string, unknown>, readFromDom() as unknown as Record<string, unknown>);
+    replaceInto(
+      UIMotion as unknown as Record<string, unknown>,
+      readFrom(pageScope()) as unknown as Record<string, unknown>,
+    );
   return UIMotion;
 }
 
